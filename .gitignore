@@ -338,3 +338,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# ConnectionString
+/appsettings.json
+/Program.cs
+/Startup.cs
