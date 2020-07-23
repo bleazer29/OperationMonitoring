@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.HistoryModels
+namespace OperationMonitoring.Models
 {
     [Table("PartsHistory")]
     public class PartHistory

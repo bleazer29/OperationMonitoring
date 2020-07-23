@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.ClientsModels
+namespace OperationMonitoring.Models
 {
-    public class Counterparty
+    public class EquipmentStatus
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
-
     }
 }

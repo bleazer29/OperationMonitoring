@@ -38,7 +38,7 @@ namespace OperationMonitoring
                     Configuration.GetConnectionString("HistoryDB")));
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
+                .AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("UserDB")));
 
@@ -53,7 +53,7 @@ namespace OperationMonitoring
                     Configuration.GetConnectionString("StorageDB")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

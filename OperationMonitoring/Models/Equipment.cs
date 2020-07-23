@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OperationMonitoring.EquipmentModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.EquipmentModels
+namespace OperationMonitoring.Models
 {
     public class Equipment
     {

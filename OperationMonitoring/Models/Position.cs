@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.EquipmentModels
+namespace OperationMonitoring.Models
 {
-    public class Category
+    public class Position
     {
         public int Id { get; set; }
-        public int Title { get; set; }
+        public int Name { get; set; }
     }
 }

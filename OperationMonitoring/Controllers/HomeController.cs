@@ -13,13 +13,13 @@ namespace OperationMonitoring.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        HistoryContext db;
-        StorageContext storagedb;
-        public HomeController(ILogger<HomeController> logger, HistoryContext context, StorageContext storage)
+        ApplicationContext db;
+       
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
         {
             _logger = logger;
             db = context;
-            storagedb = storage;
+            
         }
 
         public IActionResult Index()

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.EquipmentModels
+namespace OperationMonitoring.Models
 {
-    public class Parts
+    public class Part
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -17,5 +17,7 @@ namespace OperationMonitoring.Models.EquipmentModels
         public virtual EquipmentStatus Status { get; set; }
         public bool IsUsed { get; set; }
         // later - maybe warning bool or something?
+        public virtual Part Parent { get; set; }
+        public virtual Nomenclature Nomenclature{get;set;}
     }
 }

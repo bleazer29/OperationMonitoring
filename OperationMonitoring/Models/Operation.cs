@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OperationMonitoring.Models.EquipmentModels
+namespace OperationMonitoring.Models
 {
     public class Operation
     {
@@ -15,7 +15,7 @@ namespace OperationMonitoring.Models.EquipmentModels
         public string OperationInfo { get; set; } // client name, contract, well location... 
         public DateTime DateStart { get; set; }
         public DateTime DateFinish { get; set; }
-        public bool IsOpen { get; set; }
+       
 
     }
 }
