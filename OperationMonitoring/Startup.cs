@@ -29,7 +29,28 @@ namespace OperationMonitoring
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("EquipmentDB")));
+
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("HistoryDB")));
+
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("UserDB")));
+
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("CounterpartyDB")));
+
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("StorageDB")));
+
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
