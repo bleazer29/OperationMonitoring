@@ -17,11 +17,10 @@ namespace OperationMonitoring.Data
         public CounterpartyContext(DbContextOptions<CounterpartyContext> options) : base(options)
         {
             Database.EnsureCreated();
-            Database.Migrate();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=CounterpartyDb; Trusted_Connection =True;")
+            optionsBuilder.UseSqlServer("Data Source = IL707; Initial Catalog = CounterpartyDB; Integrated Security = True;")
                 .UseLazyLoadingProxies();
         }
 

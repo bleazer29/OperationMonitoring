@@ -23,11 +23,10 @@ namespace OperationMonitoring.Data
         public EquipmentContext(DbContextOptions<EquipmentContext> options) : base(options)
         {            
             Database.EnsureCreated();
-            Database.Migrate();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=EquipmentDB; Trusted_Connection =True;")
+            optionsBuilder.UseSqlServer("Data Source = IL707; Initial Catalog = EquipmentDB; Integrated Security = True;")
                 .UseLazyLoadingProxies();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -48,7 +48,7 @@ namespace OperationMonitoring
                     Configuration.GetConnectionString("CounterpartyDB")));
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
+                .AddDbContext<StorageContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("StorageDB")));
 
