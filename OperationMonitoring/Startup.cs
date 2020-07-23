@@ -27,7 +27,8 @@ namespace OperationMonitoring
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<EquipmentContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("EquipmentDB")));
 
@@ -42,7 +43,7 @@ namespace OperationMonitoring
                     Configuration.GetConnectionString("UserDB")));
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
+                .AddDbContext<CounterpartyContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("CounterpartyDB")));
 
