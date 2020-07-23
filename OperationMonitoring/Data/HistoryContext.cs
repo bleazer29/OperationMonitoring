@@ -17,10 +17,9 @@ namespace OperationMonitoring.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=I707;Database=HistoryDB;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=IL634\\SQLEXPRESS;Database=HistoryDB;Trusted_Connection=True;");
         }
 
         public DbSet<History> History { get; set; }
-
     }
 }

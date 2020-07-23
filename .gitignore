@@ -343,3 +343,5 @@ healthchecksdb
 /appsettings.json
 /Program.cs
 /Startup.cs
+/Data/HistoryContext.cs
+/Data/NomenclatureContext.cs

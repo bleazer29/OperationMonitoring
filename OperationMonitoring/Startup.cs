@@ -40,7 +40,7 @@ namespace OperationMonitoring
                 .AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("UserDB")));
-
+            
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -50,6 +50,7 @@ namespace OperationMonitoring
                 .AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("StorageDB")));
+        
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -83,7 +84,7 @@ namespace OperationMonitoring
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Storage}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

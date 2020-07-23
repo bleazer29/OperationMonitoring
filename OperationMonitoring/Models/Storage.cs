@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
+    
     public class Storage
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        [ForeignKey("Parent")]
+        [ForeignKey("Storage")]
         public int? ParentId { get; set; }
         public virtual Storage Parent { get; set; }
     }
