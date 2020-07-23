@@ -30,9 +30,9 @@ namespace OperationMonitoring
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("EquipmentDB")));
-
+                
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
+                .AddDbContext<HistoryContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("HistoryDB")));
 

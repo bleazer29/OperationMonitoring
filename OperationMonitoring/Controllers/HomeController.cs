@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 
 namespace OperationMonitoring.Controllers
@@ -12,10 +13,11 @@ namespace OperationMonitoring.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        HistoryContext db;
+        public HomeController(ILogger<HomeController> logger, HistoryContext context)
         {
             _logger = logger;
+            db = context;
         }
 
         public IActionResult Index()
