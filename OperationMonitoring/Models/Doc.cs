@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
-{  
-    public class History
+{
+    public class Doc
     {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-
+        public int Id { get; set; }        
+        public string FilePath { get; set; }
     }
 }

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
-    public class Storage
+    public class Types
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-       
-        public virtual Storage Parent { get; set; }
+        public int Title { get; set; }
     }
 }

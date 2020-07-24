@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
-   
-    public class Purchase
+    [Table("PartsHistory")]
+    public class PartHistory
     {
         public int Id { get; set; }
+        public int? EquipmentId { get; set; }
+        public int PartId { get; set; }
         public DateTime Date { get; set; }
-        public int Amount { get; set; }
-        [ForeignKey("Nomenclature")]
-        public int NomenclatureId { get; set; }
-        public virtual Nomenclature Nomenclature { get; set; }
+        public string Commentary { get; set; }
+        public int? UserId { get; set; }
+        public int PartOperatingTime { get; set; }
     }
 }

@@ -5,12 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
-{
-    public class Storage
+{ 
+    public class HistoryType
     {
         public int Id { get; set; }
         public string Name { get; set; }
-       
-        public virtual Storage Parent { get; set; }
     }
 }
