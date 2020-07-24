@@ -15,7 +15,8 @@ namespace OperationMonitoring.Models
         /// <summary>
         /// Из чего состоит
         /// </summary>
-        public ICollection<Part> Parts { get; set; }
+        public ICollection<Part> PartsList { get; set; }
         public DateTime Date { get; set; }
+        public bool IsUsed { get; set; }
     }
 }

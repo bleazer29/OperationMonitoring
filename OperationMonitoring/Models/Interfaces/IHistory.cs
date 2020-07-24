@@ -9,7 +9,6 @@ namespace OperationMonitoring.Models.Interfaces
     interface IHistory
     {
         public DateTime Date { get; set; }
-        public Doc Doc { get; set; } //или скан
         public string Commentary { get; set; }
         public Employee User { get; set; } //кто коммент написал
     }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200724103219_DatabaseFix4")]
+    partial class DatabaseFix4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -587,7 +589,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("MaintenanceTypeId");
 
-                    b.ToTable("Maintenances");
+                    b.ToTable("Maintenance");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.MaintenanceHistory", b =>
@@ -740,7 +742,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("WellId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.OrderHistory", b =>

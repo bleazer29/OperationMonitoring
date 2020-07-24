@@ -22,6 +22,8 @@ namespace OperationMonitoring.Data
         public DbSet<Part> Parts { get; set; }
         public DbSet<Counterparty> Counterparties { get; set; }
         public DbSet<Agreement> Agreements { get; set; }
+        public DbSet<Maintenance> Maintenances { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public DbSet<Well> Wells { get; set; }
         public DbSet<HistoryType> HistoryTypes { get; set; }
         public DbSet<EquipmentHistory> EquipmentHistory { get; set; }

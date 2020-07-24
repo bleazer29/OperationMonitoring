@@ -11,13 +11,9 @@ namespace OperationMonitoring.Models
     { 
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public virtual Doc Doc { get; set; }
         public string Commentary { get; set; }
         public virtual Employee User { get; set; }    
-        public virtual Equipment Equipment { get; set; }
-        public virtual Agreement Agreement { get; set; }
-        public virtual Well Well { get; set; }
-        public string OperationInfo { get; set; } // client name, contract, well location...       
-        public DateTime DateFinish { get; set; }
+        public virtual Order Order { get; set; }
+        public int? OperatingTime { get; set; } // minutes
     }
 }

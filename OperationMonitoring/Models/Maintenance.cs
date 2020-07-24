@@ -8,10 +8,11 @@ namespace OperationMonitoring.Models
     public class Maintenance
     {
         public int Id { get; set; }
-        public virtual Part Part { get; set; }
+        public virtual Equipment Equipment { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime FinishDate { get; set; }
-        public string WorkOrder { get { return "WO-" + Id + "/" + StartDate.Year; } }
+        public virtual MaintenanceType MaintenanceType { get; set; }
+        public string Title { get { return "WO-" + Id + "/" + StartDate.Year; } }
         public bool IsOpened { get; set; }
     }
 }
