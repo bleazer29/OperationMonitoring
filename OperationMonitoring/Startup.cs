@@ -31,8 +31,10 @@ namespace OperationMonitoring
                 .AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("OperationMonitorDB")));
+
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

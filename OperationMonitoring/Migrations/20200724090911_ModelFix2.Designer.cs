@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200724090911_ModelFix2")]
+    partial class ModelFix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -713,6 +715,9 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CounterpartyId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -737,6 +742,8 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AgreementId");
+
+                    b.HasIndex("CounterpartyId");
 
                     b.HasIndex("DocId");
 
@@ -1263,6 +1270,10 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Agreement", "Agreement")
                         .WithMany()
                         .HasForeignKey("AgreementId");
+
+                    b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
+                        .WithMany()
+                        .HasForeignKey("CounterpartyId");
 
                     b.HasOne("OperationMonitoring.Models.Doc", "Doc")
                         .WithMany()

@@ -15,7 +15,6 @@ namespace OperationMonitoring.Models
         public string Commentary { get; set; }
         public virtual Employee User { get; set; }    
         public virtual Equipment Equipment { get; set; }
-        public virtual Counterparty Counterparty { get; set; }
         public virtual Agreement Agreement { get; set; }
         public virtual Well Well { get; set; }
         public string OperationInfo { get; set; } // client name, contract, well location...       
