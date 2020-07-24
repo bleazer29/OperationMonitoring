@@ -10,6 +10,8 @@ namespace OperationMonitoring.Models
     {
         public int Id { get; set; }
         public virtual Part Part { get; set; }
-        public virtual AssemblyHistory AssemblyHistory { get; set; }
+        public DateTime Date { get; set; }
+        public EquipmentStatus StatusFrom { get; set; }
+        public EquipmentStatus StatusTo{ get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace OperationMonitoring.Data
         public DbSet<Well> Wells { get; set; }
         public DbSet<HistoryType> HistoryTypes { get; set; }
         public DbSet<EquipmentHistory> EquipmentHistory { get; set; }
-        public DbSet<AssemblyHistory> AssembliesHistory { get; set; }
+        public DbSet<Assemble> Assemblies { get; set; }
         public DbSet<PartHistory> PartHistory { get; set; }
         public DbSet<StorageHistory> StorageHistory { get; set; }
         public DbSet<MaintenanceHistory> MaintenanceHistory { get; set; }
@@ -54,12 +54,13 @@ namespace OperationMonitoring.Data
         {
             base.OnModelCreating(modelBuilder);
             EquipmentStatus[] statuses = {
-                new EquipmentStatus() { Id = 1, Title = "RFU" },
-                new EquipmentStatus() { Id = 2, Title = "JF" },
-                new EquipmentStatus() { Id = 3, Title = "WS" },
-                new EquipmentStatus() { Id = 4, Title = "SP" },
-                new EquipmentStatus() { Id = 5, Title = "RP" },
-                new EquipmentStatus() { Id = 6, Title = "Scrap" }};
+                new EquipmentStatus() { Id = 1, Title = "NA" },
+                new EquipmentStatus() { Id = 2, Title = "RFU" },
+                new EquipmentStatus() { Id = 3, Title = "JF" },
+                new EquipmentStatus() { Id = 4, Title = "WS" },
+                new EquipmentStatus() { Id = 5, Title = "SP" },
+                new EquipmentStatus() { Id = 6, Title = "RP" },
+                new EquipmentStatus() { Id = 7, Title = "Scrap" }};
             modelBuilder.Entity<EquipmentStatus>().HasData(statuses);
 
             modelBuilder.Entity<HistoryType>().HasData(
