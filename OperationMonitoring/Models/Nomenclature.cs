@@ -8,6 +8,7 @@ namespace OperationMonitoring.Models
     public class Nomenclature
     {
         public int Id { get; set; }
+        public string VendorCode { get; set; }
         public string Name { get; set; }    
         public virtual Provider Provider { get; set; }
         public virtual Specification Specification { get; set; }
