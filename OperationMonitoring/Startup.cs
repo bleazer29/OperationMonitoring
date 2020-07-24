@@ -28,32 +28,10 @@ namespace OperationMonitoring
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<EquipmentContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("EquipmentDB")));
-                
-            services.AddEntityFrameworkSqlServer()
-                .AddDbContext<HistoryContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("HistoryDB")));
-
-            services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("UserDB")));
-            
-            services.AddEntityFrameworkSqlServer()
-                .AddDbContext<CounterpartyContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("CounterpartyDB")));
-
-            services.AddEntityFrameworkSqlServer()
-                .AddDbContext<StorageContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("StorageDB")));
-        
-
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    Configuration.GetConnectionString("OperationMonitorDB")));
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -78,14 +56,14 @@ namespace OperationMonitoring
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Storage}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

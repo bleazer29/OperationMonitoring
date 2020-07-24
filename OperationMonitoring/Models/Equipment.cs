@@ -11,8 +11,8 @@ namespace OperationMonitoring.Models
         public int Id { get; set; }
         public virtual EquipmentStatus Status { get; set; }
         public virtual Department Department { get; set; }
-        public virtual Category Category { get; set; }
-        public virtual Types Type { get; set; }
+        public virtual EquipmentCategory Category { get; set; }
+        public virtual EquipmentType Type { get; set; }
         public string Title { get; set; }
         public string SerialNum { get; set; }
         public int DiameterOuter { get; set; }

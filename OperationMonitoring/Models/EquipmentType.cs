@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
-    public class HistoryPart
+    public class EquipmentType
     {
         public int Id { get; set; }
-        public virtual Part Part { get; set; }
-        public virtual AssemblyHistory AssemblyHistory { get; set; }
+        public int Title { get; set; }
     }
 }

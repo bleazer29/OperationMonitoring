@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
-    public class Category
+    public class EquipmentCategory
     {
         public int Id { get; set; }
         public int Title { get; set; }

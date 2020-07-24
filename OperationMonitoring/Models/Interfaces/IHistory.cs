@@ -11,6 +11,6 @@ namespace OperationMonitoring.Models.Interfaces
         public DateTime Date { get; set; }
         public Doc Doc { get; set; } //или скан
         public string Commentary { get; set; }
-        public IdentityUser User { get; set; } //кто коммент написал
+        public Employee User { get; set; } //кто коммент написал
     }
 }

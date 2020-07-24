@@ -13,7 +13,7 @@ namespace OperationMonitoring.Models
         public DateTime Date { get; set; }
         public virtual Doc Doc { get; set; }
         public string Commentary { get; set; }
-        public virtual IdentityUser User { get; set; }    
+        public virtual Employee User { get; set; }    
         public virtual Equipment Equipment { get; set; }
         public virtual Counterparty Counterparty { get; set; }
         public virtual Agreement Agreement { get; set; }

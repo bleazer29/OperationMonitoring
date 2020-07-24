@@ -15,10 +15,9 @@ namespace OperationMonitoring.Models
         public virtual Storage StorageFrom { get; set; }
         public virtual Storage StorageTo { get; set; }
         public virtual HistoryType HistoryType { get; set; }
-       
         public DateTime Date { get; set; }
         public virtual Doc Doc { get; set; }
         public string Commentary { get; set; }
-        public virtual IdentityUser User { get; set; }
+        public virtual Employee User { get; set; }
     }
 }
