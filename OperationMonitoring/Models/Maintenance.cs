@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,8 +22,14 @@ namespace OperationMonitoring.Models
         public virtual MaintenanceCategory MaintenanceCategory { get; set; }
         public virtual Storage ReturnStorage { get; set; }
         public string MaintenanceReason { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EstimateDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FinishDate { get; set; }
         public string Title { get { return "WO-" + Id + "/" + StartDate.Year; } }
         public bool IsOpened { get; set; }
