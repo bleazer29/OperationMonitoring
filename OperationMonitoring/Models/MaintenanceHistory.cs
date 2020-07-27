@@ -12,7 +12,7 @@ namespace OperationMonitoring.Models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
-        public virtual Employee User { get ; set; }
+        public virtual Employee Author { get ; set; }
         public virtual Maintenance Maintenance { get; set; }
     }
 }

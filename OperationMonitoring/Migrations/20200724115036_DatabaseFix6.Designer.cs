@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200724115036_DatabaseFix6")]
+    partial class DatabaseFix6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -429,9 +431,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
@@ -447,15 +446,18 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("StatusToId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("AuthorId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EquipmentId");
 
                     b.HasIndex("StatusFromId");
 
                     b.HasIndex("StatusToId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("EquipmentHistory");
                 });
@@ -566,14 +568,8 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CounterpartyId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("EquipmentId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("EstimateDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FinishDate")
                         .HasColumnType("datetime2");
@@ -584,29 +580,14 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("MaintenanceTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ResponsibleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ReturnStorageId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CounterpartyId");
-
                     b.HasIndex("EquipmentId");
 
                     b.HasIndex("MaintenanceTypeId");
-
-                    b.HasIndex("ResponsibleId");
-
-                    b.HasIndex("ReturnStorageId");
 
                     b.ToTable("Maintenances");
                 });
@@ -618,9 +599,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
@@ -630,11 +608,14 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("MaintenanceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("MaintenanceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("MaintenanceHistory");
                 });
@@ -747,19 +728,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("DateStart")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeliveryLocation")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EstimateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");
 
                     b.Property<int?>("WellId")
@@ -770,8 +739,6 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("AgreementId");
 
                     b.HasIndex("EquipmentId");
-
-                    b.HasIndex("ResponsibleId");
 
                     b.HasIndex("WellId");
 
@@ -785,9 +752,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
@@ -800,11 +764,14 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OrderHistory");
                 });
@@ -981,9 +948,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("EquipmentId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("NomenclatureId")
                         .HasColumnType("int");
 
@@ -991,8 +955,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EquipmentId");
 
                     b.HasIndex("NomenclatureId");
 
@@ -1029,9 +991,6 @@ namespace OperationMonitoring.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -1107,14 +1066,14 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DocId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("HistoryTypeId")
                         .HasColumnType("int");
@@ -1128,9 +1087,12 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("StorageToId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("DocId");
 
                     b.HasIndex("HistoryTypeId");
 
@@ -1139,6 +1101,8 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("StorageFromId");
 
                     b.HasIndex("StorageToId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("StorageHistory");
                 });
@@ -1267,10 +1231,6 @@ namespace OperationMonitoring.Migrations
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId");
@@ -1282,14 +1242,14 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "StatusTo")
                         .WithMany()
                         .HasForeignKey("StatusToId");
+
+                    b.HasOne("OperationMonitoring.Models.Employee", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Maintenance", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
-                        .WithMany()
-                        .HasForeignKey("CounterpartyId");
-
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId");
@@ -1297,25 +1257,17 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.MaintenanceType", "MaintenanceType")
                         .WithMany()
                         .HasForeignKey("MaintenanceTypeId");
-
-                    b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
-                        .WithMany()
-                        .HasForeignKey("ResponsibleId");
-
-                    b.HasOne("OperationMonitoring.Models.Storage", "ReturnStorage")
-                        .WithMany()
-                        .HasForeignKey("ReturnStorageId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.MaintenanceHistory", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("OperationMonitoring.Models.Maintenance", "Maintenance")
                         .WithMany()
                         .HasForeignKey("MaintenanceId");
+
+                    b.HasOne("OperationMonitoring.Models.Employee", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Nomenclature", b =>
@@ -1339,10 +1291,6 @@ namespace OperationMonitoring.Migrations
                         .WithMany()
                         .HasForeignKey("EquipmentId");
 
-                    b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
-                        .WithMany()
-                        .HasForeignKey("ResponsibleId");
-
                     b.HasOne("OperationMonitoring.Models.Well", "Well")
                         .WithMany()
                         .HasForeignKey("WellId");
@@ -1350,13 +1298,13 @@ namespace OperationMonitoring.Migrations
 
             modelBuilder.Entity("OperationMonitoring.Models.OrderHistory", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("OperationMonitoring.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId");
+
+                    b.HasOne("OperationMonitoring.Models.Employee", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Part", b =>
@@ -1399,10 +1347,6 @@ namespace OperationMonitoring.Migrations
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentId");
-
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
                         .HasForeignKey("NomenclatureId");
@@ -1421,9 +1365,9 @@ namespace OperationMonitoring.Migrations
 
             modelBuilder.Entity("OperationMonitoring.Models.StorageHistory", b =>
                 {
-                    b.HasOne("OperationMonitoring.Models.Employee", "Author")
+                    b.HasOne("OperationMonitoring.Models.Doc", "Doc")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("DocId");
 
                     b.HasOne("OperationMonitoring.Models.HistoryType", "HistoryType")
                         .WithMany()
@@ -1440,6 +1384,10 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
                         .HasForeignKey("StorageToId");
+
+                    b.HasOne("OperationMonitoring.Models.Employee", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
