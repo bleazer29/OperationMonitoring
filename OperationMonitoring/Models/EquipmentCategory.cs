@@ -8,6 +8,6 @@ namespace OperationMonitoring.Models
     public class EquipmentCategory
     {
         public int Id { get; set; }
-        public int Title { get; set; }
+        public string Title { get; set; }
     }
 }

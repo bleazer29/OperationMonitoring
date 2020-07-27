@@ -9,5 +9,7 @@ namespace OperationMonitoring.Models
     {
         public int Id { get; set; }        
         public string FilePath { get; set; }
+        public DocType Type { get; set; }
+        public int RelatedEntityId { get; set; }
     }
 }

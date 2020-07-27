@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OperationMonitoring.Models
 {
-    public class EquipmentType
+    public class DocType
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -802,9 +802,9 @@
 
       var start = function start(event) {
         if (_this3._pointerEvent && PointerType[event.originalEvent.pointerType.toUpperCase()]) {
-          _this3.touchStartX = event.originalEvent.clientX;
+          _this3.touchStartX = event.originalEvent.CounterpartyX;
         } else if (!_this3._pointerEvent) {
-          _this3.touchStartX = event.originalEvent.touches[0].clientX;
+          _this3.touchStartX = event.originalEvent.touches[0].CounterpartyX;
         }
       };
 
@@ -813,13 +813,13 @@
         if (event.originalEvent.touches && event.originalEvent.touches.length > 1) {
           _this3.touchDeltaX = 0;
         } else {
-          _this3.touchDeltaX = event.originalEvent.touches[0].clientX - _this3.touchStartX;
+          _this3.touchDeltaX = event.originalEvent.touches[0].CounterpartyX - _this3.touchStartX;
         }
       };
 
       var end = function end(event) {
         if (_this3._pointerEvent && PointerType[event.originalEvent.pointerType.toUpperCase()]) {
-          _this3.touchDeltaX = event.originalEvent.clientX - _this3.touchStartX;
+          _this3.touchDeltaX = event.originalEvent.CounterpartyX - _this3.touchStartX;
         }
 
         _this3._handleSwipe();
@@ -1326,7 +1326,7 @@
 
       var dimension = this._getDimension();
 
-      this._element.style[dimension] = this._element.getBoundingClientRect()[dimension] + "px";
+      this._element.style[dimension] = this._element.getBoundingCounterpartyRect()[dimension] + "px";
       Util.reflow(this._element);
       $(this._element).addClass(ClassName$3.COLLAPSING).removeClass(ClassName$3.COLLAPSE).removeClass(ClassName$3.SHOW);
       var triggerArrayLength = this._triggerArray.length;
@@ -1841,7 +1841,7 @@
   }
 
   function getSize(axis, body, html, computedStyle) {
-    return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? parseInt(html['offset' + axis]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')]) : 0);
+    return Math.max(body['offset' + axis], body['scroll' + axis], html['Counterparty' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? parseInt(html['offset' + axis]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')]) + parseInt(computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')]) : 0);
   }
 
   function getWindowSizes(document) {
@@ -1913,13 +1913,13 @@
   };
 
   /**
-   * Given element offsets, generate an output similar to getBoundingClientRect
+   * Given element offsets, generate an output similar to getBoundingCounterpartyRect
    * @method
    * @memberof Popper.Utils
    * @argument {Object} offsets
-   * @returns {Object} ClientRect like output
+   * @returns {Object} CounterpartyRect like output
    */
-  function getClientRect(offsets) {
+  function getCounterpartyRect(offsets) {
     return _extends({}, offsets, {
       right: offsets.left + offsets.width,
       bottom: offsets.top + offsets.height
@@ -1927,13 +1927,13 @@
   }
 
   /**
-   * Get bounding client rect of given element
+   * Get bounding Counterparty rect of given element
    * @method
    * @memberof Popper.Utils
    * @param {HTMLElement} element
-   * @return {Object} client rect
+   * @return {Object} Counterparty rect
    */
-  function getBoundingClientRect(element) {
+  function getBoundingCounterpartyRect(element) {
     var rect = {};
 
     // IE10 10 FIX: Please, don't ask, the element isn't
@@ -1941,7 +1941,7 @@
     // This isn't reproducible in IE10 compatibility mode of IE11
     try {
       if (isIE(10)) {
-        rect = element.getBoundingClientRect();
+        rect = element.getBoundingCounterpartyRect();
         var scrollTop = getScroll(element, 'top');
         var scrollLeft = getScroll(element, 'left');
         rect.top += scrollTop;
@@ -1949,7 +1949,7 @@
         rect.bottom += scrollTop;
         rect.right += scrollLeft;
       } else {
-        rect = element.getBoundingClientRect();
+        rect = element.getBoundingCounterpartyRect();
       }
     } catch (e) {}
 
@@ -1962,8 +1962,8 @@
 
     // subtract scrollbar size from sizes
     var sizes = element.nodeName === 'HTML' ? getWindowSizes(element.ownerDocument) : {};
-    var width = sizes.width || element.clientWidth || result.right - result.left;
-    var height = sizes.height || element.clientHeight || result.bottom - result.top;
+    var width = sizes.width || element.CounterpartyWidth || result.right - result.left;
+    var height = sizes.height || element.CounterpartyHeight || result.bottom - result.top;
 
     var horizScrollbar = element.offsetWidth - width;
     var vertScrollbar = element.offsetHeight - height;
@@ -1979,7 +1979,7 @@
       result.height -= vertScrollbar;
     }
 
-    return getClientRect(result);
+    return getCounterpartyRect(result);
   }
 
   function getOffsetRectRelativeToArbitraryNode(children, parent) {
@@ -1987,8 +1987,8 @@
 
     var isIE10 = isIE(10);
     var isHTML = parent.nodeName === 'HTML';
-    var childrenRect = getBoundingClientRect(children);
-    var parentRect = getBoundingClientRect(parent);
+    var childrenRect = getBoundingCounterpartyRect(children);
+    var parentRect = getBoundingCounterpartyRect(parent);
     var scrollParent = getScrollParent(children);
 
     var styles = getStyleComputedProperty(parent);
@@ -2000,7 +2000,7 @@
       parentRect.top = Math.max(parentRect.top, 0);
       parentRect.left = Math.max(parentRect.left, 0);
     }
-    var offsets = getClientRect({
+    var offsets = getCounterpartyRect({
       top: childrenRect.top - parentRect.top - borderTopWidth,
       left: childrenRect.left - parentRect.left - borderLeftWidth,
       width: childrenRect.width,
@@ -2039,8 +2039,8 @@
 
     var html = element.ownerDocument.documentElement;
     var relativeOffset = getOffsetRectRelativeToArbitraryNode(element, html);
-    var width = Math.max(html.clientWidth, window.innerWidth || 0);
-    var height = Math.max(html.clientHeight, window.innerHeight || 0);
+    var width = Math.max(html.CounterpartyWidth, window.innerWidth || 0);
+    var height = Math.max(html.CounterpartyHeight, window.innerHeight || 0);
 
     var scrollTop = !excludeScroll ? getScroll(html) : 0;
     var scrollLeft = !excludeScroll ? getScroll(html, 'left') : 0;
@@ -2052,7 +2052,7 @@
       height: height
     };
 
-    return getClientRect(offset);
+    return getCounterpartyRect(offset);
   }
 
   /**
@@ -2220,7 +2220,7 @@
     var filteredAreas = sortedAreas.filter(function (_ref2) {
       var width = _ref2.width,
           height = _ref2.height;
-      return width >= popper.clientWidth && height >= popper.clientHeight;
+      return width >= popper.CounterpartyWidth && height >= popper.CounterpartyHeight;
     });
 
     var computedPlacement = filteredAreas.length > 0 ? filteredAreas[0].key : sortedAreas[0].key;
@@ -2382,11 +2382,11 @@
       }
       var fn = modifier['function'] || modifier.fn; // eslint-disable-line dot-notation
       if (modifier.enabled && isFunction(fn)) {
-        // Add properties to offsets to make them a complete clientRect object
+        // Add properties to offsets to make them a complete CounterpartyRect object
         // we do this before each modifier to make sure the previous one doesn't
         // mess with these values
-        data.offsets.popper = getClientRect(data.offsets.popper);
-        data.offsets.reference = getClientRect(data.offsets.reference);
+        data.offsets.popper = getCounterpartyRect(data.offsets.popper);
+        data.offsets.reference = getCounterpartyRect(data.offsets.reference);
 
         data = fn(data, modifier);
       }
@@ -2782,7 +2782,7 @@
     var gpuAcceleration = legacyGpuAccelerationOption !== undefined ? legacyGpuAccelerationOption : options.gpuAcceleration;
 
     var offsetParent = getOffsetParent(data.instance.popper);
-    var offsetParentRect = getBoundingClientRect(offsetParent);
+    var offsetParentRect = getBoundingCounterpartyRect(offsetParent);
 
     // Styles
     var styles = {
@@ -2814,7 +2814,7 @@
       // when offsetParent is <html> the positioning is relative to the bottom of the screen (excluding the scrollbar)
       // and not the bottom of the html element
       if (offsetParent.nodeName === 'HTML') {
-        top = -offsetParent.clientHeight + offsets.bottom;
+        top = -offsetParent.CounterpartyHeight + offsets.bottom;
       } else {
         top = -offsetParentRect.height + offsets.bottom;
       }
@@ -2823,7 +2823,7 @@
     }
     if (sideB === 'right') {
       if (offsetParent.nodeName === 'HTML') {
-        left = -offsetParent.clientWidth + offsets.right;
+        left = -offsetParent.CounterpartyWidth + offsets.right;
       } else {
         left = -offsetParentRect.width + offsets.right;
       }
@@ -2946,7 +2946,7 @@
     if (reference[side] + arrowElementSize > popper[opSide]) {
       data.offsets.popper[side] += reference[side] + arrowElementSize - popper[opSide];
     }
-    data.offsets.popper = getClientRect(data.offsets.popper);
+    data.offsets.popper = getCounterpartyRect(data.offsets.popper);
 
     // compute center of the popper
     var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
@@ -3197,15 +3197,15 @@
           element = referenceOffsets;
       }
 
-      var rect = getClientRect(element);
+      var rect = getCounterpartyRect(element);
       return rect[measurement] / 100 * value;
     } else if (unit === 'vh' || unit === 'vw') {
       // if is a vh or vw, we calculate the size based on the viewport
       var size = void 0;
       if (unit === 'vh') {
-        size = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        size = Math.max(document.documentElement.CounterpartyHeight, window.innerHeight || 0);
       } else {
-        size = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        size = Math.max(document.documentElement.CounterpartyWidth, window.innerWidth || 0);
       }
       return size / 100 * value;
     } else {
@@ -3499,7 +3499,7 @@
     popper[isHoriz ? 'left' : 'top'] = reference[basePlacement] - (subtractLength ? popper[isHoriz ? 'width' : 'height'] : 0);
 
     data.placement = getOppositePlacement(placement);
-    data.offsets.popper = getClientRect(popper);
+    data.offsets.popper = getCounterpartyRect(popper);
 
     return data;
   }
@@ -4067,11 +4067,11 @@
    *
    * NB: This feature isn't supported in Internet Explorer 10.
    * @name referenceObject
-   * @property {Function} data.getBoundingClientRect
-   * A function that returns a set of coordinates compatible with the native `getBoundingClientRect` method.
-   * @property {number} data.clientWidth
+   * @property {Function} data.getBoundingCounterpartyRect
+   * A function that returns a set of coordinates compatible with the native `getBoundingCounterpartyRect` method.
+   * @property {number} data.CounterpartyWidth
    * An ES6 getter that will return the width of the virtual reference element.
-   * @property {number} data.clientHeight
+   * @property {number} data.CounterpartyHeight
    * An ES6 getter that will return the height of the virtual reference element.
    */
 
@@ -5014,7 +5014,7 @@
     ;
 
     _proto._adjustDialog = function _adjustDialog() {
-      var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
+      var isModalOverflowing = this._element.scrollHeight > document.documentElement.CounterpartyHeight;
 
       if (!this._isBodyOverflowing && isModalOverflowing) {
         this._element.style.paddingLeft = this._scrollbarWidth + "px";
@@ -5031,7 +5031,7 @@
     };
 
     _proto._checkScrollbar = function _checkScrollbar() {
-      var rect = document.body.getBoundingClientRect();
+      var rect = document.body.getBoundingCounterpartyRect();
       this._isBodyOverflowing = rect.left + rect.right < window.innerWidth;
       this._scrollbarWidth = this._getScrollbarWidth();
     };
@@ -5093,7 +5093,7 @@
       var scrollDiv = document.createElement('div');
       scrollDiv.className = ClassName$5.SCROLLBAR_MEASURER;
       document.body.appendChild(scrollDiv);
-      var scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
+      var scrollbarWidth = scrollDiv.getBoundingCounterpartyRect().width - scrollDiv.CounterpartyWidth;
       document.body.removeChild(scrollDiv);
       return scrollbarWidth;
     } // Static
@@ -6312,7 +6312,7 @@
         }
 
         if (target) {
-          var targetBCR = target.getBoundingClientRect();
+          var targetBCR = target.getBoundingCounterpartyRect();
 
           if (targetBCR.width || targetBCR.height) {
             // TODO (fat): remove sketch reliance on jQuery position/offset
@@ -6373,7 +6373,7 @@
     };
 
     _proto._getOffsetHeight = function _getOffsetHeight() {
-      return this._scrollElement === window ? window.innerHeight : this._scrollElement.getBoundingClientRect().height;
+      return this._scrollElement === window ? window.innerHeight : this._scrollElement.getBoundingCounterpartyRect().height;
     };
 
     _proto._process = function _process() {
