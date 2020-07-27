@@ -19,27 +19,27 @@ $(document).ready(function () {
 
         console.log($selectContractsClone);
 
-        $("select[name='orderClient']").change(function () {
+        $("select[name='orderCounterparty']").change(function () {
             $("select[name='orderContract'], select[name='orderWell']").prop("disabled", false);
             $("#formOpenOrder .text-danger").hide();
             var selectedCllient = $(this).children("option:selected").val();
 
                 $selectContracts.find("optgroup").remove();
-                var $foundOptgroup = $selectContractsClone.find("optgroup[data-client='" + selectedCllient + "']");
+                var $foundOptgroup = $selectContractsClone.find("optgroup[data-Counterparty='" + selectedCllient + "']");
                 if($foundOptgroup.length != 0){
                     $selectContracts.append($foundOptgroup.clone());
                 }
                 else{
-                    $selectContracts.append($selectContractsClone.find("optgroup[data-client='-1']").clone());
+                    $selectContracts.append($selectContractsClone.find("optgroup[data-Counterparty='-1']").clone());
                 }
 
                 $selectWells.find("optgroup").remove();
-                var $foundOptgroup2 = $selectWellsClone.find("optgroup[data-client='" + selectedCllient + "']");
+                var $foundOptgroup2 = $selectWellsClone.find("optgroup[data-Counterparty='" + selectedCllient + "']");
                 if($foundOptgroup2.length != 0){
                     $selectWells.append($foundOptgroup2.clone());
                 }
                 else{
-                    $selectWells.append($selectWellsClone.find("optgroup[data-client='-1']").clone());
+                    $selectWells.append($selectWellsClone.find("optgroup[data-Counterparty='-1']").clone());
                 }
           
         });
@@ -78,12 +78,12 @@ $(document).ready(function () {
 
     $("#formOpenOrder").submit(function() {
         var result = true;
-        var client = $("select[name='orderClient'] option:selected").val();
+        var Counterparty = $("select[name='orderCounterparty'] option:selected").val();
         var contract = $("select[name='orderContract'] option:selected").val();
         var well = $("select[name='orderWell'] option:selected").val();
-        if ( client == -1){
+        if ( Counterparty == -1){
             result = false;
-            $("select[name='orderClient']").next().show();
+            $("select[name='orderCounterparty']").next().show();
         } 
         if ( contract == -1 ){
             result = false;

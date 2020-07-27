@@ -803,9 +803,9 @@
 
       var start = function start(event) {
         if (_this3._pointerEvent && PointerType[event.originalEvent.pointerType.toUpperCase()]) {
-          _this3.touchStartX = event.originalEvent.clientX;
+          _this3.touchStartX = event.originalEvent.CounterpartyX;
         } else if (!_this3._pointerEvent) {
-          _this3.touchStartX = event.originalEvent.touches[0].clientX;
+          _this3.touchStartX = event.originalEvent.touches[0].CounterpartyX;
         }
       };
 
@@ -814,13 +814,13 @@
         if (event.originalEvent.touches && event.originalEvent.touches.length > 1) {
           _this3.touchDeltaX = 0;
         } else {
-          _this3.touchDeltaX = event.originalEvent.touches[0].clientX - _this3.touchStartX;
+          _this3.touchDeltaX = event.originalEvent.touches[0].CounterpartyX - _this3.touchStartX;
         }
       };
 
       var end = function end(event) {
         if (_this3._pointerEvent && PointerType[event.originalEvent.pointerType.toUpperCase()]) {
-          _this3.touchDeltaX = event.originalEvent.clientX - _this3.touchStartX;
+          _this3.touchDeltaX = event.originalEvent.CounterpartyX - _this3.touchStartX;
         }
 
         _this3._handleSwipe();
@@ -1327,7 +1327,7 @@
 
       var dimension = this._getDimension();
 
-      this._element.style[dimension] = this._element.getBoundingClientRect()[dimension] + "px";
+      this._element.style[dimension] = this._element.getBoundingCounterpartyRect()[dimension] + "px";
       Util.reflow(this._element);
       $(this._element).addClass(ClassName$3.COLLAPSING).removeClass(ClassName$3.COLLAPSE).removeClass(ClassName$3.SHOW);
       var triggerArrayLength = this._triggerArray.length;
@@ -2436,7 +2436,7 @@
     ;
 
     _proto._adjustDialog = function _adjustDialog() {
-      var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
+      var isModalOverflowing = this._element.scrollHeight > document.documentElement.CounterpartyHeight;
 
       if (!this._isBodyOverflowing && isModalOverflowing) {
         this._element.style.paddingLeft = this._scrollbarWidth + "px";
@@ -2453,7 +2453,7 @@
     };
 
     _proto._checkScrollbar = function _checkScrollbar() {
-      var rect = document.body.getBoundingClientRect();
+      var rect = document.body.getBoundingCounterpartyRect();
       this._isBodyOverflowing = rect.left + rect.right < window.innerWidth;
       this._scrollbarWidth = this._getScrollbarWidth();
     };
@@ -2515,7 +2515,7 @@
       var scrollDiv = document.createElement('div');
       scrollDiv.className = ClassName$5.SCROLLBAR_MEASURER;
       document.body.appendChild(scrollDiv);
-      var scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
+      var scrollbarWidth = scrollDiv.getBoundingCounterpartyRect().width - scrollDiv.CounterpartyWidth;
       document.body.removeChild(scrollDiv);
       return scrollbarWidth;
     } // Static
@@ -3734,7 +3734,7 @@
         }
 
         if (target) {
-          var targetBCR = target.getBoundingClientRect();
+          var targetBCR = target.getBoundingCounterpartyRect();
 
           if (targetBCR.width || targetBCR.height) {
             // TODO (fat): remove sketch reliance on jQuery position/offset
@@ -3795,7 +3795,7 @@
     };
 
     _proto._getOffsetHeight = function _getOffsetHeight() {
-      return this._scrollElement === window ? window.innerHeight : this._scrollElement.getBoundingClientRect().height;
+      return this._scrollElement === window ? window.innerHeight : this._scrollElement.getBoundingCounterpartyRect().height;
     };
 
     _proto._process = function _process() {
