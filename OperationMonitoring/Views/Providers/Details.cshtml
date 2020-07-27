@@ -1,0 +1,75 @@
+﻿@model OperationMonitoring.Models.Provider
+
+<div class="content-heading">
+    <div class="content-heading__info">
+        <h4>
+            Information about provider -
+            @Html.DisplayFor(model => model.Name)
+        </h4>
+    </div>
+</div>
+
+<!-- INFO -->
+<div class="form-pos form-info">
+    <div class="form-info__heading">
+        General information:
+    </div>
+    <div class="form-info__item">
+        <div class="form-info__label">
+            @Html.DisplayNameFor(model => model.Name)
+        </div>
+        <div class="form-info_data">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+    </div>
+    <div class="form-info__item">
+        <div class="form-info__label">
+            @Html.DisplayNameFor(model => model.Address)
+        </div>
+        <div class="form-info_data">
+            @Html.DisplayFor(model => model.Address)
+        </div>
+    </div>
+    <div class="form-info__item">
+        <div class="form-info__label">
+            @Html.DisplayNameFor(model => model.EDRPOU)
+        </div>
+        <div class="form-info_data">
+            @Html.DisplayFor(model => model.EDRPOU)
+        </div>
+    </div>
+    <div class="btn btn-primary js-btn-edit">Edit information</div>
+</div>
+  
+<!-- EDIT FORM -->
+<div class="form-pos hidden">
+    <form asp-controller="Providers" asp-action="EditProvider" method="post" asp-route-providerId="@Model.Id">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input name="editName" required value="@Model.Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address" class="control-label"></label>
+            <input name="editAddress" required value="@Model.Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EDRPOU" class="control-label"></label>
+            <input name="editEDRPOU" required value="@Model.EDRPOU" class="form-control" />
+            <span asp-validation-for="EDRPOU" class="text-danger"></span>
+        </div>
+       
+        <div class="form-group">
+            <input type="submit" value="Save changes" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<!-- HISTORY -->
+@*@{
+    ViewData["History"] = ViewBag.History;
+    ViewData["Type"] = "General";
+    <partial name="_History" view-data="ViewData" />
+}*@
