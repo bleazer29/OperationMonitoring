@@ -11,7 +11,14 @@ namespace OperationMonitoring.Models
         public virtual Equipment Equipment { get; set; }
         public virtual Employee Responsible { get; set; }
         public virtual Counterparty Counterparty { get; set; }
+        /// <summary>
+        /// внешний или внутренний ремонт (потом может добавятся ещё типы)
+        /// </summary>
         public virtual MaintenanceType MaintenanceType { get; set; }
+        /// <summary>
+        /// плановый или аварийный (потом может добавятся ещё категории)
+        /// </summary>
+        public virtual MaintenanceCategory MaintenanceCategory { get; set; }
         public virtual Storage ReturnStorage { get; set; }
         public string MaintenanceReason { get; set; }
         public DateTime StartDate { get; set; }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200727124909_EquipHistory")]
+    partial class EquipHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -918,14 +920,19 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("PartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int?>("StatusFromId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatusToId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PartId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("StatusFromId");
+
+                    b.HasIndex("StatusToId");
 
                     b.ToTable("PartHistory");
                 });
@@ -1026,9 +1033,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("NomenclatureId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PartId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("StorageId")
                         .HasColumnType("int");
 
@@ -1037,8 +1041,6 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("EquipmentId");
 
                     b.HasIndex("NomenclatureId");
-
-                    b.HasIndex("PartId");
 
                     b.HasIndex("StorageId");
 
@@ -1439,9 +1441,13 @@ namespace OperationMonitoring.Migrations
                         .WithMany()
                         .HasForeignKey("PartId");
 
-                    b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
+                    b.HasOne("OperationMonitoring.Models.EquipmentStatus", "StatusFrom")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusFromId");
+
+                    b.HasOne("OperationMonitoring.Models.EquipmentStatus", "StatusTo")
+                        .WithMany()
+                        .HasForeignKey("StatusToId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
@@ -1453,10 +1459,6 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
                         .HasForeignKey("NomenclatureId");
-
-                    b.HasOne("OperationMonitoring.Models.Part", "Part")
-                        .WithMany()
-                        .HasForeignKey("PartId");
 
                     b.HasOne("OperationMonitoring.Models.Storage", "Storage")
                         .WithMany()

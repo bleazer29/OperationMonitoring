@@ -15,7 +15,6 @@ namespace OperationMonitoring.Models
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }       
         public virtual Equipment Equipment { get; set; }
-        public virtual EquipmentStatus StatusFrom { get; set; }
-        public virtual EquipmentStatus StatusTo { get; set; }
+        public virtual EquipmentStatus Status { get; set; }
     }
 }

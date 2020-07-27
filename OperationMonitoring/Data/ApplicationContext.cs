@@ -32,8 +32,10 @@ namespace OperationMonitoring.Data
         public DbSet<StorageHistory> StorageHistory { get; set; }
         public DbSet<MaintenanceHistory> MaintenanceHistory { get; set; }
         public DbSet<MaintenanceType> MaintenanceTypes { get; set; }
+        public DbSet<MaintenanceCategory> MaintenanceCategories { get; set; }
         public DbSet<OrderHistory> OrderHistory { get; set; }
         public DbSet<Doc> Docs { get; set; }
+        public DbSet<DocType> DocTypes { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
 
