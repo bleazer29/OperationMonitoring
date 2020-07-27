@@ -15,6 +15,7 @@ namespace OperationMonitoring.Models
         public virtual EquipmentType Type { get; set; }
         public string Title { get; set; }
         public string SerialNum { get; set; }
+        public string InventoryNum { get; set; }
         public int DiameterOuter { get; set; }
         public int DiameterInner { get; set; }
         public int Length { get; set; }

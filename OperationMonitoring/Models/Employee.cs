@@ -14,5 +14,6 @@ namespace OperationMonitoring.Models
         public DateTime BirthDate { get; set; }
         public virtual Position Position { get; set; }
         public string Email { get; set; }
+        public string UserGUID { get; set; }
     }
 }
