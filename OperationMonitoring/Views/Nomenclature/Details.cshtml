@@ -1,5 +1,278 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model OperationMonitoring.Models.Nomenclature
+
+<div class="content-heading">
+    <div class="content-heading__info">
+        <h4>
+            Information about nomenclature -
+            @Html.DisplayFor(model => model.Name)
+        </h4>
+        <a class="btn btn-primary" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+<!-- INFO -->
+<div>
+    <div class="form-pos form-info">
+        <div class="form-info__heading">
+            General information:
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Name)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.VendorCode)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.VendorCode)
+            </div>
+        </div>
+    </div>
+    <div class="form-pos form-info">
+        <div class="form-info__heading">
+            Specifications:
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Specification.Material)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Specification.Material)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Specification.Height)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Specification.Height)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Specification.Weight)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Specification.Weight)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Specification.OperatingTime)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Specification.OperatingTime)
+            </div>
+        </div>
+    </div>
+    <div class="form-pos form-info">
+        <div class="form-info__heading">Provider:</div>
+        <div class="form-info__item">
+            <div class="form-info__label">General information</div>
+            @if (Model.Provider != null)
+            {
+                <div class="form-info_data">
+                    <a asp-controller="Providers" asp-action="Details" asp-route-id="@Model.Provider.Id">
+                        @Model.Provider.Name,
+                        <br /> @Model.Provider.Address,
+                        <br /> @Model.Provider.EDRPOU
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="btn btn-primary js-btn-edit">Edit information</div>
+</div>
+
+
+<!-- EDIT FORM -->
+<div class="hidden">
+    <form asp-controller="Nomenclature" asp-action="EditNomenclature" method="post" asp-route-nomenclatureId="@Model.Id">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-pos">
+            <label class="form-info__label">General information:</label>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input name="editName" required value="@Model.Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VendorCode" class="control-label"></label>
+                <input name="editVendorCode" required value="@Model.VendorCode" class="form-control" />
+                <span asp-validation-for="VendorCode" class="text-danger"></span>
+            </div>
+        </div>
+        @if (Model.Specification != null)
+        {
+            <div class="form-pos">
+                <label class="form-info__label">Specification:</label>
+                <div class="form-group">
+                    <label asp-for="Specification.Material" class="control-label"></label>
+                    <input name="editMaterial" required value="@Model.Specification.Material" class="form-control" />
+                    <span asp-validation-for="Specification.Material" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.Height" class="control-label"></label>
+                    <input name="editHeight" required value="@Model.Specification.Height" class="form-control" />
+                    <span asp-validation-for="Specification.Height" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.Weight" class="control-label"></label>
+                    <input name="editWeight" required value="@Model.Specification.Weight" class="form-control" />
+                    <span asp-validation-for="Specification.Weight" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.OperatingTime" class="control-label"></label>
+                    <input name="editOperatingTime" required value="@Model.Specification.OperatingTime" class="form-control" />
+                    <span asp-validation-for="Specification.OperatingTime" class="text-danger"></span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-pos">
+                <label class="form-info__label">Specification:</label>
+                <div class="form-group">
+                    <label asp-for="Specification.Material" class="control-label"></label>
+                    <input name="editMaterial" required class="form-control" />
+                    <span asp-validation-for="Specification.Material" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.Height" class="control-label"></label>
+                    <input name="editHeight" required class="form-control" />
+                    <span asp-validation-for="Specification.Height" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.Weight" class="control-label"></label>
+                    <input name="editWeight" required class="form-control" />
+                    <span asp-validation-for="Specification.Weight" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Specification.OperatingTime" class="control-label"></label>
+                    <input name="editOperatingTime" required class="form-control" />
+                    <span asp-validation-for="Specification.OperatingTime" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+        <div class="form-pos">
+            <label class="control-label">Provider:</label>
+            <div class="form-group" name="provider-form">
+
+                <div class="provider-form" name="provider-form-select">
+                    <select name="provider" class="form-control">
+                        <option value="-1">Add New Provider</option>
+                        @{
+                            if (ViewBag.Providers != null)
+                            {
+                                List<Provider> providers = ViewBag.Providers;
+                                int i = 0;
+                                while (i < providers.Count)
+                                {
+                                    <option value="@providers[i].Id">@providers[i].Name</option>
+                                    i++;
+                                }
+                            }
+                        }
+                    </select>
+                    <span class="text-danger hidden">Provider must be selected</span>
+                </div>
+                <div class="provider-form" name="provider-form-fields">
+                    <div class="form-group">
+                        <label asp-for="@Model.Provider.Name" class="control-label"></label>
+                        <input name="providerName" class="form-control" />
+                        <span asp-validation-for="@Model.Provider.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Provider.Address" class="control-label"></label>
+                        <input name="providerAddress" class="form-control" />
+                        <span asp-validation-for="@Model.Provider.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Provider.EDRPOU" class="control-label"></label>
+                        <input name="providerEDRPOU" class="form-control" />
+                        <span asp-validation-for="@Model.Provider.EDRPOU" class="text-danger"></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save changes" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="@(ViewBag.CurrentSort.ToString() == "vendorCode" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "vendorCode_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Vendor Code", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "vendorCode", searchString = ViewBag.CurrentFilter })
+            </th>
+            <th class="@(ViewBag.CurrentSort.ToString() == "name" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "name_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Name", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "name", searchString = ViewBag.CurrentFilter })
+            </th>
+            <th class="@(ViewBag.CurrentSort.ToString() == "providerName" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "providerName_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Provider", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "providerName", searchString = ViewBag.CurrentFilter })
+            </th>
+            <th>
+                <!-- actions -->
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VendorCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Provider.Name)
+                </td>
+                <td>
+                    <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<!-- PAGES -->
+<div class="pages">
+    <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+    @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
+         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+</div>
+
+
+<script type="text/javascript">
+    var provider = '@ViewBag.ProviderId';
+    $("select[name='provider']").find('option[value="' + provider + '"]').prop("selected", true);
+
+    if ($("select[name='provider']").children("option:selected").val() == "-1") {
+        $(".provider-form[name='provider-form-fields']").fadeIn();
+    }
+    else {
+        $(".provider-form[name='provider-form-fields']").hide();
+    }
+
+    $("select[name='provider']").change(function () {
+        if ($(this).children("option:selected").val() == "-1") {
+            $(".provider-form[name='provider-form-fields']").fadeIn();
+        }
+        else {
+            $(".provider-form[name='provider-form-fields']").hide();
+        }
+    });
+</script> 

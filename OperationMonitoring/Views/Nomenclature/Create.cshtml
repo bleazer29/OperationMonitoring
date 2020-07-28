@@ -10,6 +10,7 @@
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-pos">
+        <label class="control-label">General information</label>
         <div class="form-group">
             <label asp-for="VendorCode" class="control-label"></label>
             <input asp-for="VendorCode" class="form-control" />
@@ -22,6 +23,7 @@
         </div>
     </div>
     <div class="form-pos">
+        <label class="control-label">Specification</label>
         <div class="form-group">
             <label asp-for="Specification.Material" class="control-label"></label>
             <input asp-for="Specification.Material" class="form-control" />
@@ -45,11 +47,11 @@
     </div>
 
     <div class="form-pos">
-        <div class="form-group">
-            <label class="control-label">Provider</label>
-            <div class="container">
-                <select name="provider" class="form-select">
-
+        <label class="control-label">Provider:</label>
+        <div class="form-group" name="provider-form">
+            <div class="provider-form" name="provider-form-select">
+                <select name="provider" class="form-control">
+                    <option value="-1">Add New Provider</option>
                     @{
                         if (ViewBag.Providers != null)
                         {
@@ -64,11 +66,26 @@
                     }
                 </select>
                 <span class="text-danger hidden">Provider must be selected</span>
-                <button class="btn btn-primary"><span>&#43;</span></button>
             </div>
-           
-        </div>
+            <div class="provider-form" name="provider-form-fields">
+                <div class="form-group">
+                    <label asp-for="@Model.Provider.Name" class="control-label"></label>
+                    <input name="providerName" class="form-control" />
+                    <span asp-validation-for="@Model.Provider.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Provider.Address" class="control-label"></label>
+                    <input name="providerAddress" class="form-control" />
+                    <span asp-validation-for="@Model.Provider.Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Provider.EDRPOU" class="control-label"></label>
+                    <input name="providerEDRPOU" class="form-control" />
+                    <span asp-validation-for="@Model.Provider.EDRPOU" class="text-danger"></span>
+                </div>
 
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
@@ -76,8 +93,24 @@
 </form>
 
 
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script type="text/javascript">
+    if ($("select[name='provider']").children("option:selected").val() == "-1") {
+        $(".provider-form[name='provider-form-fields']").fadeIn();
+    }
+    else {
+        $(".provider-form[name='provider-form-fields']").hide();
+    }
+
+    $("select[name='provider']").change(function () {
+        if ($(this).children("option:selected").val() == "-1") {
+            $(".provider-form[name='provider-form-fields']").fadeIn();
+        }
+        else {
+            $(".provider-form[name='provider-form-fields']").hide();
+        }
+    });
+</script> 

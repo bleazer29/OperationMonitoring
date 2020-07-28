@@ -105,6 +105,7 @@ namespace OperationMonitoring.Controllers
         [HttpGet("/[controller]/[action]/{id}")]
         public ActionResult Details(int id)
         {
+            ViewBag.Stocks = db.Stocks.Where(x => x.Nomenclature != null && x.Nomenclature.Provider != null && x.Nomenclature.Provider.Id == id);
             var provider = db.Providers.FirstOrDefault(x => x.Id == id);     
             return View(provider);
         }
@@ -112,6 +113,7 @@ namespace OperationMonitoring.Controllers
         // CREATE
         public ActionResult Create()
         {
+            ViewBag.Partial = false;
             return View();
         }
 
@@ -121,13 +123,16 @@ namespace OperationMonitoring.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 db.Providers.Add(provider);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
+               
             }
             else
             {
                 return View();
+                
             }
         }
 

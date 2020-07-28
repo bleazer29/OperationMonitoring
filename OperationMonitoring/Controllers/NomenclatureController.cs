@@ -14,10 +14,11 @@ namespace OperationMonitoring.Controllers
     public class NomenclatureController : Controller
     {
         private readonly ApplicationContext db;
-        private int pageSize = 10;
+        private int pageSize = 10;   
+        
         public NomenclatureController(ApplicationContext context)
         {
-            db = context;
+            db = context;   
         }
 
         // SEARCH
@@ -31,7 +32,7 @@ namespace OperationMonitoring.Controllers
                 case "VendorCode":
                     nomenclature = nomenclature.Where(x => x.VendorCode != null && x.VendorCode.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
-                case "ProviderName":
+                case "Provider":
                     nomenclature = nomenclature.Where(x => x.Provider != null && x.Provider.Name.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 default:
@@ -73,9 +74,10 @@ namespace OperationMonitoring.Controllers
             ViewBag.CurrentFilter = searchString;
             ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Name" : searchField;
 
-            var nomenclature = db.Nomenclatures.Include(x => x.Provider).Include(x => x.Specification).ToList();
+            var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).ToList();
             ViewBag.Nomenclature = nomenclature;
-            ViewBag.Providers = db.Providers.ToList();
+            var providers = db.Providers.ToList();
+            ViewBag.Providers = providers;
             
             // SEARCH
             nomenclature = Searching(nomenclature, searchField, searchString);
@@ -107,26 +109,40 @@ namespace OperationMonitoring.Controllers
         [HttpGet("/[controller]/[action]/{id}")]
         public ActionResult Details(int id)
         {
-            var nomenclature = db.Nomenclatures.Include(x => x.Provider).Include(x => x.Specification).FirstOrDefault(x => x.Id == id);
+            var providers = db.Providers.ToList();
+            ViewBag.Providers = providers;
+            var nomenclature =db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == id);
+            if (nomenclature.Provider != null) ViewBag.ProviderId = nomenclature.Provider.Id;
+            else ViewBag.ProviderId = -1;
+            
             return View(nomenclature);
         }
 
         // CREATE
         public ActionResult Create()
         {
-            ViewBag.Providers = db.Providers.ToList();
+            var providers = db.Providers.ToList();
+            ViewBag.Providers = providers;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Nomenclature nomenclature, string provider)
+        public async Task<ActionResult> Create(Nomenclature nomenclature,
+            string provider, string providerName, string providerEDRPOU, string providerAddress)
         {
             
             if (ModelState.IsValid)
             {
                 int providerId = int.Parse(provider);
-                nomenclature.Provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
+                if (providerId == -1)
+                {
+                    Provider pr = new Provider() { Name = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
+                    db.Providers.Add(pr);
+                    nomenclature.Provider = pr;
+                }
+                else if (providerId != 0)
+                    nomenclature.Provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
                 db.Nomenclatures.Add(nomenclature);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -140,20 +156,33 @@ namespace OperationMonitoring.Controllers
         // EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditNomenclature(int providerId, string editName, string editAddress, string editEDRPOU)
+        public async Task<ActionResult> EditNomenclature(int nomenclatureId, string editName, string editVendorCode, string editMaterial, 
+            double? editHeight, double? editWeight, int? editOperatingTime, string provider, string providerName, string providerEDRPOU, string providerAddress)
         {
             try
             {
-                var provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
-                provider.Name = editName;
-                provider.Address = editAddress;
-                provider.EDRPOU = editEDRPOU;
+                var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == nomenclatureId);
+                nomenclature.Name = editName;
+                nomenclature.VendorCode = editVendorCode;
+                if (editHeight !=null) nomenclature.Specification.Height = (double)editHeight;
+                if (editWeight != null) nomenclature.Specification.Weight = (double)editWeight;
+                if (editOperatingTime != null) nomenclature.Specification.OperatingTime = (int)editOperatingTime;
+                nomenclature.Specification.Material = editMaterial;
+                int providerId = int.Parse(provider);
+                if (providerId == -1)
+                {
+                    Provider pr = new Provider() { Name = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
+                    db.Providers.Add(pr);
+                    nomenclature.Provider = pr;
+                }
+                else if (providerId != 0) 
+                    nomenclature.Provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
                 db.SaveChanges();
-                return RedirectToAction("Details", new { id = providerId });
+                return RedirectToAction("Details", new { id = nomenclatureId });
             }
             catch
             {
-                return RedirectToAction("Details", new { id = providerId });
+                return RedirectToAction("Details", new { id = nomenclatureId });
             }
         }
     }
