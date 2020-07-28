@@ -20,5 +20,6 @@ namespace OperationMonitoring.Models
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }
+        public string Message { get; set; }
     }
 }
