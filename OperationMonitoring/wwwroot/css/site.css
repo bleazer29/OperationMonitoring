@@ -151,7 +151,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding-top: 80px;
+    padding-top: 100px;
 }
 .container{
     width: 100%;
@@ -196,7 +196,8 @@ html, body {
 }
 .header .container{
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     margin: 0 auto;
 }
@@ -261,11 +262,12 @@ html, body {
 }
 .header-nav__container{
     display: flex;
+    padding-top: 10px;
 }
 .header-nav__item{
     font-size: 18px;
     text-transform: uppercase;
-    margin-left: 20px;
+    margin: 0 10px;
 }
 @media only screen and (max-width: 800px) {
     .header-nav__icon{
@@ -296,10 +298,10 @@ h1{
     margin-bottom: 20px;
 }
 h4{
-    font-size: 26px;
+    font-size: 28px;
 }
 h5{
-    font-size: 22px;
+    font-size: 24px;
 }
 p{
     font-size: 16px;
@@ -374,7 +376,7 @@ p{
     margin-top: 20px;
 }
 .content-heading{
-    display: block;
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -929,4 +931,31 @@ p{
         margin-left: 0;
         margin-right: 8px;
     }
+}
+.two-rows{
+    max-width: none;
+}
+.two-rows form{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.two-rows .form-group{
+    width: calc(50% - 10px);
+}
+.two-rows .button-pos{
+    width: 100%;
+}
+.two-rows .btn{
+    min-width: 300px;
+}
+.two-rows hr{
+    margin: 0;
+    border: none;
+    width: 100%;
+    height: 1px;
+}
+.content-heading-auto{
+    display: block;
 }

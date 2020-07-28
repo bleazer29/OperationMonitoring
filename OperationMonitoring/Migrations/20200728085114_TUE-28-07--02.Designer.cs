@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200728085114_TUE-28-07--02")]
+    partial class TUE280702
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +258,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsUsed")
@@ -267,7 +269,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("PartId");
 
@@ -308,23 +310,6 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "Department1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Department2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Title = "Department3"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Doc", b =>
@@ -399,15 +384,15 @@ namespace OperationMonitoring.Migrations
 
             modelBuilder.Entity("OperationMonitoring.Models.Equipment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("EquipId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("DiameterInner")
@@ -437,13 +422,13 @@ namespace OperationMonitoring.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TypeId")
+                    b.Property<int>("TypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarningTime")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("EquipId");
 
                     b.HasIndex("CategoryId");
 
@@ -469,23 +454,6 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "Category1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Category2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Title = "Category3"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
@@ -504,7 +472,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
@@ -517,7 +485,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("StatusId");
 
@@ -589,23 +557,6 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "Type1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Type2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Title = "Type3"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.HistoryType", b =>
@@ -650,7 +601,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("CounterpartyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EstimateDate")
@@ -684,7 +635,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("CounterpartyId");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("MaintenanceCategoryId");
 
@@ -854,7 +805,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("DeliveryLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EstimateDate")
@@ -870,7 +821,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("AgreementId");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("ResponsibleId");
 
@@ -923,7 +874,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<string>("InventoryNum")
@@ -957,7 +908,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("AssembleId");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("NomenclatureId");
 
@@ -1086,7 +1037,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int?>("EquipmentEquipId")
                         .HasColumnType("int");
 
                     b.Property<int?>("NomenclatureId")
@@ -1100,7 +1051,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("EquipmentEquipId");
 
                     b.HasIndex("NomenclatureId");
 
@@ -1345,7 +1296,7 @@ namespace OperationMonitoring.Migrations
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
@@ -1370,11 +1321,15 @@ namespace OperationMonitoring.Migrations
                 {
                     b.HasOne("OperationMonitoring.Models.EquipmentCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
@@ -1382,7 +1337,9 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.EquipmentType", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
@@ -1393,7 +1350,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
@@ -1408,7 +1365,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.MaintenanceCategory", "MaintenanceCategory")
                         .WithMany()
@@ -1457,7 +1414,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
                         .WithMany()
@@ -1487,7 +1444,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
@@ -1517,7 +1474,7 @@ namespace OperationMonitoring.Migrations
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentEquipId");
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()

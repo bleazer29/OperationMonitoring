@@ -10,6 +10,12 @@ $(document).ready(function () {
         $(this).hide().next('.form-pos').fadeIn();
     });
 
+    $("select").each(function(){
+        $(this).change(function () {
+            console.log("111");
+            $(this).next(".text-danger").hide();
+        });
+    });
 
     if( $("#formOpenOrder").length ){
         var $selectContracts = $("select[name='orderContract']");
@@ -18,7 +24,7 @@ $(document).ready(function () {
         var $selectWellsClone = $selectWells.clone();
 
         console.log($selectContractsClone);
-
+        
         $("select[name='orderCounterparty']").change(function () {
             $("select[name='orderContract'], select[name='orderWell']").prop("disabled", false);
             $("#formOpenOrder .text-danger").hide();
@@ -75,24 +81,23 @@ $(document).ready(function () {
         return result;
     });
     
+    $("#CreateEquipment").submit(function() {
+        var validate = [
+            ["department", $("select[name='department'] option:selected").val()],
+            ["category", $("select[name='category'] option:selected").val()],
+            ["type", $("select[name='type'] option:selected").val()]
+        ];
+        var result = ValidateSelects(validate);
+        return result;
+    });
 
     $("#formOpenOrder").submit(function() {
-        var result = true;
-        var Counterparty = $("select[name='orderCounterparty'] option:selected").val();
-        var contract = $("select[name='orderContract'] option:selected").val();
-        var well = $("select[name='orderWell'] option:selected").val();
-        if ( Counterparty == -1){
-            result = false;
-            $("select[name='orderCounterparty']").next().show();
-        } 
-        if ( contract == -1 ){
-            result = false;
-            $("select[name='orderContract']").next().show();
-        } 
-        if ( well == -1 ){
-            result = false;
-            $("select[name='orderWell']").next().show();
-        } 
+        var validate = [
+            ["orderCounterparty", $("select[name='orderCounterparty'] option:selected").val()],
+            ["orderContract", $("select[name='orderContract'] option:selected").val()],
+            ["orderWell", $("select[name='orderWell'] option:selected").val()]
+        ];
+        var result = ValidateSelects(validate);
         return result;
     });
 
@@ -145,3 +150,14 @@ $(document).ready(function () {
     
 
 });
+
+function ValidateSelects(validatearray){
+    var result = true;
+    for (var i = 0; i < validatearray.length; i++){
+        if (validatearray[i][1] == -1){
+            result = false;
+            $("[name='"+validatearray[i][0]+"']").next().show();
+        }
+    }
+    return result;
+};
