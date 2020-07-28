@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using X.PagedList;
@@ -74,10 +75,18 @@ namespace OperationMonitoring.Controllers
         }
 
         // PRESET
-        public ActionResult Preset(int equipmentId)
+        public ActionResult Preset(int id)
         {
-            var equipment = db.Equipment.FirstOrDefault(x => x.Id == equipmentId);
-            return View(equipment);
+            ViewBag.Equipment = db.Equipment
+                .Include(x => x.Department)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .FirstOrDefault(x => x.Id == id);
+            //var nomenclature = db.Nomenclatures
+            //    .Include(x => x.Specification)
+            //    .Include()
+            return View();
         }
 
 

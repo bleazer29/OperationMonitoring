@@ -658,10 +658,13 @@ p{
 }
 .form-info{
     width: 100%;
+    padding: 0;
 }
 .form-info__heading{
     font-size: 22px;
-    margin-bottom: 20px;
+    position: relative;
+    padding: 20px;
+    cursor: pointer;
 }
 .form-info__heading + .form-info__note{
     margin-top: -15px;
@@ -805,9 +808,6 @@ p{
 }
 .form-close-maintenance{
     margin-top: 30px;
-}
-.form-close-maintenance .form-info__heading{
-    margin-bottom: 0;
 }
 .table-equipment p:first-child{
     margin-top: -15px;
@@ -958,4 +958,33 @@ p{
 }
 .content-heading-auto{
     display: block;
+}
+.info-dropdown{
+    display: none;
+    padding: 0px 20px 20px;
+}
+.icon-check{
+    position: relative;
+    display: inline-block;
+    width: 13px;
+    height: 25px;
+    border-bottom: 3px solid green;
+    border-right: 3px solid green;
+    transform: rotate(45deg);
+    margin-right: 6px;
+    margin-left: 5px;
+}
+.icon-check + span{
+    color: green;
+}
+.icon-arrow{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-left: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg);
+    right: 20px;
+    top: 50%;
+    margin-top: -9px;
 }

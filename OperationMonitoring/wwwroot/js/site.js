@@ -147,6 +147,11 @@ $(document).ready(function () {
             .fadeIn(200);
         }
     });
+
+    $(".form-info .form-info__heading").click(function(){
+        $(this).next(".info-dropdown").stop().slideToggle();
+    });
+    
     
 
 });
