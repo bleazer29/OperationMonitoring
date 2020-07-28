@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200728070125_wqd4u")]
+    partial class wqd4u
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -805,9 +807,6 @@ namespace OperationMonitoring.Migrations
 
                     b.Property<DateTime>("EstimateDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsOpen")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");

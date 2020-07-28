@@ -17,5 +17,6 @@ namespace OperationMonitoring.Models
         public string Commentary { get; set; }
         public virtual Employee Author { get ; set; }
         public virtual Maintenance Maintenance { get; set; }
+        public string Message { get; set; }
     }
 }

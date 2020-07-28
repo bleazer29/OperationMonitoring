@@ -1,0 +1,7 @@
+﻿@model OperationMonitoring.Models.Order
+
+@{
+    ViewData["Controller"] = "Orders";
+    ViewData["History"] = ViewBag.History;
+    <partial name="_OrderDetails" model="Model" view-data="ViewData" />
+}

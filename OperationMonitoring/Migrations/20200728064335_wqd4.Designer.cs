@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200728064335_wqd4")]
+    partial class wqd4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -470,9 +472,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("EquipmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
@@ -677,9 +676,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("MaintenanceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
@@ -806,9 +802,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("EstimateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsOpen")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");
 
@@ -843,9 +836,6 @@ namespace OperationMonitoring.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OperatingTime")
                         .HasColumnType("int");
@@ -1175,10 +1165,10 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("HistoryTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("PartId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("StockId")
+                    b.Property<int?>("StorageFromId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StorageToId")
@@ -1190,7 +1180,9 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("HistoryTypeId");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("StorageFromId");
 
                     b.HasIndex("StorageToId");
 
@@ -1490,9 +1482,13 @@ namespace OperationMonitoring.Migrations
                         .WithMany()
                         .HasForeignKey("HistoryTypeId");
 
-                    b.HasOne("OperationMonitoring.Models.Stock", "Stock")
+                    b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
-                        .HasForeignKey("StockId");
+                        .HasForeignKey("PartId");
+
+                    b.HasOne("OperationMonitoring.Models.Storage", "StorageFrom")
+                        .WithMany()
+                        .HasForeignKey("StorageFromId");
 
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()

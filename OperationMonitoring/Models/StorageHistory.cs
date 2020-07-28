@@ -11,8 +11,7 @@ namespace OperationMonitoring.Models
     public class StorageHistory : IHistory
     {
         public int Id { get; set; }
-        public virtual Part Part { get; set; }
-        public virtual Storage StorageFrom { get; set; }
+        public virtual Stock Stock { get; set; }
         public virtual Storage StorageTo { get; set; }
         public virtual HistoryType HistoryType { get; set; }
         [DataType(DataType.Date)]
@@ -20,5 +19,6 @@ namespace OperationMonitoring.Models
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }
+        public string Message { get; set; }
     }
 }
