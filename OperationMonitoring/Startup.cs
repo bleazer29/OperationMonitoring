@@ -31,8 +31,7 @@ namespace OperationMonitoring
                 options.UseSqlServer(
                     Configuration.GetConnectionString("OperationMonitorDB")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -57,8 +56,8 @@ namespace OperationMonitoring
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

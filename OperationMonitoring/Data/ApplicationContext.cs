@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
@@ -40,8 +38,7 @@ namespace OperationMonitoring.Data
         public DbSet<Position> Positions { get; set; }
 
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
-            : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options): base(options)
         {
             Database.Migrate();
         }
@@ -120,6 +117,13 @@ namespace OperationMonitoring.Data
                new Stock() { Id = 4, Amount=5}
             };
             modelBuilder.Entity<Stock>().HasData(stocks);
+
+
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
         }
     }
 }
