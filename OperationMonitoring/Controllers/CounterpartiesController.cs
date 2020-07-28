@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using X.PagedList;
@@ -41,7 +42,7 @@ namespace OperationMonitoring.Controllers
         // LIST
         public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, int? page, string currentFilter)
         {
-            var Counterparties = db.Counterparties.ToList();
+            var Counterparties = db.Counterparties.AsNoTracking().ToList();
 
             if (!string.IsNullOrEmpty(searchString))
             {
