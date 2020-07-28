@@ -17,6 +17,6 @@ namespace OperationMonitoring.Models
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }
         public virtual Order Order { get; set; }
-        public int? OperatingTime { get; set; } // minutes
+        public int? OperatingTime { get; set; } // minutes?
     }
 }
