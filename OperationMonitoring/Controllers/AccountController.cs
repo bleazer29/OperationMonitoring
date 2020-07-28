@@ -13,13 +13,11 @@ namespace OperationMonitoring.Controllers
 
         private readonly ApplicationContext db;
         private readonly UserManager<IdentityUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
         private SignInManager<IdentityUser> signInManager { get; set; }
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationContext db, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationContext db)
         {
             this.db = db;
-            this.roleManager = roleManager;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
