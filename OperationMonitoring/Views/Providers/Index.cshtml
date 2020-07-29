@@ -2,14 +2,7 @@
 @{
     ViewData["Title"] = "Providers";
 }
-@{
-    List<Provider> providers = new List<Provider>();
-    if (ViewBag.Providers != null)
-    {
-        providers = ViewBag.Providers;
-    }
 
-}
 <div class="content-heading">
     <h4>Providers</h4>
     <a class="btn btn-primary" asp-action="Create">Add New Provider</a>
@@ -88,15 +81,11 @@
 <div class="pages">
     <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
     @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
-         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+         new { page, newSortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>
-@*<div class="align-right">
-        <a class="btn btn-primary btn-auto" asp-action="ExportToExcel">Export To Excel</a>
-    </div>*@
 
 
 <script type="text/javascript">
     var category = '@ViewBag.SearchField';
     $("select[name='searchField']").find('option[value="' + category + '"]').prop("selected", true);
-
 </script> 

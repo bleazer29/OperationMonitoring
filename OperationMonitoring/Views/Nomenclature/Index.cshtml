@@ -2,14 +2,7 @@
 @{
     ViewData["Title"] = "Nomenclature";
 }
-@{
-    List<Nomenclature> nomenclature = new List<Nomenclature>();
-    if (ViewBag.Nomenclature != null)
-    {
-        nomenclature = ViewBag.Nomenclature;
-    }
 
-}
 <div class="content-heading">
     <h4>Nomenclature</h4>
     <a class="btn btn-primary" asp-action="Create">Add New Nomenclature</a>
@@ -74,7 +67,9 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Provider.Name)
+                <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Provider.Id">
+                    @Html.DisplayFor(modelItem => item.Provider.Name)
+                </a>
             </td>
             <td>
                 <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
@@ -88,7 +83,7 @@
 <div class="pages">
     <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
     @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
-         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+         new { page, newSortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>
 @*<div class="align-right">
         <a class="btn btn-primary btn-auto" asp-action="ExportToExcel">Export To Excel</a>

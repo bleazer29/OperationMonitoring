@@ -209,53 +209,6 @@
 </div>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th class="@(ViewBag.CurrentSort.ToString() == "vendorCode" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "vendorCode_desc" ? "sort-desc" : " ")">
-                @Html.ActionLink("Vendor Code", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "vendorCode", searchString = ViewBag.CurrentFilter })
-            </th>
-            <th class="@(ViewBag.CurrentSort.ToString() == "name" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "name_desc" ? "sort-desc" : " ")">
-                @Html.ActionLink("Name", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "name", searchString = ViewBag.CurrentFilter })
-            </th>
-            <th class="@(ViewBag.CurrentSort.ToString() == "providerName" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "providerName_desc" ? "sort-desc" : " ")">
-                @Html.ActionLink("Provider", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "providerName", searchString = ViewBag.CurrentFilter })
-            </th>
-            <th>
-                <!-- actions -->
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VendorCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Provider.Name)
-                </td>
-                <td>
-                    <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-</table>
-<!-- PAGES -->
-<div class="pages">
-    <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
-    @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
-         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
-</div>
-
-
 <script type="text/javascript">
     var provider = '@ViewBag.ProviderId';
     $("select[name='provider']").find('option[value="' + provider + '"]').prop("selected", true);

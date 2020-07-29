@@ -1,0 +1,33 @@
+﻿@model IList<OperationMonitoring.Models.Storage>
+@{
+    ViewData["Title"] = "Storages";
+    
+}
+
+
+<div class="content-heading">
+    <h4>Storages</h4>
+    <a class="btn btn-primary" asp-action="Create">Add New Storage</a>
+</div>
+<div id="storagesTreeView">
+   
+</div>
+
+
+
+<script>
+    @*var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
+    $('#storagesTreeView').jstree({
+        "plugins": ["wholerow"],
+        "core": {
+            "multiple": false,
+            "themes": {
+                "dots": false,
+                "icons": false,
+                "responsive":true
+            },
+            'data': storagesJSON
+        }
+    });
+    $(function () { $('#jstree_demo_div').jstree(); });*@
+</script>
