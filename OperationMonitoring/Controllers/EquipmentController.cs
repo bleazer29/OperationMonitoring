@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -74,23 +76,72 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        // PRESET
-        public ActionResult Preset(int id, int? presetId)
+        // SEARCHING
+        private List<Nomenclature> Searching(List<Nomenclature> nomenclature,  string searchField, string searchString)
         {
+            switch (searchField)
+            {
+                case "Title":
+                    nomenclature = nomenclature.Where(x => x.Name.ToLower()
+                        .Contains(searchString.ToLower())).ToList();
+                    break;
+                case "Provider":
+                    nomenclature = nomenclature.Where(x => x.Provider.Name.ToLower()
+                        .Contains(searchString.ToLower())).ToList();
+                    break;
+                case "Code":
+                    nomenclature = nomenclature.Where(x => x.VendorCode.ToLower()
+                        .Contains(searchString.ToLower())).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            return nomenclature;
+        }
+
+        // PRESET
+        public ActionResult Preset(int id, int? presetId, int? page, string searchString, string searchField, string currentSearch)
+        {            
+            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
+
+            var nomenclature = db.Nomenclatures
+                .Include(x => x.Specification)
+                .ThenInclude(i => i.UsageType)
+                .Include(x => x.Provider).ToList();            
+
             ViewBag.Equipment = db.Equipment
                 .Include(x => x.Department)
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .FirstOrDefault(x => x.Id == id);
-            ViewBag.Nomenclature = db.Nomenclatures
-                .Include(x => x.Specification)
-                .Include(x => x.Provider).ToList();
             ViewBag.Preset = db.Presets
                 .Include(x => x.PresetItems)
-                .ThenInclude(i => i.Nomenclature)
+                    .ThenInclude(i => i.Nomenclature)
+                        .ThenInclude(ii => ii.Provider)
+                .Include(x => x.PresetItems)
+                    .ThenInclude(i => i.Nomenclature)
+                        .ThenInclude(ii => ii.Specification)
                 .FirstOrDefault(x => x.Id == presetId);
-            return View();
+
+            if (searchString.IsNullOrEmpty())
+            {
+                if (!currentSearch.IsNullOrEmpty())
+                {
+                    nomenclature = Searching(nomenclature, searchField, currentSearch);
+                }               
+            }
+            else
+            {
+                nomenclature = Searching(nomenclature, searchField, searchString);
+                currentSearch = searchString;
+                page = 1;
+            }
+            ViewBag.CurrentFilter = currentSearch;
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(nomenclature.ToPagedList(pageNumber, pageSize));
         }
 
 

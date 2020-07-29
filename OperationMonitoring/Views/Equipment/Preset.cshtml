@@ -1,4 +1,4 @@
-﻿@*@model OperationMonitoring.Models.Equipment*@
+﻿@model X.PagedList.IPagedList<OperationMonitoring.Models.Nomenclature>
 
 @{
     ViewData["Title"] = "Preset";
@@ -9,11 +9,12 @@
     {
         CurrentPreset = ViewBag.Preset;
     }
-    List<Nomenclature> CurrentNomenclature = new List<Nomenclature>();
-    if (ViewBag.Nomenclature != null)
+    else
     {
-        CurrentNomenclature = ViewBag.Nomenclature;
+        CurrentPreset.Id = -1;
     }
+    
+    Equipment equipment = ViewBag.Equipment;
 }
 
 <div class="content-heading content-heading-auto">
@@ -29,7 +30,10 @@
 <!-- SELECTED PARTS -->
 <div class="selected-parts">
     <h5>Selected parts:</h5>
-    @if (CurrentPreset == null || CurrentPreset.PresetItems.Count == 0)
+    <!-- LATER -
+        LOAD PRESET
+    -->
+    @if (CurrentPreset.Id == -1 || CurrentPreset.PresetItems.Count == 0)
     {
         <p class="selected-parts__empty">
             Please select items on the list below.
@@ -39,18 +43,36 @@
     {
         foreach (PresetItem item in CurrentPreset.PresetItems)
         {
-            <div class="selected-parts__item">
+            <div class="selected-parts__item" data-item="@item.Id">
                 <div class="selected-parts__item-code">
                     @item.Nomenclature.VendorCode
                 </div>
                 <div class="selected-parts__item-provider">
-                    @{
-                        var provider = CurrentNomenclature.FirstOrDefault(x => x.Id == item.Id);
+                    @if (@item.Nomenclature.Provider != null)
+                    {
+                        @item.Nomenclature.Provider.Name
                     }
-                    @provider.Provider.Name
+                    else
+                    {
+                        <span>&lt;Unknown&gt;</span>
+                    }
                 </div>
                 <div class="selected-parts__item-title">
                     @item.Nomenclature.Name
+                    @if (@item.Nomenclature.Specification != null)
+                    {
+                        <p>
+                            <span>@item.Nomenclature.Specification.Material</span>
+                            <span>@item.Nomenclature.Specification.Weight</span>
+                            <span>@item.Nomenclature.Specification.Height</span>
+                            <span>@item.Nomenclature.Specification.OperatingTime</span>
+                        </p>
+                    }
+                    else
+                    {
+                        <p>&lt;Unknown Specification&gt;</p>
+                    }
+
                 </div>
                 <div class="selected-parts__item-amount">
                     @item.Amount
@@ -62,10 +84,44 @@
         }
     }
 </div>
+<div class="selected-parts__forms">
+    <form asp-action="ClearPreset"
+          asp-route-equipmentId="@equipment.Id"
+          asp-route-presetId="@CurrentPreset.Id">
+        <button class="btn btn-alter">Clear List</button>
+    </form>
+    <div class="selected-parts__forms-right">
+        <form id="FormSavePreset" asp-action="SavePreset"
+              asp-route-equipmentId="@equipment.Id"
+              asp-route-presetId="@CurrentPreset.Id">
+            <input type="hidden" name="presetParameters" />
+            <button class="btn btn-primary">Save</button>
+        </form>
+        <form id="FormFinishPreset" asp-action="FinishPreset"
+              asp-route-equipmentId="@equipment.Id"
+              asp-route-presetId="@CurrentPreset.Id">
+            <input type="hidden" name="presetParameters" />
+            <button class="btn btn-primary">Finish Selecting Parts</button>
+        </form>
+    </div>
+    <!-- LATER
+        SAVE PRESET
+    <form asp-action="SaveTempPreset">
+        <h5>Save as preset: </h5>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <input class="form-control" type="text" required />
+            <button class="btn btn-primary">Save Preset</button>
+        </div>
+    </form>
+    -->
+</div>
 
 <!-- PARTS FILTER -->
 <div class="search-panel">
-    <form id="SearchNomenclature">
+    <form asp-action="Preset"
+          asp-route-id="@equipment.Id"
+          asp-route-presetId="@CurrentPreset.Id">
         <div class="search-field">
             <div class="search-label">
                 <label class="control-label">Field:</label>
@@ -74,7 +130,7 @@
                 <select name="searchField" class="form-select">
                     <option selected value="Title">Title</option>
                     <option value="Code">Code</option>
-                    <option value="Vendor">Vendor</option>
+                    <option value="Provider">Provider</option>
                 </select>
             </div>
         </div>
@@ -83,7 +139,7 @@
                 <label class="control-label">Search:</label>
             </div>
             <div class="search-textbox">
-                <input name="searchString" type="text" />
+                <input name="searchString" type="text" value="@ViewBag.CurrentFilter" />
             </div>
         </div>
         <button class="btn btn-primary search-btn">Search</button>
@@ -94,53 +150,64 @@
 </div>
 
 <!-- PARTS LIST -->
-@if (CurrentNomenclature.Any())
-{
-    <div id="nomenclature-list" class="nomenclature-list">
-        <h5>Nomenclature</h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <td>Code</td>
-                    <td>Provider</td>
-                    <td>Detail</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in CurrentNomenclature)
-                {
-                <tr>
+<div id="nomenclature-list" class="nomenclature-list">
+    <h5>Nomenclature</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th class="width-20">Provider</th>
+                <th class="width-80">Detail</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-nomenclature="@item.Id">
                     <td>
                         @item.VendorCode
                     </td>
                     <td>
-                        @item.Provider
+                        @if (item.Provider != null)
+                        {
+                            @item.Provider.Name
+                        }
+                        else
+                        {
+                            <p>&lt;Unknown&gt;</p>
+                        }
                     </td>
                     <td>
                         @item.Name
-                        <p>
-                            <span>@item.Specification.Material</span>
-                            <span>@item.Specification.Weight</span>
-                            <span>@item.Specification.Height</span>
-                            <span>@item.Specification.OperatingTime</span>
-                        </p>
+                        @if (@item.Specification != null)
+                        {
+                            <p>
+                                <span>@item.Specification.Material</span>
+                                <span>@item.Specification.Weight</span>
+                                <span>@item.Specification.Height</span>
+                                <span>@item.Specification.OperatingTime</span>
+                            </p>
+                        }
+                        else
+                        {
+                            <p>&lt;Unknown Specification&gt;</p>
+                        }
                     </td>
-                    <td>
-                        
+                    <td class="nomenclature-list-amount">
+                        <input type="text" name="input-@item.Id" />
                     </td>
-                    <td><input type="text" name="@item.Id" /></td>
                     <td><span data-input="" class="btn btn-primary">Get</span></td>
                 </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
+    <div class="pages">
+        <span>Page @(Model.PageCount<Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+        @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Preset",
+             new { page, searchField = ViewBag.CurrentField, searchString = ViewBag.CurrentFilter }))
     </div>
-}
+</div>
 
 
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

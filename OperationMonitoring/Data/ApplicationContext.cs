@@ -121,6 +121,16 @@ namespace OperationMonitoring.Data
                 new Nomenclature() { Id = 6, Name="Shaft"},
             };
             modelBuilder.Entity<Nomenclature>().HasData(nomenclatures);
+            Specification[] specifications =
+            {
+                new Specification() { Id=1, Weight=3000, OperatingTime=12000  },
+                new Specification() { Id=2, Weight=30, Height=30, OperatingTime=9000  },
+                new Specification() { Id=3, Height=20, OperatingTime=5000  },
+                new Specification() { Id=4, Weight=200, OperatingTime=12000  },
+                new Specification() { Id=5, Height=40, OperatingTime=12000  },
+                new Specification() { Id=6, Weight=100, OperatingTime=10000  },
+            };
+            modelBuilder.Entity<Specification>().HasData(specifications);
 
             Stock[] stocks = {
                new Stock() { Id = 1, Amount=5},

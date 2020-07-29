@@ -864,13 +864,13 @@ p{
 .table-time-danger .btn{
     background: #DD2C00;
 }
-.history-navigation{
+.simple-pagination{
     margin-top: 15px;
     display: flex;
     justify-content: center;
     font-size: 16px;
 }
-.history-navigation a{
+.simple-pagination a{
     display: block;
     text-align: center;
     width: 40px;
@@ -961,7 +961,7 @@ p{
 }
 .info-dropdown{
     display: none;
-    padding: 0px 20px 20px;
+    padding: 0px 20px 23px;
 }
 .icon-check{
     position: relative;
@@ -993,15 +993,48 @@ p{
     text-align: center;
 }
 
-
-
-
-
-
-
-
-
-
+.selected-parts{
+    margin-top: 30px;
+}
+.selected-parts__forms{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 15px;
+}
+.selected-parts__forms-right{
+    display: flex;
+}
+.selected-parts__forms-right form{
+    margin-left: 20px;
+}
+.nomenclature-list{
+    margin-top: 30px;
+}
+.nomenclature-list-amount{
+    width: 115px;
+    min-width: 115px;
+}
+td.nomenclature-list-amount{
+    padding-right: 0;
+}
+.nomenclature-list .table .btn{
+    min-height: 40px;
+    padding: 5px 10px;
+    display: flex;
+}
+.nomenclature-list .table input{
+    text-align: center;
+    margin-right: -10px;
+}
+.nomenclature-list .hidden{
+    display: none !important;
+}
+.width-20{
+    width: 20%;
+}
+.width-80{
+    width: 80%;
+}
 
 
 
