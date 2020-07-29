@@ -12,6 +12,9 @@ using OperationMonitoring.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace OperationMonitoring
 {
@@ -27,11 +30,20 @@ namespace OperationMonitoring
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("OperationMonitorDB")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+           
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options => {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                
+
+            }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
