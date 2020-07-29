@@ -1020,6 +1020,51 @@ namespace OperationMonitoring.Migrations
                     b.ToTable("Positions");
                 });
 
+            modelBuilder.Entity("OperationMonitoring.Models.Preset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("EquipmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.ToTable("Presets");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.PresetItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("NomenclatureId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PresetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NomenclatureId");
+
+                    b.HasIndex("PresetId");
+
+                    b.ToTable("PresetItems");
+                });
+
             modelBuilder.Entity("OperationMonitoring.Models.Provider", b =>
                 {
                     b.Property<int>("Id")
@@ -1088,6 +1133,50 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("UsageTypeId");
 
                     b.ToTable("Specifications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Height = 0.0,
+                            OperatingTime = 12000,
+                            Weight = 3000.0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Height = 30.0,
+                            OperatingTime = 9000,
+                            Weight = 30.0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Height = 20.0,
+                            OperatingTime = 5000,
+                            Weight = 0.0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Height = 0.0,
+                            OperatingTime = 12000,
+                            Weight = 200.0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Height = 40.0,
+                            OperatingTime = 12000,
+                            Weight = 0.0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Height = 0.0,
+                            OperatingTime = 10000,
+                            Weight = 100.0
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
@@ -1550,6 +1639,24 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.Preset", b =>
+                {
+                    b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
+                        .WithMany()
+                        .HasForeignKey("EquipmentId");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.PresetItem", b =>
+                {
+                    b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
+                        .WithMany()
+                        .HasForeignKey("NomenclatureId");
+
+                    b.HasOne("OperationMonitoring.Models.Preset", "Preset")
+                        .WithMany("PresetItems")
+                        .HasForeignKey("PresetId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
