@@ -345,3 +345,7 @@ healthchecksdb
 /Startup.cs
 /Data/HistoryContext.cs
 /Data/NomenclatureContext.cs
+
+
+# Migrations
+/Migrations/
