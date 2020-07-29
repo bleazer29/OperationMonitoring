@@ -38,6 +38,8 @@ namespace OperationMonitoring.Data
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
+        public DbSet<Preset> Presets { get; set; }
+        public DbSet<PresetItem> PresetItems { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)

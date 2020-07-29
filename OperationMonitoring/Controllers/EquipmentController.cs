@@ -75,7 +75,7 @@ namespace OperationMonitoring.Controllers
         }
 
         // PRESET
-        public ActionResult Preset(int id)
+        public ActionResult Preset(int id, int? presetId)
         {
             ViewBag.Equipment = db.Equipment
                 .Include(x => x.Department)
@@ -83,9 +83,13 @@ namespace OperationMonitoring.Controllers
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .FirstOrDefault(x => x.Id == id);
-            //var nomenclature = db.Nomenclatures
-            //    .Include(x => x.Specification)
-            //    .Include()
+            ViewBag.Nomenclature = db.Nomenclatures
+                .Include(x => x.Specification)
+                .Include(x => x.Provider).ToList();
+            ViewBag.Preset = db.Presets
+                .Include(x => x.PresetItems)
+                .ThenInclude(i => i.Nomenclature)
+                .FirstOrDefault(x => x.Id == presetId);
             return View();
         }
 
