@@ -1,0 +1,82 @@
+﻿@model OperationMonitoring.Models.Equipment
+
+@{
+    ViewData["Title"] = "Add Equipment";
+}
+
+    <div class="content-heading content-heading-auto">
+        <h4>Add Equipment</h4>
+        <h5>Step 1. Input base characteristics</h5>
+    </div>
+
+    <div class="form-pos two-rows">
+        <form id="CreateEquipment" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Department" class="control-label"></label>
+                <select name="department" required class="form-select" asp-items="@(new SelectList(ViewBag.DepartmentList, "Id", "Title"))">
+                    <option value="-1">Select</option>
+                </select>
+                <span asp-validation-for="Department" class="text-danger hidden">
+                    You need to choose a Department
+                </span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select name="category" required class="form-select" asp-items="@(new SelectList(ViewBag.CategoryList, "Id", "Title"))">
+                    <option value="-1">Select</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger hidden">
+                    You need to choose a Category
+                </span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select name="type" required class="form-select" asp-items="@(new SelectList(ViewBag.TypeList, "Id", "Title"))">
+                    <option value="-1">Select</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger hidden">
+                    You need to choose a Type
+                </span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="SerialNum" class="control-label"></label>
+                <input asp-for="SerialNum" class="form-control" />
+                <span asp-validation-for="SerialNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InventoryNum" class="control-label"></label>
+                <input asp-for="InventoryNum" class="form-control" />
+                <span asp-validation-for="InventoryNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiameterOuter" class="control-label"></label>
+                <input asp-for="DiameterOuter" class="form-control" />
+                <span asp-validation-for="DiameterOuter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiameterInner" class="control-label"></label>
+                <input asp-for="DiameterInner" class="form-control" />
+                <span asp-validation-for="DiameterInner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Length" class="control-label"></label>
+                <input asp-for="Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+            <div class="form-group button-pos">
+                <input type="submit" value="Create" class="btn btn-primary btn-auto" />
+            </div>
+        </form>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
