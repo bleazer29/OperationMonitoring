@@ -1,0 +1,206 @@
+﻿@model OperationMonitoring.Models.Maintenance
+<div class="form-pos form-info block-width-100">
+    <div class="form-info__heading">
+        Maintenance Order #@(Model.Title):
+    </div>
+    @if ((string)@ViewData["Controller"] == "Maintenance")
+    {
+        <div class="form-info__note">
+            Status:
+            @if (@Model.IsOpened)
+            {
+                <span>Open</span>
+            }
+            else
+            {
+                <span>Closed</span>
+            }
+        </div>
+    }
+
+    @if ((string)@ViewData["Controller"] == "Maintenance")
+    {
+<div class="form-info__item">
+    <div class="form-info__label">Equipment</div>
+    <div class="form-info_data">
+        <a asp-controller="Equipment" asp-action="Details" asp-route-id="@Model.Equipment.Id">
+            @Model.Equipment.Title
+        </a>
+        @if (Model.Equipment.Type != null)
+        {
+            <label>Type: @Model.Equipment.Type.Title</label>
+        }
+        @if (Model.Equipment.Category != null)
+        {
+            <label>Category: @Model.Equipment.Category.Title</label>
+        }
+    </div>
+</div>
+    }
+<div class="form-info__item">
+    <div class="form-info__label">Maintenance</div>
+    <div class="form-info_data">
+        @if (Model.MaintenanceType != null)
+        {
+            <label>Type: @Model.MaintenanceType.Name</label>
+        }
+        @if (Model.MaintenanceCategory != null)
+        {
+            <label>Category: @Model.MaintenanceCategory.Title</label>
+        }
+        @if (Model.MaintenanceReason != null)
+        {
+            <label>Reason: @Model.MaintenanceReason</label>
+        }
+        @if (Model.Responsible != null)
+        {
+            <label>Responsible: @Model.Responsible.FullName </label>
+        }
+    </div>
+</div>
+
+<div class="form-info__item">
+    <div class="form-info__label">Started: </div>
+    <div class="form-info_data">
+        @Model.StartDate.ToString("dd.MM.yyyy")
+    </div>
+</div>
+    @if (Model.IsOpened == true)
+    {
+        @if (Model.EstimateDate < Model.StartDate)
+        {
+            <div class="form-pos form-due-date">
+                <form method="post" asp-controller="Shared" asp-action="SetMaintenanceDueDate"
+                      asp-route-controllerId="@ViewData["Controller"]"
+                      asp-route-equipmentId="@Model.Equipment.Id"
+                      asp-route-maintenanceId="@Model.Id">
+                    <div class="form-group">
+                        <label class="control-label">Set Due date</label>
+                        <input required name="dueDate" type="date" class="form-control" />
+                    </div>
+                    <button class="btn btn-primary btn-auto">Set Date</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="form-info__item">
+                <div class="form-info__label">Due Date: </div>
+                <div class="form-info_data">
+                    @{
+                        string date = Model.EstimateDate.ToString();
+                        date = date.Remove(date.Length - 8);
+                    }
+                    @date
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="form-info__item">
+            <div class="form-info__label">Finish Date: </div>
+            <div class="form-info_data">
+                @Model.FinishDate.ToString("dd.MM.yyyy")
+            </div>
+        </div>
+    }
+
+    @if (ViewData["Scans"] != null)
+    {
+        List<Doc> scans = (List<Doc>)ViewData["Scans"];
+        if (scans.Count > 0)
+        {
+            <div class="scan-images">
+                <div class="form-info__heading">Related Documents:</div>
+                @{
+                    foreach (var scan in scans)
+                    {
+                        <div class="scan-images__item">
+                            <img data-fancybox="docs" alt="" src="data:image/jpg;base64,@scan.FilePath" />
+                            <span class="scan-images__item-filename">@scan.FilePath</span>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    }
+
+    @if (Model.IsOpened == true)
+    {
+        <div class="form-pos form-upload">
+            <div class="form-info__heading">Upload Documents (image scans):</div>
+            <form id="UploadPhotos" enctype="multipart/form-data" method="post"
+                  asp-controller="Shared" asp-action="UploadImg"
+                  asp-route-controllerID="@ViewData["Controller"]"
+                  asp-route-equipmentId="@Model.Equipment.Id"
+                  asp-route-maintenanceId="@Model.Id">
+                <div class="form-info__item">
+                    <div class="form-info__item-inputs">
+                        <input type="file" name="imgfilepath" accept=".jpg, .jpeg, .png, .gif">
+                    </div>
+                    <span class="btn btn-alter btn-auto js-add-more-inputs">Add More Files</span>
+                </div>
+                <button class="btn btn-primary btn-auto">Upload</button>
+            </form>
+        </div>
+    }
+
+    <!-- ADD NOTE -->
+    @if (Model.IsOpened == true)
+    {
+        ViewData["EquipmentId"] = Model.Equipment.Id;
+        ViewData["EntityType"] = "Maintenance";
+        ViewData["EntityId"] = Model.Id;
+        ViewData["Heading"] = "Maintenance notes";
+        <partial name="_FormAddNote" view-data="ViewData" />
+    }
+    <!-- HISTORY -->
+    @{
+        ViewData["Type"] = "Maintenance";
+        ViewData["EntityId"] = Model.Id;
+        <partial name="_MaintenanceHistory" view-data="ViewData" />
+    }
+
+    @{
+        if (Model.IsOpened == true && Model.Equipment.Status.Title == "SP")
+        {
+            <a asp-controller="Shared" asp-action="MaintenanceChangeStatus"
+               asp-route-controllerID="@ViewData["Controller"]"
+               asp-route-equipmentId="@Model.Equipment.Id"
+               asp-route-maintenanceId="@Model.Id"
+               class="btn btn-alter btn-auto">Equipment Need Repairs</a>
+        }
+    }
+
+    @if (Model.IsOpened == true)
+    {
+        <span class="btn btn-primary btn-auto js-form-show">Close Maintenance</span>
+        <div class="form-pos form-close-maintenance hidden">
+            <form method="post" asp-controller="Shared" asp-action="CloseMaintenance"
+                  asp-route-controllerId="@ViewData["Controller"]"
+                  asp-route-equipmentId="@Model.Equipment.Id"
+                  asp-route-maintenanceId="@Model.Id">
+                <div class="form-info__heading">Results of Maintenance:</div>
+                <div class="form-group">
+                    <label class="control-label">Equipment Status</label>
+                    <select name="equipmentStatus" class="form-select">
+                        <option value="RFU">RFU</option>
+                        <option value="Scrap">Scrap</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Operating Time (hours)</label>
+                    <input name="operatingTime" type="number" min="0" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Alert for Minimal Operating Time (hours)</label>
+                    <input name="operatingTimeMin" type="number" min="0" value="@(Model.Equipment.OperatingTime / 60)" class="form-control" />
+                </div>
+                <div class="text-danger hidden"></div>
+                <button class="btn btn-auto btn-primary">Close Maintenance</button>
+            </form>
+        </div>
+    }
+
+</div>

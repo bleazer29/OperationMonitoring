@@ -78,9 +78,9 @@ namespace OperationMonitoring.Data
             modelBuilder.Entity<MaintenanceType>().HasData(
                 new MaintenanceType[]
                 {
-                    new MaintenanceType {Id = 1, Name = "Write-off"},
+                    new MaintenanceType {Id = 1, Name = "Common maintenance"},
                     new MaintenanceType {Id = 2, Name = "Outer meintenance"},
-                    new MaintenanceType {Id = 4, Name = "Common maintenance"}
+                    new MaintenanceType {Id = 3, Name = "Additional meintenance"}
                 });
 
             Provider[] providers = {
