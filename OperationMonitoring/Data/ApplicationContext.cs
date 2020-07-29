@@ -38,6 +38,7 @@ namespace OperationMonitoring.Data
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
+        public DbSet<UsageType> UsageTypes { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
@@ -81,6 +82,13 @@ namespace OperationMonitoring.Data
                     new MaintenanceType {Id = 1, Name = "Common maintenance"},
                     new MaintenanceType {Id = 2, Name = "Outer meintenance"},
                     new MaintenanceType {Id = 3, Name = "Additional meintenance"}
+                });
+
+            modelBuilder.Entity<UsageType>().HasData(
+                new UsageType[]
+                {
+                    new UsageType {Id = 1, Title = "General"},
+                    new UsageType {Id = 2, Title = "Special"}
                 });
 
             Provider[] providers = {

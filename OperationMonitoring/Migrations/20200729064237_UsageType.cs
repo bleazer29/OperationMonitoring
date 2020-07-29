@@ -2,17 +2,17 @@
 
 namespace OperationMonitoring.Migrations
 {
-    public partial class MaintenanceCategory : Migration
+    public partial class UsageType : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "MaintenanceCategoryId",
-                table: "Maintenances",
+                name: "UsageTypeId",
+                table: "Specifications",
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "MaintenanceCategory",
+                name: "UsageType",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -21,19 +21,19 @@ namespace OperationMonitoring.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MaintenanceCategory", x => x.Id);
+                    table.PrimaryKey("PK_UsageType", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Maintenances_MaintenanceCategoryId",
-                table: "Maintenances",
-                column: "MaintenanceCategoryId");
+                name: "IX_Specifications_UsageTypeId",
+                table: "Specifications",
+                column: "UsageTypeId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Maintenances_MaintenanceCategory_MaintenanceCategoryId",
-                table: "Maintenances",
-                column: "MaintenanceCategoryId",
-                principalTable: "MaintenanceCategory",
+                name: "FK_Specifications_UsageType_UsageTypeId",
+                table: "Specifications",
+                column: "UsageTypeId",
+                principalTable: "UsageType",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -41,19 +41,19 @@ namespace OperationMonitoring.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Maintenances_MaintenanceCategory_MaintenanceCategoryId",
-                table: "Maintenances");
+                name: "FK_Specifications_UsageType_UsageTypeId",
+                table: "Specifications");
 
             migrationBuilder.DropTable(
-                name: "MaintenanceCategory");
+                name: "UsageType");
 
             migrationBuilder.DropIndex(
-                name: "IX_Maintenances_MaintenanceCategoryId",
-                table: "Maintenances");
+                name: "IX_Specifications_UsageTypeId",
+                table: "Specifications");
 
             migrationBuilder.DropColumn(
-                name: "MaintenanceCategoryId",
-                table: "Maintenances");
+                name: "UsageTypeId",
+                table: "Specifications");
         }
     }
 }

@@ -10,8 +10,8 @@ using OperationMonitoring.Data;
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200728085431_OrderModelFix")]
-    partial class OrderModelFix
+    [Migration("20200729064331_UsageType2")]
+    partial class UsageType2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -310,6 +310,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Department1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Department2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Department3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Doc", b =>
@@ -369,6 +386,9 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
@@ -402,6 +422,7 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("InventoryNum")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Length")
@@ -411,12 +432,14 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNum")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TypeId")
@@ -451,6 +474,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Category1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Category2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Category3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
@@ -554,6 +594,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Type1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Type2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Type3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.HistoryType", b =>
@@ -709,7 +766,7 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Write-off"
+                            Name = "Common maintenance"
                         },
                         new
                         {
@@ -718,8 +775,8 @@ namespace OperationMonitoring.Migrations
                         },
                         new
                         {
-                            Id = 4,
-                            Name = "Common maintenance"
+                            Id = 3,
+                            Name = "Additional meintenance"
                         });
                 });
 
@@ -929,6 +986,9 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("PartId")
                         .HasColumnType("int");
 
@@ -1016,10 +1076,15 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UsageTypeId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsageTypeId");
 
                     b.ToTable("Specifications");
                 });
@@ -1165,6 +1230,9 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
@@ -1197,6 +1265,21 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("StorageToId");
 
                     b.ToTable("StorageHistory");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.UsageType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsageTypes");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
@@ -1454,6 +1537,13 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
+                {
+                    b.HasOne("OperationMonitoring.Models.UsageType", "UsageType")
+                        .WithMany()
+                        .HasForeignKey("UsageTypeId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>

@@ -10,8 +10,8 @@ using OperationMonitoring.Data;
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200728090457_Tue-28-07--03")]
-    partial class Tue280703
+    [Migration("20200729064237_UsageType")]
+    partial class UsageType
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -310,6 +310,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Department1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Department2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Department3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Doc", b =>
@@ -369,6 +386,9 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
@@ -389,10 +409,10 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("DiameterInner")
@@ -422,7 +442,7 @@ namespace OperationMonitoring.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TypeId")
+                    b.Property<int?>("TypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarningTime")
@@ -454,6 +474,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Category1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Category2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Category3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
@@ -557,6 +594,23 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EquipmentTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Type1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Type2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Type3"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.HistoryType", b =>
@@ -712,7 +766,7 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Write-off"
+                            Name = "Common maintenance"
                         },
                         new
                         {
@@ -721,8 +775,8 @@ namespace OperationMonitoring.Migrations
                         },
                         new
                         {
-                            Id = 4,
-                            Name = "Common maintenance"
+                            Id = 3,
+                            Name = "Additional meintenance"
                         });
                 });
 
@@ -810,6 +864,9 @@ namespace OperationMonitoring.Migrations
 
                     b.Property<DateTime>("EstimateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");
@@ -1019,10 +1076,15 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UsageTypeId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsageTypeId");
 
                     b.ToTable("Specifications");
                 });
@@ -1168,6 +1230,9 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
@@ -1183,10 +1248,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PartId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StorageFromId")
+                    b.Property<int?>("StockId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StorageToId")
@@ -1198,13 +1260,26 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("HistoryTypeId");
 
-                    b.HasIndex("PartId");
-
-                    b.HasIndex("StorageFromId");
+                    b.HasIndex("StockId");
 
                     b.HasIndex("StorageToId");
 
                     b.ToTable("StorageHistory");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.UsageType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsageType");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
@@ -1321,15 +1396,11 @@ namespace OperationMonitoring.Migrations
                 {
                     b.HasOne("OperationMonitoring.Models.EquipmentCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("OperationMonitoring.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
@@ -1337,9 +1408,7 @@ namespace OperationMonitoring.Migrations
 
                     b.HasOne("OperationMonitoring.Models.EquipmentType", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TypeId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
@@ -1470,6 +1539,13 @@ namespace OperationMonitoring.Migrations
                         .HasForeignKey("StatusId");
                 });
 
+            modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
+                {
+                    b.HasOne("OperationMonitoring.Models.UsageType", "UsageType")
+                        .WithMany()
+                        .HasForeignKey("UsageTypeId");
+                });
+
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
@@ -1506,13 +1582,9 @@ namespace OperationMonitoring.Migrations
                         .WithMany()
                         .HasForeignKey("HistoryTypeId");
 
-                    b.HasOne("OperationMonitoring.Models.Part", "Part")
+                    b.HasOne("OperationMonitoring.Models.Stock", "Stock")
                         .WithMany()
-                        .HasForeignKey("PartId");
-
-                    b.HasOne("OperationMonitoring.Models.Storage", "StorageFrom")
-                        .WithMany()
-                        .HasForeignKey("StorageFromId");
+                        .HasForeignKey("StockId");
 
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()

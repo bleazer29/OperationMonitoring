@@ -12,6 +12,5 @@ namespace OperationMonitoring.Models.Interfaces
         public string Commentary { get; set; }
         public string Message { get; set; }
         public Employee Author { get; set; } //кто коммент написал
-        public string Message { get; set; } // automatically created message
     }
 }
