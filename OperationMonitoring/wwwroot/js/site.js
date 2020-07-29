@@ -109,13 +109,18 @@ $(document).ready(function () {
         $('.form-info__item-inputs').append(newUpload);
     });
     
-    if( $("input[name='dueDate']").length ){
+    if ($("input[name='editDateDue']").length ){
         // console.log("IF");
         // var today = new Date().toISOString().split('T')[0];
         // console.log(today);
         // $("input[name='dueDate]").attr('min', today);
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementsByName("dueDate")[0].setAttribute('min', today);
+        //var today = new Date().toISOString().split('T')[0];
+        var startDate = document.getElementsByName("editDateStart")[0].val();
+        var startdate = new Date(startDate).toISOString().split('T')[0];
+       // document.getElementsByName("startDate")[0].setAttribute('min', startDate);
+
+        //var endDate = document.getElementsByName("contractEndDate").val();
+        document.getElementsByName("editDateDue")[0].min = startdate
     }
     
     if($(".history").length){
@@ -153,7 +158,6 @@ $(document).ready(function () {
     });
     
     
-
 });
 
 function ValidateSelects(validatearray){

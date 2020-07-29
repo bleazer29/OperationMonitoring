@@ -42,7 +42,7 @@ namespace OperationMonitoring.Controllers
         // LIST
         public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, int? page, string currentFilter)
         {
-            var Counterparties = db.Counterparties.AsNoTracking().ToList();
+            var Counterparties = db.Counterparties.ToList();
 
             if (!string.IsNullOrEmpty(searchString))
             {

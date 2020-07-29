@@ -23,5 +23,6 @@ namespace OperationMonitoring.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateFinish { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

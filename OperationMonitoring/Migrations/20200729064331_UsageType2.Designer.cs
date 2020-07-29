@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200729064331_UsageType2")]
+    partial class UsageType2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -926,9 +928,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
@@ -1281,18 +1280,6 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UsageTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "General"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Special"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>

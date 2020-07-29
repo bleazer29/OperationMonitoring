@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200729063800_Employee3")]
+    partial class Employee3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -926,9 +928,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
@@ -1077,15 +1076,10 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsageTypeId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UsageTypeId");
 
                     b.ToTable("Specifications");
                 });
@@ -1266,33 +1260,6 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("StorageToId");
 
                     b.ToTable("StorageHistory");
-                });
-
-            modelBuilder.Entity("OperationMonitoring.Models.UsageType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsageTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "General"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Special"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
@@ -1550,13 +1517,6 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
-                });
-
-            modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
-                {
-                    b.HasOne("OperationMonitoring.Models.UsageType", "UsageType")
-                        .WithMany()
-                        .HasForeignKey("UsageTypeId");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>

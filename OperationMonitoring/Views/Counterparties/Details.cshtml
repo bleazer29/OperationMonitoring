@@ -17,7 +17,11 @@
 
     <div class="content-heading">
         <div class="content-heading__info">
-            <h4>Counterparty - @Html.DisplayFor(model => model.Title)</h4>
+            <h4>Counterparty - @Html.DisplayFor(model => model.Title)
+                <div class="content-heading__info">
+                    <h5>EDRPOU - @Html.DisplayFor(model => model.EDRPOU)</h5>
+                </div>
+            </h4>
             <span class="btn btn-primary js-btn-edit">Edit Name</span>
         </div>
         <div class="content-heading__form">
@@ -30,9 +34,6 @@
                 </span>
             </form>
         </div>
-        <div class="content-heading__info">
-            <h3>EDRPOU - @Html.DisplayFor(model => model.EDRPOU)</h3>
-        </div>
 
     </div>
 
@@ -44,8 +45,8 @@
             {
                 <div class="details-info__item">
                     <a class="details-info__item-title" href="#">@item.AgreementNumber</a>
-                    <a class="details-info__item-title" href="#">@item.DateStart.ToString("dd.MM.yyyy")</a>
-                    <a class="details-info__item-title" href="#">@item.DateDue.ToString("dd.MM.yyyy")</a>
+                    <lable class="details-info__item-title" href="#">@item.DateStart.ToString("dd.MM.yyyy")</lable>
+                    <lable class="details-info__item-title" href="#">@item.DateDue.ToString("dd.MM.yyyy")</lable>
                     <span class="btn btn-primary js-btn-edit">Edit</span>
                     @*<a asp-action="RemoveContract" asp-route-id="@item.Id" class="btn btn-alter">Remove</a>*@
                 </div>
@@ -54,7 +55,7 @@
                           asp-route-CounterpartyId="@Model.Id"
                           asp-route-contractId="@item.Id">
                         <input name="editContractNum" value="@item.AgreementNumber" class="form-control" />
-                        <input name="editDateStart" type="datetime-local" value="@item.DateStart.ToString("s")" class="form-control" />
+                        <input id="editDateStart" name="editDateStart" type="datetime-local" value="@item.DateStart.ToString("s")" class="form-control" />
                         <input name="editDateDue" type="datetime-local" value="@item.DateDue.ToString("s")" class="form-control" />
                         <button class="btn btn-primary">Ok</button>
                         <span title="discard" class="btn btn-alter btn-refresh js-btn-discard">
@@ -86,7 +87,7 @@
             {
                 <div class="details-info__item">
                     <a class="details-info__item-title" href="">@item.Title</a>
-                    <a class="details-info__item-title" href="">@item.Location</a>
+                    <lable class="details-info__item-title" href="">@item.Location</lable>
                     <span class="btn btn-primary js-btn-edit">Edit</span>
                     @*<a asp-action="RemoveWell" asp-route-id="@item.Id" class="btn btn-alter">Remove</a>*@
                 </div>

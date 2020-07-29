@@ -1,0 +1,15 @@
+﻿
+<div class="form-pos form-info block-width-100">
+    <div class="form-info__heading">@((string)ViewData["Heading"])</div>
+    <form method="post"
+          asp-controller="Shared" asp-action="AddNote"
+          asp-route-equipmentId="@ViewData["EquipmentId"]"
+          asp-route-entityType="@ViewData["EntityType"]"
+          asp-route-entityId="@ViewData["EntityId"]"
+          asp-route-controllerId="@ViewData["Controller"]">
+        <div class="form-group">
+            <textarea required class="form-control" name="noteText"></textarea>
+        </div>
+        <button class="btn btn-primary">Add Note</button>
+    </form>
+</div>
