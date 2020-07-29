@@ -349,3 +349,4 @@ healthchecksdb
 
 # Migrations
 /Migrations/
+OperationMonitoring/Migrations/
