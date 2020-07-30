@@ -126,7 +126,7 @@ $(document).ready(function () {
     if($(".history").length){
         var i = 1;
         $('.history-pos').each( function(){
-            $(this).attr("id", "history" + i);
+            $(this).attr("id", "history" + i
             i++;
             $(this).simplePagination({
                 first_content: '&lt;&lt;',
@@ -138,6 +138,7 @@ $(document).ready(function () {
             });
         })
     }    
+
 
     $(".header-nav__icon").click(function(){
         if ($(this).hasClass("menu-open")){

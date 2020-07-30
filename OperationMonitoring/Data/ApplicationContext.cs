@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
 
-namespace OperationMonitoring.Data
+namespace OperationMonitoring.Data              
 {
     public class ApplicationContext : IdentityDbContext
     {

@@ -72,7 +72,7 @@ namespace OperationMonitoring.Controllers
             int pageNumber = (page ?? 1);
             ViewBag.CounterpartyContracts = db.Agreements.ToList();
             ViewBag.CounterpartyWells = db.Wells.ToList();
-            return View(Counterparties.ToPagedList(pageNumber, pageSize));
+            return View(Counterparties);
         }
 
         // DETAILS 

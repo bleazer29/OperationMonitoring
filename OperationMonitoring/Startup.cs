@@ -12,6 +12,8 @@ using OperationMonitoring.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OperationMonitoring.Hubs;
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace OperationMonitoring
 {
@@ -36,6 +38,12 @@ namespace OperationMonitoring
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(60);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +74,15 @@ namespace OperationMonitoring
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<DataFilterHub>("/data",
+                    options =>
+                    {
+                        options.ApplicationMaxBufferSize = 64;
+                        options.TransportMaxBufferSize = 64;
+                        options.LongPolling.PollTimeout = TimeSpan.FromSeconds(60);
+                        options.Transports = HttpTransportType.LongPolling | HttpTransportType.WebSockets;
+                    }
+                    );
             });
         }
     }
