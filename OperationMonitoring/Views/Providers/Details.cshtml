@@ -1,14 +1,12 @@
 ﻿@model OperationMonitoring.Models.Provider
 @{X.PagedList.PagedList<OperationMonitoring.Models.Stock> stocksList = ViewBag.Stocks; }
 
-<div class="content-heading">
-    <div class="content-heading__info">
-        <h4>
-            Information about provider -
-            @Html.DisplayFor(model => model.Name)
-        </h4>
-        <a class="btn btn-primary" asp-action="Index">Back to List</a>
-    </div>
+<div class="content-heading"> 
+    <h4>
+        Information about provider -
+        @Html.DisplayFor(model => model.Name)
+    </h4>
+    <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>   
 </div>
 
 
@@ -41,7 +39,6 @@
         </div>
         <div class="btn btn-primary edit-button">Edit information</div>
     </div>
-
 </div>
 
 
@@ -52,10 +49,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input name="editName" required value="@Model.Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                <input name="editName" required value="@Model.Name" class="form-control" />Н
                 <label asp-for="Address" class="control-label"></label>
                 <input name="editAddress" required value="@Model.Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>

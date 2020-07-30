@@ -1,24 +1,34 @@
-﻿@model IList<OperationMonitoring.Models.Storage>
+﻿@model IList<OperationMonitoring.Helpers.TreeViewStorage>
 @{
     ViewData["Title"] = "Storages";
-    
+
 }
-
-
-<div class="content-heading">
-    <h4>Storages</h4>
-    <a class="btn btn-primary" asp-action="Create">Add New Storage</a>
-</div>
-<div id="storagesTreeView">
-   
-</div>
-
+    <div class="container">
+        <div class="storagesTreeView-container">
+            <div class="content-heading">
+                <h4>Storages</h4>
+                <a class="btn btn-primary" asp-action="Create">+</a>
+            </div>
+            <div id="storagesTreeView">
+                
+            </div>
+        </div>
+        <div class="storage-items-container">
+            <div class="container buttons">
+                Кнопки
+            </div>
+            <div class="storage-items">
+                Айтемы
+            </div>
+        </div>
+    </div>
+    
 
 
 <script>
-    @*var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
+    var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
     $('#storagesTreeView').jstree({
-        "plugins": ["wholerow"],
+        "plugins": ["wholerow", "contextmenu"],
         "core": {
             "multiple": false,
             "themes": {
@@ -26,8 +36,8 @@
                 "icons": false,
                 "responsive":true
             },
-            'data': storagesJSON
-        }
+            "data": storagesJSON
+        } 
+        
     });
-    $(function () { $('#jstree_demo_div').jstree(); });*@
 </script>

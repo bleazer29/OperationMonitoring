@@ -67,9 +67,11 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
+              @if (item.Provider != null) { 
                 <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Provider.Id">
                     @Html.DisplayFor(modelItem => item.Provider.Name)
                 </a>
+              }  
             </td>
             <td>
                 <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>

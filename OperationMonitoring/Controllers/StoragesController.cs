@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
+using OperationMonitoring.Helpers;
+using OperationMonitoring.Models;
 using X.PagedList;
 
 namespace OperationMonitoring.Controllers
@@ -25,7 +27,12 @@ namespace OperationMonitoring.Controllers
             ViewBag.CurrentFilter = searchString;
             ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Name" : searchField;
 
-            var storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
+            foreach(Storage storage in storages)
+            {
+                treeViewStorages.Add(new TreeViewStorage(storage));
+            }
             //ViewBag.Providers = providers;
 
             //// SEARCH
@@ -43,14 +50,14 @@ namespace OperationMonitoring.Controllers
             //ViewBag.CurrentSort = newSortOrder;
             //providers = Sorting(newSortOrder, providers);
 
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            int pageNumber = (page ?? 1);
+            //if (searchString != null)
+            //{
+            //    page = 1;
+            //}
+            //int pageNumber = (page ?? 1);
 
 
-            return View(storages);
+            return View(treeViewStorages);
 
         }
 
@@ -63,17 +70,27 @@ namespace OperationMonitoring.Controllers
         // GET: StoragesController/Create
         public ActionResult Create()
         {
+            var storages = db.Storages.ToList();
+            ViewBag.Storages = storages;
+            ViewBag.StoragesJS = JSConverter.SerializeObject(storages);
             return View();
         }
 
         // POST: StoragesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Storage storage)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    db.Storages.Add(storage);
+                    db.SaveChanges();
+                    // Logic to add the book to DB
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index");
             }
             catch
             {

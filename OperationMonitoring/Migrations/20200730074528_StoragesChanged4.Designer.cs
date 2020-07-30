@@ -10,8 +10,8 @@ using OperationMonitoring.Data;
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200729064331_UsageType2")]
-    partial class UsageType2
+    [Migration("20200730074528_StoragesChanged4")]
+    partial class StoragesChanged4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -928,6 +928,9 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
@@ -1044,18 +1047,21 @@ namespace OperationMonitoring.Migrations
                         {
                             Id = 1,
                             Address = "Address1",
+                            EDRPOU = "32855961",
                             Name = "Provider1"
                         },
                         new
                         {
                             Id = 2,
                             Address = "8 Wang Hoi Road, Kowloon Bay, Hong Kong",
+                            EDRPOU = "38377143",
                             Name = "New Provider"
                         },
                         new
                         {
                             Id = 3,
                             Address = "148 Wing Lok Street, Sheung Wan, Hong Kong",
+                            EDRPOU = "47855961",
                             Name = "AIP Company"
                         });
                 });
@@ -1172,11 +1178,13 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
+                            Location = "Kyiv, Ukraine",
                             Name = "Main Building"
                         },
                         new
                         {
                             Id = 2,
+                            Location = "Kyiv, Ukraine",
                             Name = "Side Building"
                         },
                         new
@@ -1280,6 +1288,18 @@ namespace OperationMonitoring.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UsageTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "General"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Special"
+                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>

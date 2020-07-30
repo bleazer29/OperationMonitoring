@@ -1152,3 +1152,7 @@ p {
     top: 50%;
     margin-top: -9px;
 }
+
+.storages-tree :last-child {
+    display: none;
+}

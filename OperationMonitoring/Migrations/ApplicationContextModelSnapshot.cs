@@ -1045,18 +1045,21 @@ namespace OperationMonitoring.Migrations
                         {
                             Id = 1,
                             Address = "Address1",
+                            EDRPOU = "32855961",
                             Name = "Provider1"
                         },
                         new
                         {
                             Id = 2,
                             Address = "8 Wang Hoi Road, Kowloon Bay, Hong Kong",
+                            EDRPOU = "38377143",
                             Name = "New Provider"
                         },
                         new
                         {
                             Id = 3,
                             Address = "148 Wing Lok Street, Sheung Wan, Hong Kong",
+                            EDRPOU = "47855961",
                             Name = "AIP Company"
                         });
                 });
@@ -1173,11 +1176,13 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
+                            Location = "Kyiv, Ukraine",
                             Name = "Main Building"
                         },
                         new
                         {
                             Id = 2,
+                            Location = "Kyiv, Ukraine",
                             Name = "Side Building"
                         },
                         new
