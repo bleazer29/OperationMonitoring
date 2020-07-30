@@ -1,0 +1,23 @@
+﻿@*@model OperationMonitoring.Models.Equipment*@
+
+@{
+    ViewData["Title"] = "Preset";
+}
+
+<div class="content-heading content-heading-auto">
+    <h4>Add Equipment</h4>
+    <h5>Step 2. Select parts of equipment.</h5>
+</div>
+<!-- GENERAL INFO -->
+@{
+    ViewData["Controller"] = "Preset";
+    <partial name="_EquipmentInfo" model="ViewBag.Equipment" view-data="ViewData" />
+}
+
+<!-- PARTS FILTER -->
+<!-- PARTS LIST -->
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

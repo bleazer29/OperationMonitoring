@@ -32,10 +32,13 @@ namespace OperationMonitoring.Data
         public DbSet<StorageHistory> StorageHistory { get; set; }
         public DbSet<MaintenanceHistory> MaintenanceHistory { get; set; }
         public DbSet<MaintenanceType> MaintenanceTypes { get; set; }
+        public DbSet<MaintenanceCategory> MaintenanceCategories { get; set; }
         public DbSet<OrderHistory> OrderHistory { get; set; }
         public DbSet<Doc> Docs { get; set; }
+        public DbSet<DocType> DocTypes { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
+        public DbSet<UsageType> UsageTypes { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
@@ -76,9 +79,16 @@ namespace OperationMonitoring.Data
             modelBuilder.Entity<MaintenanceType>().HasData(
                 new MaintenanceType[]
                 {
-                    new MaintenanceType {Id = 1, Name = "Write-off"},
+                    new MaintenanceType {Id = 1, Name = "Common maintenance"},
                     new MaintenanceType {Id = 2, Name = "Outer meintenance"},
-                    new MaintenanceType {Id = 4, Name = "Common maintenance"}
+                    new MaintenanceType {Id = 3, Name = "Additional meintenance"}
+                });
+
+            modelBuilder.Entity<UsageType>().HasData(
+                new UsageType[]
+                {
+                    new UsageType {Id = 1, Title = "General"},
+                    new UsageType {Id = 2, Title = "Special"}
                 });
 
             Provider[] providers = {
@@ -118,6 +128,32 @@ namespace OperationMonitoring.Data
                new Stock() { Id = 4, Amount=5}
             };
             modelBuilder.Entity<Stock>().HasData(stocks);
+
+            Department[] departments =
+            {
+                new Department() { Id=1, Title="Department1" },
+                new Department() { Id=2, Title="Department2" },
+                new Department() { Id=3, Title="Department3" }
+            };
+            modelBuilder.Entity<Department>().HasData(departments);
+
+            EquipmentCategory[] categories =
+            {
+                new EquipmentCategory() { Id=1, Title="Category1" },
+                new EquipmentCategory() { Id=2, Title="Category2" },
+                new EquipmentCategory() { Id=3, Title="Category3" }
+            };
+            modelBuilder.Entity<EquipmentCategory>().HasData(categories);
+
+            EquipmentType[] types =
+            {
+                new EquipmentType() { Id=1, Title="Type1" },
+                new EquipmentType() { Id=2, Title="Type2" },
+                new EquipmentType() { Id=3, Title="Type3" }
+            };
+            modelBuilder.Entity<EquipmentType>().HasData(types);
+
+
         }
     }
 }

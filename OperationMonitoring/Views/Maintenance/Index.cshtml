@@ -1,0 +1,83 @@
+﻿@model X.PagedList.IPagedList<OperationMonitoring.Models.Maintenance>
+
+@{
+    ViewData["Title"] = "Maintenance";
+}
+
+<div class="content-heading">
+    <h4>Maintenance</h4>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="@(ViewBag.CurrentSort.ToString() == "id" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "id_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Id", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "id" })
+            </th>
+            <th class="@(ViewBag.CurrentSort.ToString() == "status" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "status_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Status", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "status" })
+            </th>
+            <th class="@(ViewBag.CurrentSort.ToString() == "datestart" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "datestart_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Start Date", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "datestart" })
+            </th>
+            <th class="@(ViewBag.CurrentSort.ToString() == "datefinish" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "datefinish_desc" ? "sort-desc" : " ")">
+                @Html.ActionLink("Finish Date", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "datefinish" })
+            </th>
+            <th>
+                Equipment
+            </th>
+            <th>
+                <!-- actions -->
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @if (item.IsOpened == true)
+                    {
+                        <span>Open</span>
+                    }
+                    else
+                    {
+                        <span>Closed</span>
+                    }
+                </td>
+                <td>
+                    @item.StartDate.ToString("dd.MM.yyyy")
+                </td>
+                <td>
+                    @if (item.IsOpened == true)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <span>@item.FinishDate.ToString("dd.MM.yyyy")</span>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Title">
+                        @Html.DisplayFor(modelItem => item.Equipment.Title), <br />
+                        @Html.DisplayFor(modelItem => item.Equipment.Category), <br />
+                        @Html.DisplayFor(modelItem => item.Equipment.Department)
+                    </a>
+                </td>
+                <td>
+                    <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- PAGES -->
+<div class="pages">
+    <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+    @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
+         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+</div>

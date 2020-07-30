@@ -1,0 +1,95 @@
+﻿@model X.PagedList.IPagedList<OperationMonitoring.Models.Equipment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="content-heading">
+    <h4>Equipment</h4>
+    <a class="btn btn-primary" asp-action="Create">Add New Equipment</a>
+</div>
+
+<!-- SEARCH PANEL -->
+
+<!-- LIST -->
+
+<!-- PAGES -->
+<div class="pages">
+    <span>Page @(Model.PageCount<Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+    @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
+         new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+</div>
+
+<table class="table">
+    @*<thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SerialNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InventoryNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiameterOuter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiameterInner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Length)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OperatingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WarningTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>*@
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Id)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SerialNum)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InventoryNum)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiameterOuter)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiameterInner)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Length)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OperatingTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarningTime)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OperationMonitoring.Migrations
 {
-    public partial class Initwefwef : Migration
+    public partial class Employee3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,7 +67,7 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<int>(nullable: false)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,16 +75,16 @@ namespace OperationMonitoring.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Docs",
+                name: "DocTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FilePath = table.Column<string>(nullable: true)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Docs", x => x.Id);
+                    table.PrimaryKey("PK_DocTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,7 +93,7 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<int>(nullable: false)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -119,7 +119,7 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<int>(nullable: false)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -137,6 +137,19 @@ namespace OperationMonitoring.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HistoryTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MaintenanceCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaintenanceCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,7 +171,7 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(nullable: false)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -186,10 +199,10 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Material = table.Column<string>(nullable: true),
+                    OperatingTime = table.Column<int>(nullable: false),
                     Weight = table.Column<double>(nullable: false),
-                    Height = table.Column<double>(nullable: false),
-                    Width = table.Column<double>(nullable: false)
+                    Material = table.Column<string>(nullable: true),
+                    Height = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -203,6 +216,7 @@ namespace OperationMonitoring.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
+                    Location = table.Column<string>(nullable: true),
                     ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -323,28 +337,6 @@ namespace OperationMonitoring.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Agreements",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CounterpartyId = table.Column<int>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    DateStart = table.Column<DateTime>(nullable: false),
-                    DateDue = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Agreements", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Agreements_Counterparties_CounterpartyId",
-                        column: x => x.CounterpartyId,
-                        principalTable: "Counterparties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Wells",
                 columns: table => new
                 {
@@ -366,6 +358,27 @@ namespace OperationMonitoring.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Docs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FilePath = table.Column<string>(nullable: true),
+                    TypeId = table.Column<int>(nullable: true),
+                    RelatedEntityId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Docs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Docs_DocTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "DocTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Equipment",
                 columns: table => new
                 {
@@ -375,8 +388,9 @@ namespace OperationMonitoring.Migrations
                     DepartmentId = table.Column<int>(nullable: true),
                     CategoryId = table.Column<int>(nullable: true),
                     TypeId = table.Column<int>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    SerialNum = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: false),
+                    SerialNum = table.Column<string>(nullable: false),
+                    InventoryNum = table.Column<string>(nullable: false),
                     DiameterOuter = table.Column<int>(nullable: false),
                     DiameterInner = table.Column<int>(nullable: false),
                     Length = table.Column<int>(nullable: false),
@@ -420,9 +434,11 @@ namespace OperationMonitoring.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    Patronymic = table.Column<string>(nullable: true),
                     BirthDate = table.Column<DateTime>(nullable: false),
                     PositionId = table.Column<int>(nullable: true),
-                    Email = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: true),
+                    UserGUID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -441,6 +457,7 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    VendorCode = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     ProviderId = table.Column<int>(nullable: true),
                     SpecificationId = table.Column<int>(nullable: true)
@@ -463,36 +480,30 @@ namespace OperationMonitoring.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AssembliesHistory",
+                name: "Agreements",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EquipmentId = table.Column<int>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
+                    CounterpartyId = table.Column<int>(nullable: true),
+                    AgreementNumber = table.Column<string>(nullable: true),
                     DocId = table.Column<int>(nullable: true),
-                    Commentary = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true)
+                    DateStart = table.Column<DateTime>(nullable: false),
+                    DateDue = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssembliesHistory", x => x.Id);
+                    table.PrimaryKey("PK_Agreements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AssembliesHistory_Docs_DocId",
+                        name: "FK_Agreements_Counterparties_CounterpartyId",
+                        column: x => x.CounterpartyId,
+                        principalTable: "Counterparties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Agreements_Docs_DocId",
                         column: x => x.DocId,
                         principalTable: "Docs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AssembliesHistory_Equipment_EquipmentId",
-                        column: x => x.EquipmentId,
-                        principalTable: "Equipment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AssembliesHistory_Employees_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -504,21 +515,19 @@ namespace OperationMonitoring.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(nullable: false),
-                    DocId = table.Column<int>(nullable: true),
                     Commentary = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true),
+                    AuthorId = table.Column<int>(nullable: true),
                     EquipmentId = table.Column<int>(nullable: true),
-                    EquipmentOperatingTime = table.Column<int>(nullable: false),
-                    StatusFromId = table.Column<int>(nullable: true),
-                    StatusToId = table.Column<int>(nullable: true)
+                    StatusId = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EquipmentHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EquipmentHistory_Docs_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Docs",
+                        name: "FK_EquipmentHistory_Employees_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -528,21 +537,113 @@ namespace OperationMonitoring.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_EquipmentHistory_EquipmentStatuses_StatusFromId",
-                        column: x => x.StatusFromId,
+                        name: "FK_EquipmentHistory_EquipmentStatuses_StatusId",
+                        column: x => x.StatusId,
                         principalTable: "EquipmentStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Maintenances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EquipmentId = table.Column<int>(nullable: true),
+                    ResponsibleId = table.Column<int>(nullable: true),
+                    CounterpartyId = table.Column<int>(nullable: true),
+                    MaintenanceTypeId = table.Column<int>(nullable: true),
+                    MaintenanceCategoryId = table.Column<int>(nullable: true),
+                    ReturnStorageId = table.Column<int>(nullable: true),
+                    MaintenanceReason = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EstimateDate = table.Column<DateTime>(nullable: false),
+                    FinishDate = table.Column<DateTime>(nullable: false),
+                    IsOpened = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Maintenances", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EquipmentHistory_EquipmentStatuses_StatusToId",
-                        column: x => x.StatusToId,
-                        principalTable: "EquipmentStatuses",
+                        name: "FK_Maintenances_Counterparties_CounterpartyId",
+                        column: x => x.CounterpartyId,
+                        principalTable: "Counterparties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_EquipmentHistory_Employees_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Maintenances_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_MaintenanceCategories_MaintenanceCategoryId",
+                        column: x => x.MaintenanceCategoryId,
+                        principalTable: "MaintenanceCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_MaintenanceTypes_MaintenanceTypeId",
+                        column: x => x.MaintenanceTypeId,
+                        principalTable: "MaintenanceTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_Employees_ResponsibleId",
+                        column: x => x.ResponsibleId,
                         principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_Storages_ReturnStorageId",
+                        column: x => x.ReturnStorageId,
+                        principalTable: "Storages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AgreementId = table.Column<int>(nullable: true),
+                    WellId = table.Column<int>(nullable: true),
+                    EquipmentId = table.Column<int>(nullable: true),
+                    ResponsibleId = table.Column<int>(nullable: true),
+                    DeliveryLocation = table.Column<string>(nullable: true),
+                    DateStart = table.Column<DateTime>(nullable: false),
+                    EstimateDate = table.Column<DateTime>(nullable: false),
+                    DateFinish = table.Column<DateTime>(nullable: false),
+                    IsOpen = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Agreements_AgreementId",
+                        column: x => x.AgreementId,
+                        principalTable: "Agreements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Employees_ResponsibleId",
+                        column: x => x.ResponsibleId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Wells_WellId",
+                        column: x => x.WellId,
+                        principalTable: "Wells",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -554,38 +655,24 @@ namespace OperationMonitoring.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(nullable: false),
-                    DateFinish = table.Column<DateTime>(nullable: false),
-                    DocId = table.Column<int>(nullable: true),
                     Commentary = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true),
-                    EquipmentId = table.Column<int>(nullable: true),
-                    MaintenanceTypeId = table.Column<int>(nullable: true)
+                    AuthorId = table.Column<int>(nullable: true),
+                    MaintenanceId = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MaintenanceHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MaintenanceHistory_Docs_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Docs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MaintenanceHistory_Equipment_EquipmentId",
-                        column: x => x.EquipmentId,
-                        principalTable: "Equipment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MaintenanceHistory_MaintenanceTypes_MaintenanceTypeId",
-                        column: x => x.MaintenanceTypeId,
-                        principalTable: "MaintenanceTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MaintenanceHistory_Employees_UserId",
-                        column: x => x.UserId,
+                        name: "FK_MaintenanceHistory_Employees_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MaintenanceHistory_Maintenances_MaintenanceId",
+                        column: x => x.MaintenanceId,
+                        principalTable: "Maintenances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -597,53 +684,25 @@ namespace OperationMonitoring.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(nullable: false),
-                    DocId = table.Column<int>(nullable: true),
                     Commentary = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true),
-                    EquipmentId = table.Column<int>(nullable: true),
-                    CounterpartyId = table.Column<int>(nullable: true),
-                    AgreementId = table.Column<int>(nullable: true),
-                    WellId = table.Column<int>(nullable: true),
-                    OperationInfo = table.Column<string>(nullable: true),
-                    DateFinish = table.Column<DateTime>(nullable: false)
+                    AuthorId = table.Column<int>(nullable: true),
+                    OrderId = table.Column<int>(nullable: true),
+                    OperatingTime = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderHistory_Agreements_AgreementId",
-                        column: x => x.AgreementId,
-                        principalTable: "Agreements",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderHistory_Counterparties_CounterpartyId",
-                        column: x => x.CounterpartyId,
-                        principalTable: "Counterparties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderHistory_Docs_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Docs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderHistory_Equipment_EquipmentId",
-                        column: x => x.EquipmentId,
-                        principalTable: "Equipment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderHistory_Employees_UserId",
-                        column: x => x.UserId,
+                        name: "FK_OrderHistory_Employees_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderHistory_Wells_WellId",
-                        column: x => x.WellId,
-                        principalTable: "Wells",
+                        name: "FK_OrderHistory_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -656,14 +715,15 @@ namespace OperationMonitoring.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(nullable: true),
                     SerialNum = table.Column<string>(nullable: true),
-                    Properties = table.Column<string>(nullable: true),
+                    InventoryNum = table.Column<string>(nullable: true),
                     OperationTime = table.Column<int>(nullable: false),
                     WarningTime = table.Column<int>(nullable: false),
                     EquipmentId = table.Column<int>(nullable: true),
                     StatusId = table.Column<int>(nullable: true),
                     IsUsed = table.Column<bool>(nullable: false),
                     ParentId = table.Column<int>(nullable: true),
-                    NomenclatureId = table.Column<int>(nullable: true)
+                    NomenclatureId = table.Column<int>(nullable: true),
+                    AssembleId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -695,28 +755,29 @@ namespace OperationMonitoring.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stocks",
+                name: "Assemblies",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<double>(nullable: false),
-                    NomenclatureId = table.Column<int>(nullable: true),
-                    StorageId = table.Column<int>(nullable: true)
+                    EquipmentId = table.Column<int>(nullable: true),
+                    PartId = table.Column<int>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    IsUsed = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stocks", x => x.Id);
+                    table.PrimaryKey("PK_Assemblies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Stocks_Nomenclatures_NomenclatureId",
-                        column: x => x.NomenclatureId,
-                        principalTable: "Nomenclatures",
+                        name: "FK_Assemblies_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Stocks_Storages_StorageId",
-                        column: x => x.StorageId,
-                        principalTable: "Storages",
+                        name: "FK_Assemblies_Parts_PartId",
+                        column: x => x.PartId,
+                        principalTable: "Parts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -728,21 +789,64 @@ namespace OperationMonitoring.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PartId = table.Column<int>(nullable: true),
-                    AssemblyHistoryId = table.Column<int>(nullable: true)
+                    Date = table.Column<DateTime>(nullable: false),
+                    StatusId = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PartHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PartHistory_AssembliesHistory_AssemblyHistoryId",
-                        column: x => x.AssemblyHistoryId,
-                        principalTable: "AssembliesHistory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_PartHistory_Parts_PartId",
                         column: x => x.PartId,
                         principalTable: "Parts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PartHistory_EquipmentStatuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "EquipmentStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stocks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<double>(nullable: false),
+                    EquipmentId = table.Column<int>(nullable: true),
+                    PartId = table.Column<int>(nullable: true),
+                    NomenclatureId = table.Column<int>(nullable: true),
+                    StorageId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stocks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Stocks_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
+                        principalTable: "Equipment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Stocks_Nomenclatures_NomenclatureId",
+                        column: x => x.NomenclatureId,
+                        principalTable: "Nomenclatures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Stocks_Parts_PartId",
+                        column: x => x.PartId,
+                        principalTable: "Parts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Stocks_Storages_StorageId",
+                        column: x => x.StorageId,
+                        principalTable: "Storages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -753,22 +857,22 @@ namespace OperationMonitoring.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PartId = table.Column<int>(nullable: true),
-                    StorageFromId = table.Column<int>(nullable: true),
+                    StockId = table.Column<int>(nullable: true),
+                    Amount = table.Column<int>(nullable: true),
                     StorageToId = table.Column<int>(nullable: true),
                     HistoryTypeId = table.Column<int>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false),
-                    DocId = table.Column<int>(nullable: true),
                     Commentary = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true)
+                    AuthorId = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StorageHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StorageHistory_Docs_DocId",
-                        column: x => x.DocId,
-                        principalTable: "Docs",
+                        name: "FK_StorageHistory_Employees_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -778,15 +882,9 @@ namespace OperationMonitoring.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StorageHistory_Parts_PartId",
-                        column: x => x.PartId,
-                        principalTable: "Parts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StorageHistory_Storages_StorageFromId",
-                        column: x => x.StorageFromId,
-                        principalTable: "Storages",
+                        name: "FK_StorageHistory_Stocks_StockId",
+                        column: x => x.StockId,
+                        principalTable: "Stocks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -795,12 +893,26 @@ namespace OperationMonitoring.Migrations
                         principalTable: "Storages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StorageHistory_Employees_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Department1" },
+                    { 2, "Department2" },
+                    { 3, "Department3" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EquipmentCategories",
+                columns: new[] { "Id", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Category1" },
+                    { 2, "Category2" },
+                    { 3, "Category3" }
                 });
 
             migrationBuilder.InsertData(
@@ -808,12 +920,23 @@ namespace OperationMonitoring.Migrations
                 columns: new[] { "Id", "Title" },
                 values: new object[,]
                 {
-                    { 1, "RFU" },
-                    { 2, "JF" },
-                    { 3, "WS" },
-                    { 4, "SP" },
-                    { 5, "RP" },
-                    { 6, "Scrap" }
+                    { 7, "Scrap" },
+                    { 6, "RP" },
+                    { 5, "SP" },
+                    { 3, "JF" },
+                    { 2, "RFU" },
+                    { 1, "NA" },
+                    { 4, "WS" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EquipmentTypes",
+                columns: new[] { "Id", "Title" },
+                values: new object[,]
+                {
+                    { 3, "Type3" },
+                    { 1, "Type1" },
+                    { 2, "Type2" }
                 });
 
             migrationBuilder.InsertData(
@@ -821,9 +944,9 @@ namespace OperationMonitoring.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Write-off" },
                     { 2, "Transportation" },
-                    { 3, "Supply" }
+                    { 3, "Supply" },
+                    { 1, "Write-off" }
                 });
 
             migrationBuilder.InsertData(
@@ -831,22 +954,22 @@ namespace OperationMonitoring.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Write-off" },
+                    { 1, "Common maintenance" },
                     { 2, "Outer meintenance" },
-                    { 4, "Common maintenance" }
+                    { 3, "Additional meintenance" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Nomenclatures",
-                columns: new[] { "Id", "Name", "ProviderId", "SpecificationId" },
+                columns: new[] { "Id", "Name", "ProviderId", "SpecificationId", "VendorCode" },
                 values: new object[,]
                 {
-                    { 6, "Shaft", null, null },
-                    { 5, "Ring", null, null },
-                    { 4, "Shaft", null, null },
-                    { 2, "Spacer", null, null },
-                    { 1, "Motor", null, null },
-                    { 3, "Ring", null, null }
+                    { 6, "Shaft", null, null, null },
+                    { 4, "Shaft", null, null, null },
+                    { 5, "Ring", null, null, null },
+                    { 2, "Spacer", null, null, null },
+                    { 1, "Motor", null, null, null },
+                    { 3, "Ring", null, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -861,54 +984,59 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "Stocks",
-                columns: new[] { "Id", "Amount", "NomenclatureId", "StorageId" },
+                columns: new[] { "Id", "Amount", "EquipmentId", "NomenclatureId", "PartId", "StorageId" },
                 values: new object[,]
                 {
-                    { 1, 5.0, null, null },
-                    { 2, 2.0, null, null },
-                    { 3, 5.0, null, null },
-                    { 4, 5.0, null, null }
+                    { 3, 5.0, null, null, null, null },
+                    { 1, 5.0, null, null, null, null },
+                    { 2, 2.0, null, null, null, null },
+                    { 4, 5.0, null, null, null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Name", "ParentId" },
                 values: new object[,]
                 {
-                    { 1, "Main Building", null },
-                    { 2, "Side Building", null }
+                    { 1, null, "Main Building", null },
+                    { 2, null, "Side Building", null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Name", "ParentId" },
-                values: new object[] { 3, "Floor 1", 1 });
+                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                values: new object[] { 3, null, "Floor 1", 1 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Name", "ParentId" },
-                values: new object[] { 5, "Floor 3", 1 });
+                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                values: new object[] { 5, null, "Floor 3", 1 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Name", "ParentId" },
-                values: new object[] { 4, "Floor 2", 2 });
+                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                values: new object[] { 4, null, "Floor 2", 2 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Name", "ParentId" },
                 values: new object[,]
                 {
-                    { 6, "Room 4", 3 },
-                    { 8, "Room 6", 5 },
-                    { 7, "Room 5", 4 },
-                    { 9, "Room 7", 4 }
+                    { 6, null, "Room 4", 3 },
+                    { 8, null, "Room 6", 5 },
+                    { 7, null, "Room 5", 4 },
+                    { 9, null, "Room 7", 4 }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Agreements_CounterpartyId",
                 table: "Agreements",
                 column: "CounterpartyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agreements_DocId",
+                table: "Agreements",
+                column: "DocId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -950,19 +1078,19 @@ namespace OperationMonitoring.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssembliesHistory_DocId",
-                table: "AssembliesHistory",
-                column: "DocId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AssembliesHistory_EquipmentId",
-                table: "AssembliesHistory",
+                name: "IX_Assemblies_EquipmentId",
+                table: "Assemblies",
                 column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssembliesHistory_UserId",
-                table: "AssembliesHistory",
-                column: "UserId");
+                name: "IX_Assemblies_PartId",
+                table: "Assemblies",
+                column: "PartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Docs_TypeId",
+                table: "Docs",
+                column: "TypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_PositionId",
@@ -990,9 +1118,9 @@ namespace OperationMonitoring.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentHistory_DocId",
+                name: "IX_EquipmentHistory_AuthorId",
                 table: "EquipmentHistory",
-                column: "DocId");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipmentHistory_EquipmentId",
@@ -1000,39 +1128,49 @@ namespace OperationMonitoring.Migrations
                 column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentHistory_StatusFromId",
+                name: "IX_EquipmentHistory_StatusId",
                 table: "EquipmentHistory",
-                column: "StatusFromId");
+                column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentHistory_StatusToId",
-                table: "EquipmentHistory",
-                column: "StatusToId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EquipmentHistory_UserId",
-                table: "EquipmentHistory",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceHistory_DocId",
+                name: "IX_MaintenanceHistory_AuthorId",
                 table: "MaintenanceHistory",
-                column: "DocId");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceHistory_EquipmentId",
+                name: "IX_MaintenanceHistory_MaintenanceId",
                 table: "MaintenanceHistory",
+                column: "MaintenanceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Maintenances_CounterpartyId",
+                table: "Maintenances",
+                column: "CounterpartyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Maintenances_EquipmentId",
+                table: "Maintenances",
                 column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceHistory_MaintenanceTypeId",
-                table: "MaintenanceHistory",
+                name: "IX_Maintenances_MaintenanceCategoryId",
+                table: "Maintenances",
+                column: "MaintenanceCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Maintenances_MaintenanceTypeId",
+                table: "Maintenances",
                 column: "MaintenanceTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceHistory_UserId",
-                table: "MaintenanceHistory",
-                column: "UserId");
+                name: "IX_Maintenances_ResponsibleId",
+                table: "Maintenances",
+                column: "ResponsibleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Maintenances_ReturnStorageId",
+                table: "Maintenances",
+                column: "ReturnStorageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Nomenclatures_ProviderId",
@@ -1045,44 +1183,49 @@ namespace OperationMonitoring.Migrations
                 column: "SpecificationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_AgreementId",
+                name: "IX_OrderHistory_AuthorId",
                 table: "OrderHistory",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderHistory_OrderId",
+                table: "OrderHistory",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_AgreementId",
+                table: "Orders",
                 column: "AgreementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_CounterpartyId",
-                table: "OrderHistory",
-                column: "CounterpartyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_DocId",
-                table: "OrderHistory",
-                column: "DocId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_EquipmentId",
-                table: "OrderHistory",
+                name: "IX_Orders_EquipmentId",
+                table: "Orders",
                 column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_UserId",
-                table: "OrderHistory",
-                column: "UserId");
+                name: "IX_Orders_ResponsibleId",
+                table: "Orders",
+                column: "ResponsibleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderHistory_WellId",
-                table: "OrderHistory",
+                name: "IX_Orders_WellId",
+                table: "Orders",
                 column: "WellId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PartHistory_AssemblyHistoryId",
-                table: "PartHistory",
-                column: "AssemblyHistoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PartHistory_PartId",
                 table: "PartHistory",
                 column: "PartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartHistory_StatusId",
+                table: "PartHistory",
+                column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parts_AssembleId",
+                table: "Parts",
+                column: "AssembleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Parts_EquipmentId",
@@ -1105,9 +1248,19 @@ namespace OperationMonitoring.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Stocks_EquipmentId",
+                table: "Stocks",
+                column: "EquipmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stocks_NomenclatureId",
                 table: "Stocks",
                 column: "NomenclatureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Stocks_PartId",
+                table: "Stocks",
+                column: "PartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stocks_StorageId",
@@ -1115,9 +1268,9 @@ namespace OperationMonitoring.Migrations
                 column: "StorageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StorageHistory_DocId",
+                name: "IX_StorageHistory_AuthorId",
                 table: "StorageHistory",
-                column: "DocId");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StorageHistory_HistoryTypeId",
@@ -1125,24 +1278,14 @@ namespace OperationMonitoring.Migrations
                 column: "HistoryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StorageHistory_PartId",
+                name: "IX_StorageHistory_StockId",
                 table: "StorageHistory",
-                column: "PartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StorageHistory_StorageFromId",
-                table: "StorageHistory",
-                column: "StorageFromId");
+                column: "StockId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StorageHistory_StorageToId",
                 table: "StorageHistory",
                 column: "StorageToId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StorageHistory_UserId",
-                table: "StorageHistory",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Storages_ParentId",
@@ -1153,10 +1296,30 @@ namespace OperationMonitoring.Migrations
                 name: "IX_Wells_CounterpartyId",
                 table: "Wells",
                 column: "CounterpartyId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Parts_Assemblies_AssembleId",
+                table: "Parts",
+                column: "AssembleId",
+                principalTable: "Assemblies",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Assemblies_Equipment_EquipmentId",
+                table: "Assemblies");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Parts_Equipment_EquipmentId",
+                table: "Parts");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Assemblies_Parts_PartId",
+                table: "Assemblies");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -1185,9 +1348,6 @@ namespace OperationMonitoring.Migrations
                 name: "PartHistory");
 
             migrationBuilder.DropTable(
-                name: "Stocks");
-
-            migrationBuilder.DropTable(
                 name: "StorageHistory");
 
             migrationBuilder.DropTable(
@@ -1197,43 +1357,49 @@ namespace OperationMonitoring.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Maintenances");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "HistoryTypes");
+
+            migrationBuilder.DropTable(
+                name: "Stocks");
+
+            migrationBuilder.DropTable(
+                name: "MaintenanceCategories");
+
+            migrationBuilder.DropTable(
                 name: "MaintenanceTypes");
 
             migrationBuilder.DropTable(
                 name: "Agreements");
 
             migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
                 name: "Wells");
-
-            migrationBuilder.DropTable(
-                name: "AssembliesHistory");
-
-            migrationBuilder.DropTable(
-                name: "HistoryTypes");
-
-            migrationBuilder.DropTable(
-                name: "Parts");
 
             migrationBuilder.DropTable(
                 name: "Storages");
 
             migrationBuilder.DropTable(
-                name: "Counterparties");
-
-            migrationBuilder.DropTable(
                 name: "Docs");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Positions");
+
+            migrationBuilder.DropTable(
+                name: "Counterparties");
+
+            migrationBuilder.DropTable(
+                name: "DocTypes");
 
             migrationBuilder.DropTable(
                 name: "Equipment");
-
-            migrationBuilder.DropTable(
-                name: "Nomenclatures");
-
-            migrationBuilder.DropTable(
-                name: "Positions");
 
             migrationBuilder.DropTable(
                 name: "EquipmentCategories");
@@ -1242,10 +1408,19 @@ namespace OperationMonitoring.Migrations
                 name: "Departments");
 
             migrationBuilder.DropTable(
-                name: "EquipmentStatuses");
+                name: "EquipmentTypes");
 
             migrationBuilder.DropTable(
-                name: "EquipmentTypes");
+                name: "Parts");
+
+            migrationBuilder.DropTable(
+                name: "Assemblies");
+
+            migrationBuilder.DropTable(
+                name: "Nomenclatures");
+
+            migrationBuilder.DropTable(
+                name: "EquipmentStatuses");
 
             migrationBuilder.DropTable(
                 name: "Providers");

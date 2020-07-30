@@ -1,0 +1,7 @@
+﻿@model OperationMonitoring.Models.Maintenance
+
+@{
+    ViewData["Controller"] = "Maintenance";
+    ViewData["History"] = ViewBag.History;
+    <partial name="_MaintenanceDetails" model="Model" view-data="ViewData" />
+}
