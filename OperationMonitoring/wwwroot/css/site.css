@@ -733,6 +733,10 @@ p {
     margin-top: 0;
 }
 
+.storages-path .form-select + .form-select {
+    margin-top: 25px;
+}
+
 .search-panel .btn-refresh {
     min-width: 40px;
 }

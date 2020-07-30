@@ -25,14 +25,14 @@
        
         <div class="form-group">
             <div class="selectedvalue"></div>
-            <div class="select-pos">
+            <div class="select-pos storages-path">
                 @{
                     List<OperationMonitoring.Models.Storage> l1 = ViewBag.Storages;
                     List<int> listTemp = new List<int>();
                     if (l1.Count != 0)
                     {
                         <label asp-for="ParentId" class="control-label">Select path</label>
-                        <select class="form-control control-select">
+                        <select class="form-control form-select">
                             <option value="-1">Select level</option>
                             @foreach (var build in l1)
                             {
@@ -57,7 +57,7 @@
                             if (tempSelect != 0)
                             {
                                 var selName = "s" + listTemp[0];
-                                <select data-selector="@selName" class="form-control control-select" style="display: none;">
+                                <select data-selector="@selName" class="form-control form-select" style="display: none;">
                                     <option value="-1">Select level</option>
                                     @foreach (var build in l1)
                                     {
@@ -90,7 +90,7 @@
 }
 
 <script type="text/javascript">
-    $(".control-select").change(function () {
+    $(".form-select").change(function () {
         var sel = $(this).children("option:selected").val();
         $("#_parent").val(sel);
         $(this).nextAll().hide();
