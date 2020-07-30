@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using OperationMonitoring.ModelsIdentity;
@@ -45,7 +47,7 @@ namespace OperationMonitoring.Controllers
 
                     // добавляем пользователя
                     var result = await userManager.CreateAsync(user, model.RegisterViewModel.Password);
-
+                   
                     /////////////////////////////////////////////////////////////
 
                     //Добавление первой роли для администратора
@@ -72,29 +74,26 @@ namespace OperationMonitoring.Controllers
                     {
                         Employee employee = new Employee
                         {
-                            FirstName = model.Employee.FirstName,
-                            LastName = model.Employee.LastName,
-                            Patronymic = model.Employee.Patronymic,
-                            BirthDate = model.Employee.BirthDate,
-                            Email = user.Email,
-                            UserGUID = user.Id
+                            IdentityUser = user
                         };
                         db.Employees.Add(employee);
                         db.SaveChanges();
-                    }
-
-                    if (result.Succeeded)
-                    {
+                   
                         var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account",new { userId = user.Id, code = code },protocol: HttpContext.Request.Scheme);
-                        EmailServices emailService = new EmailServices();
-                        await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account",
-                            $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                        //var callbackUrl = Url.Action("ConfirmEmail", "Account",new { userId = user.Id, code = code },protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
+                        //EmailServices emailService = new EmailServices();
+                        //await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                        var result1 = await userManager.ConfirmEmailAsync(user, code);  //первое подтверждение по умолчанию
+                        if (result1.Succeeded)
+                        {
+                            return View();
+                        }
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             return RedirectToAction("ListUsers", "Admin");
                         }
-                        return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                        //return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                       
                     }
                     else
                     {
@@ -286,6 +285,36 @@ namespace OperationMonitoring.Controllers
             catch  { return View(model);  }
            
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile() 
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(HttpContext.User);
+                if (userId == null) return View();
+                else return View(await db.Employees.FirstOrDefaultAsync(x => x.IdentityUser.Id.Equals(userId)));
+            }
+            catch { return View(); }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(int id, Employee employees)
+        {
+            try
+            {
+                this.db.Entry(employees).State = EntityState.Modified;
+                await this.db.SaveChangesAsync();
+                return RedirectToAction(nameof(EditProfile));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
 
     }
 }

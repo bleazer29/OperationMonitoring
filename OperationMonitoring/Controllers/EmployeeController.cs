@@ -48,11 +48,11 @@ namespace OperationMonitoring.Controllers
                 Employee employee = new Employee
                 {
                     BirthDate = employees.BirthDate,
-                    Email = employees.Email,
+                    //Email = employees.Email,
                     FirstName = employees.FirstName,
                     LastName = employees.LastName,
-                    Patronymic = employees.Patronymic,
-                    UserGUID = Convert.ToString(Guid.NewGuid())
+                    Patronymic = employees.Patronymic
+                    //UserGUID = Convert.ToString(Guid.NewGuid())
                 };
                 this.db.Add(employee);
                 this.db.SaveChanges();
