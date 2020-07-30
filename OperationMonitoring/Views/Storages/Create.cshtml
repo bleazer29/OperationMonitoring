@@ -1,0 +1,99 @@
+﻿@model OperationMonitoring.Models.Storage
+
+@{
+    ViewData["Title"] = "Add New Storage";
+}
+
+<div class="content-heading">
+    <h4>Add New Storage</h4>
+    <a class="btn btn-primary" asp-action="Index">Back to List</a>
+</div>
+
+<div class="form-pos">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Location" class="control-label"></label>
+            <input asp-for="Location" class="form-control" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+       
+        <div class="form-group">
+            <div class="selectedvalue"></div>
+            <div class="select-pos">
+                @{
+                    List<OperationMonitoring.Models.Storage> l1 = ViewBag.Storages;
+                    List<int> listTemp = new List<int>();
+                    if (l1.Count != 0)
+                    {
+                        <label asp-for="ParentId" class="control-label">Select path</label>
+                        <select class="form-control control-select">
+                            <option value="-1">Select level</option>
+                            @foreach (var build in l1)
+                            {
+                                if (build.ParentId == null)
+                                {
+                                    <option value="@build.Id">@build.Name</option>
+                                }
+                                listTemp.Add(@build.Id);
+                            }
+                        </select>
+
+                        while (listTemp.Count != 0)
+                        {
+                            var tempSelect = 0;
+                            @foreach (var build in l1)
+                            {
+                                if (build.ParentId == listTemp[0])
+                                {
+                                    tempSelect++;
+                                }
+                            }
+                            if (tempSelect != 0)
+                            {
+                                var selName = "s" + listTemp[0];
+                                <select data-selector="@selName" class="form-control control-select" style="display: none;">
+                                    <option value="-1">Select level</option>
+                                    @foreach (var build in l1)
+                                    {
+                                        if (build.ParentId == listTemp[0])
+                                        {
+                                            <option value="@build.Id">@build.Name</option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            listTemp.RemoveAt(0);
+
+                        }
+                    }
+
+                }
+            </div>
+
+            <input asp-for="ParentId" id="_parent" class="form-control" style="display: none;" />
+            <span asp-validation-for="ParentId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script type="text/javascript">
+    $(".control-select").change(function () {
+        var sel = $(this).children("option:selected").val();
+        $("#_parent").val(sel);
+        $(this).nextAll().hide();
+        $(".select-pos").find('select[data-selector="s' + sel + '"]').addClass("BBB").show();
+    });
+</script> 

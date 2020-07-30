@@ -1,0 +1,144 @@
+﻿@model OperationMonitoring.Models.Provider
+@{X.PagedList.PagedList<OperationMonitoring.Models.Stock> stocksList = ViewBag.Stocks; }
+
+<div class="content-heading"> 
+    <h4>
+        Information about provider -
+        @Html.DisplayFor(model => model.Name)
+    </h4>
+    <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>   
+</div>
+
+
+<!-- INFO -->
+<div>
+    <div class="form-pos form-info">
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Name)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Address)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Address)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.EDRPOU)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.EDRPOU)
+            </div>
+        </div>
+        <div class="btn btn-primary edit-button">Edit information</div>
+    </div>
+</div>
+
+
+<!-- EDIT FORM -->
+<div class="hidden">
+    <div class="form-pos">
+        <form asp-controller="Providers" asp-action="EditProvider" method="post" asp-route-providerId="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input name="editName" required value="@Model.Name" class="form-control" />Н
+                <label asp-for="Address" class="control-label"></label>
+                <input name="editAddress" required value="@Model.Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EDRPOU" class="control-label"></label>
+                <input name="editEDRPOU" required value="@Model.EDRPOU" class="form-control" />
+                <span asp-validation-for="EDRPOU" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (stocksList != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th colspan="2" class="@(ViewBag.CurrentSort.ToString() == "vendorCode" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "vendorCode" ? "sort-desc" : " ")">
+                    @Html.ActionLink("Nomenclature", "Details", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "vendorCode", page = stocksList.PageNumber })
+                </th>
+
+                <th class="@(ViewBag.CurrentSort.ToString() == "storageName" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "storageName_desc" ? "sort-desc" : " ")">
+                    @Html.ActionLink("Storage", "Details", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "storageName", page = stocksList.PageNumber })
+                </th>
+
+                <th class="@(ViewBag.CurrentSort.ToString() == "amount" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "amount_desc" ? "sort-desc" : " ")">
+                    @Html.ActionLink("Amount", "Details", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "amount", page = stocksList.PageNumber })
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (Stock item in ViewBag.Stocks)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">
+                            @item.Nomenclature.VendorCode
+                        </a>
+
+                    </td>
+                    <td>
+                        <a asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">
+                            @item.Nomenclature.Name
+                        </a>
+                    </td>
+
+                    <td>
+                        <a sp-controller="Storages" asp-action="Details" asp-route-id="@item.Nomenclature.Id">
+                            @{
+                                var storage = item.Storage;
+                                while (storage != null)
+                                {
+                                    @storage.Name
+                                    if (storage.Parent != null)
+                                    {
+                                        <br />
+                                    }
+                                    storage = storage.Parent;
+                                }
+                            }
+                        </a>
+                    </td>
+                    <td>
+                        @item.Amount
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <!-- PAGES -->
+    <div class="pages">
+        <span>Page @(ViewBag.Stocks.PageCount < ViewBag.Stocks.PageNumber ? 0 : ViewBag.Stocks.PageNumber) of @ViewBag.Stocks.PageCount</span>
+        @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, stocksList, page => Url.Action("Details",
+             new { page, newSortOrder = ViewBag.CurrentSort, id = Model.Id }))
+    </div>
+}
+
+<script>
+    $(".edit-button").click(function () {
+        $(this).parent().parent().hide().next().fadeIn();
+    });
+</script>
+
