@@ -15,12 +15,9 @@ namespace OperationMonitoring.Models
         public string Patronymic { get; set; }
         public string FullName { get { return LastName + " " + FirstName + " " + Patronymic; } }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date),Required]
         public DateTime BirthDate { get; set; }
         public virtual Position Position { get; set; }
-        //public string Email { get; set; }
-        //public string UserGUID { get; set; }
         public IdentityUser IdentityUser { get; set; }
     }
 }

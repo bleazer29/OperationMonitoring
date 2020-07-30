@@ -177,12 +177,14 @@ namespace OperationMonitoring.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult ChangePassword()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             try
@@ -243,7 +245,6 @@ namespace OperationMonitoring.Controllers
             
         }
 
-
         [HttpGet]
         public IActionResult ResetPassword(string token, string email)
         {
@@ -266,16 +267,10 @@ namespace OperationMonitoring.Controllers
                         var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
                         if (result.Succeeded)
                         {
-                            if (await userManager.IsLockedOutAsync(user))
-                            {
-                                await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
-                            }
+                            if (await userManager.IsLockedOutAsync(user)) await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
                             return View("ResetPasswordConfirmation");
                         }
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
+                        foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
                         return View(model);
                     }
                     return View("ResetPasswordConfirmation");
@@ -283,11 +278,11 @@ namespace OperationMonitoring.Controllers
                 return View(model);
             }
             catch  { return View(model);  }
-           
         }
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> EditProfile() 
         {
             try
@@ -300,6 +295,7 @@ namespace OperationMonitoring.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(int id, Employee employees)
         {

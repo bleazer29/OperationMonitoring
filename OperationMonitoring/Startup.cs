@@ -36,14 +36,21 @@ namespace OperationMonitoring
                     Configuration.GetConnectionString("OperationMonitorDB")));
 
            
+           
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => {
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Password.RequiredLength = 10;
+                options.Password.RequiredUniqueChars = 3;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-                
+               
+
 
             }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+
+
 
             services.AddControllersWithViews();
             services.AddRazorPages();
