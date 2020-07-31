@@ -69,7 +69,6 @@
                                 </select>
                             }
                             listTemp.RemoveAt(0);
-
                         }
                     }
 
@@ -90,10 +89,17 @@
 }
 
 <script type="text/javascript">
-    $(".form-select").change(function () {
+    var prevSelect;
+    $(".control-select").change(function () {
         var sel = $(this).children("option:selected").val();
+        if (prevSelect == null) {
+            prevSelect = sel;
+        }
+        else if (sel == -1) {
+            sel = prevSelect;
+        }
         $("#_parent").val(sel);
         $(this).nextAll().hide();
-        $(".select-pos").find('select[data-selector="s' + sel + '"]').addClass("BBB").show();
+        $(".select-pos").find('select[data-selector="s' + sel + '"]').show();
     });
 </script> 

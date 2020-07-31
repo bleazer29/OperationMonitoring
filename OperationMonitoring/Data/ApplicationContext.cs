@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
 
-namespace OperationMonitoring.Data
+namespace OperationMonitoring.Data              
 {
     public class ApplicationContext : IdentityDbContext
     {
@@ -51,7 +51,7 @@ namespace OperationMonitoring.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source = IL634\\SQLEXPRESS; Initial Catalog = OperationMonitorDB; Integrated Security = True;");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source = (localdb)\\mssqllocaldb; Initial Catalog = OperationMonitorDB; Integrated Security = True;");
             }
         }
 
