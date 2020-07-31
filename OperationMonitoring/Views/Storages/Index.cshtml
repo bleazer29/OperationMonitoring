@@ -1,69 +1,80 @@
 ﻿@model IList<OperationMonitoring.Helpers.TreeViewStorage>
+@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks}
 @{
     ViewData["Title"] = "Storages";
 
 }
-    <div class="flex-container">
-        <div class="storagesTreeView-container">
-            <div class="content-heading">
-                <h4>Storages</h4>
-                <a class="btn btn-primary" asp-action="Create">+</a>
-            </div>
-            <div id="storagesTreeView">
-                
-            </div>
+<div class="flex-container">
+    <div class="storagesTreeView-container">
+        <div class="content-heading">
+            <h4>Storages</h4>
+            <a class="btn btn-primary" asp-action="Create">+</a>
         </div>
-        <div class="storage-items-container">         
-            <div class="search-panel">
-                <div class="search-select">
-                    <select class="form-select">
-                        <option value="1" selected>Все</option>
-                        <option value="2" selected>Номенклатура</option>
-                        <option value="3" selected>Детали</option>
-                        <option value="4" selected>Оборудование</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary">Transfer</button>
-            </div>
+        <div id="storagesTreeView">
 
+        </div>
+    </div>
+    <div class="storage-items-container">
+        <div class="search-panel">
+            <div class="search-select">
+                <select class="form-select">
+                    <option value="1" selected>All</option>
+                    <option value="2" selected>Nomenclature</option>
+                    <option value="3" selected>Parts</option>
+                    <option value="4" selected>Equipment</option>
+                </select>
+            </div>
+            <button class="btn btn-primary">Transfer</button>
+        </div>
+        <div class="nomenclature-table">
             <table class="table">
                 <thead>
                     <tr>
+                        <th class="@(ViewBag.CurrentSort.ToString() == "address" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "address_desc" ? "sort-desc" : " ")">
+                            @Html.ActionLink("Vendor code", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "address", searchString = ViewBag.CurrentFilter })
+                        </th>
                         <th class="@(ViewBag.CurrentSort.ToString() == "name" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "name_desc" ? "sort-desc" : " ")">
                             @Html.ActionLink("Name", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "name", searchString = ViewBag.CurrentFilter })
                         </th>
-                        <th class="@(ViewBag.CurrentSort.ToString() == "address" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "address_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("Address", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "address", searchString = ViewBag.CurrentFilter })
+                        <th class="@(ViewBag.CurrentSort.ToString() == "EDRPOU" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "EDRPOU_desc" ? "sort-desc" : " ")">
+                            @Html.ActionLink("Provider", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
                         </th>
                         <th class="@(ViewBag.CurrentSort.ToString() == "EDRPOU" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "EDRPOU_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("EDRPOU", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
+                            @Html.ActionLink("Amount", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
                         </th>
                         <th>
-                            <!-- actions -->
+                            @*actions*@
                         </th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach (var item in Model)
-                    {
+                    @foreach (var item in stocks)
+                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Name)
+                                @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Address)
+                                @Html.DisplayFor(modelItem => item.Nomenclature.Name)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.EDRPOU)
+                                @if (item.Nomenclature.Provider != null)
+                                {
+                                    <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">
+                                        @Html.DisplayFor(modelItem => item.Nomenclature.Provider.Name)
+                                    </a>
+                                }
                             </td>
                             <td>
-                                <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                <a class="btn" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Id">Details</a>
                             </td>
                         </tr>
-                    }
+                     }
                 </tbody>
-
             </table>
             <!-- PAGES -->
             <div class="pages">
@@ -73,9 +84,11 @@
             </div>
         </div>
 
-       
     </div>
-    
+
+
+</div>
+
 
 
 <script>
@@ -106,7 +119,7 @@
                 };
             }
         }
-        
+
     });
 </script>
 
@@ -114,5 +127,53 @@
     //$(function () {
     //    $('#storagesTreeView').on("select_node.jstree", function (e, data) { window.location.href = "/Storages/Details/id=" + data.node.id; });
     //});
-    
+
+</script>
+
+<script>
+    $.GenList = function () {
+        $('#paged-list').simplePagination({
+            items_per_page: 5,
+            number_of_visible_page_numbers: 10,
+            first_content: '<<',
+            previous_content: '<',
+            next_content: '>',
+            last_content: '>>'
+        });
+    }
+
+    $.GenList();
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/data")
+        .build();
+
+    hubConnection.on("Receive", function (data) {
+
+        document.getElementById("CPTablebody").innerHTML = "";
+        var json = JSON.parse(data);
+        for (let i = 0; i < json.length; i++) {
+            document.getElementById("CPTablebody").innerHTML += "<tr>" +
+                "<td>" + json[i].Id + "</td>"
+                + "<td>" + json[i].Title + "</td>"
+                + "<td>" + json[i].EDRPOU + "</td>"
+                + "<td>" + "</td>" +
+                "<td>" + "</td>" +
+                "</tr>";
+        }
+        $.GenList();
+    });
+
+    var searchstring = "";
+    document.getElementById("SearchString").addEventListener("change", function (e) {
+        var inp = document.getElementById("SearchString");
+        searchstring = inp.value;
+    });
+
+    document.getElementById("signal-search-btn").addEventListener("click", function (e) {
+        const item = document.getElementById("searchTB");
+        hubConnection.invoke("CounterpartySearch", searchstring);
+    });
+
+    hubConnection.start();
 </script>
