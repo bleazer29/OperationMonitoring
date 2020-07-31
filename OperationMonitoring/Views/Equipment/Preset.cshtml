@@ -33,7 +33,7 @@
     <!-- LATER -
         LOAD PRESET
     -->
-    @if (CurrentPreset.Id == -1 || CurrentPreset.PresetItems.Count == 0)
+    @if (CurrentPreset.PresetItems == null || CurrentPreset.PresetItems.Count == 0)
     {
         <p class="selected-parts__empty">
             Please select items on the list below.
@@ -41,6 +41,9 @@
     }
     else
     {
+        <p class="selected-parts__empty hidden">
+            Please select items on the list below.
+        </p>
         foreach (PresetItem item in CurrentPreset.PresetItems)
         {
             <div class="selected-parts__item" data-item="@item.Id">
@@ -198,7 +201,7 @@
                     <td class="nomenclature-list-amount">
                         <input type="text" name="input-@item.Id" />
                     </td>
-                    <td><span data-input="" class="btn btn-primary">Get</span></td>
+                    <td><span data-input="" class="btn btn-primary js-get-nomenclature">Get</span></td>
                 </tr>
             }
         </tbody>
@@ -206,8 +209,20 @@
     <div class="pages">
         <span>Page @(Model.PageCount<Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
         @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Preset",
-             new { page, searchField = ViewBag.CurrentField, searchString = ViewBag.CurrentFilter }))
+             new { page, searchField = ViewBag.CurrentField, currentSearch = ViewBag.CurrentFilter }))
     </div>
 </div>
 
+<script>
+    $(function () {
+        $('.js-get-nomenclature').click(function () {
+            var inputValue = $('[name="presetParameters"]').val();
+            $('[name="presetParameters"]').val(inputValue + '12');
+        });
 
+        $('.pages a').click(function (e) {
+            e.preventDefault();
+            window.location.href = $(this).attr("href") + "?presetParameters=" + $('[name="presetParameters"]').val();
+        });
+    });
+</script>

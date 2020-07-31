@@ -101,29 +101,42 @@ namespace OperationMonitoring.Controllers
         }
 
         // PRESET
-        public ActionResult Preset(int id, int? presetId, int? page, string searchString, string searchField, string currentSearch)
-        {            
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
+        public async Task<ActionResult> Preset(int id, int? presetId, int? page, string searchString, string searchField, string currentSearch, string presetParameters)
+        {
+            if (searchField.IsNullOrEmpty())
+            {
+                searchField = "Title";
+            }
+            ViewBag.SearchField = searchField;
 
             var nomenclature = db.Nomenclatures
                 .Include(x => x.Specification)
                 .ThenInclude(i => i.UsageType)
-                .Include(x => x.Provider).ToList();            
+                .Include(x => x.Provider).ToList();
 
-            ViewBag.Equipment = db.Equipment
+             var equipment = db.Equipment
                 .Include(x => x.Department)
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .FirstOrDefault(x => x.Id == id);
-            ViewBag.Preset = db.Presets
-                .Include(x => x.PresetItems)
-                    .ThenInclude(i => i.Nomenclature)
-                        .ThenInclude(ii => ii.Provider)
-                .Include(x => x.PresetItems)
-                    .ThenInclude(i => i.Nomenclature)
-                        .ThenInclude(ii => ii.Specification)
-                .FirstOrDefault(x => x.Id == presetId);
+            ViewBag.Equipment = equipment;
+
+            var preset = db.Presets
+               .Include(x => x.PresetItems)
+                   .ThenInclude(i => i.Nomenclature)
+                       .ThenInclude(ii => ii.Provider)
+               .Include(x => x.PresetItems)
+                   .ThenInclude(i => i.Nomenclature)
+                       .ThenInclude(ii => ii.Specification)
+               .FirstOrDefault(x => x.Id == presetId);
+            if (preset == null)
+            {
+                preset = new Preset() { Equipment = equipment };
+                db.Presets.Add(preset);
+                await db.SaveChangesAsync();
+            }
+            ViewBag.Preset = preset;
 
             if (searchString.IsNullOrEmpty())
             {
