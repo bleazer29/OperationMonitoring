@@ -115,7 +115,7 @@
                 }
             </tbody>
         </table>
-        <div class="my-navigation">
+        <div class="history-navigation">
             <div class="simple-pagination-first"></div>
             <div class="simple-pagination-previous"></div>
             <div class="simple-pagination-page-numbers"></div>
@@ -149,8 +149,8 @@
         document.getElementById("CPTablebody").innerHTML = "";
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
-
-            document.getElementById("CPTablebody").innerHTML += "<tr>" + "<td>" + json[i].Id + "</td>"
+            document.getElementById("CPTablebody").innerHTML += "<tr>" +
+                "<td>" + json[i].Id + "</td>"
                 + "<td>" + json[i].Title + "</td>"
                 + "<td>" + json[i].EDRPOU + "</td>"
                 + "<td>" + "</td>" +
@@ -168,7 +168,7 @@
 
     document.getElementById("signal-search-btn").addEventListener("click", function (e) {
         const item = document.getElementById("searchTB");
-        hubConnection.invoke("CounterpartySearch", searchstring, 0, 0);
+        hubConnection.invoke("CounterpartySearch", searchstring);
     });
 
     hubConnection.start();
