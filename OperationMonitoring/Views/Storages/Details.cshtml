@@ -1,5 +1,161 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model OperationMonitoring.Models.Storage
+
+<div class="content-heading">
+    <h4>
+        Information about provider -
+        @Html.DisplayFor(model => model.Name)
+    </h4>
+    <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>
+</div>
+
+
+<!-- INFO -->
+
+    <div class="form-pos form-info">
+
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Name)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                @Html.DisplayNameFor(model => model.Location)
+            </div>
+            <div class="form-info_data">
+                @Html.DisplayFor(model => model.Location)
+            </div>
+        </div>
+        <div class="form-info__item">
+            <div class="form-info__label">
+                Path
+            </div>
+            <div class="form-info_data">
+                @{
+                    List<OperationMonitoring.Models.Storage> storageParents = ViewBag.StorageParents;
+                    if (storageParents.Count != 0)
+                    {
+                        <div class="storages-list">
+                            @foreach (var item in storageParents)
+                            {
+                                <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                <span>&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;</span>
+                            }
+                            <div>@Model.Name</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="btn btn-primary js-btn-edit">Edit information</div>
+    </div>
+
+
+    <!-- EDIT FORM -->
+    <div class="hidden">
+        <div class="form-pos">
+            <form asp-controller="Storages" asp-action="EditStorage" method="post" asp-route-storageId="@Model.Id">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input name="editName" required value="@Model.Name" class="form-control" />Н
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Location" class="control-label"></label>
+                    <input name="editAddress" required value="@Model.Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="selectedvalue"></div>
+                    <div class="select-pos storages-path">
+                        @{
+                            List<OperationMonitoring.Models.Storage> l1 = ViewBag.Storages;
+                            List<int> listTemp = new List<int>();
+                            if (l1.Count != 0)
+                            {
+                                <label asp-for="ParentId" class="control-label">SELECT PATH</label>
+                                <select class="form-control form-select top-level">
+                                    <option value="-1">Select level</option>
+                                    @foreach (var build in l1)
+                                    {
+                                        if (build.ParentId == null)
+                                        {
+                                            <option value="@build.Id">@build.Name</option>
+                                        }
+                                        listTemp.Add(@build.Id);
+                                    }
+                                </select>
+
+                                while (listTemp.Count != 0)
+                                {
+                                    var tempSelect = 0;
+                                    @foreach (var build in l1)
+                                    {
+                                        if (build.ParentId == listTemp[0])
+                                        {
+                                            tempSelect++;
+                                        }
+                                    }
+                                    if (tempSelect != 0)
+                                    {
+                                        var selName = "s" + listTemp[0];
+                                        <select data-selector="@selName" class="form-control form-select" style="display: none;">
+                                            <option value="-1">Select level</option>
+                                            @foreach (var build in l1)
+                                            {
+                                                if (build.ParentId == listTemp[0])
+                                                {
+                                                    <option value="@build.Id">@build.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                    listTemp.RemoveAt(0);
+                                }
+                            }
+                        }
+                    </div>
+                    <input asp-for="ParentId" id="_parent" class="form-control" style="display: none;" />
+                    <span asp-validation-for="ParentId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Save changes" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <script type="text/javascript">
+    const storageParentsList = JSON.parse('@Html.Raw(ViewBag.StorageParents)');
+        console.log(locList);
+        var child = null;
+        for (var i = 0; i < locList.length; i++) {
+            var parent = locList[i];
+            $(".select-pos").find('select[data-selector="s' + parent.Id + '"]').show();
+            if (child != null) {
+                $('select[data-selector="s' + parent.Id + '"]').val(child);
+            }
+            child = parent.Id;
+            parent = parent[i+1];
+    }
+    $('select.top-level').val(child);
+
+    var prevSelect;
+    $(".form-select").change(function () {
+        var sel = $(this).children("option:selected").val();
+        if (prevSelect == null) {
+            prevSelect = sel;
+        }
+        else if (sel == -1) {
+            sel = prevSelect;
+        }
+        $("#_parent").val(sel);
+        $(this).nextAll().hide();
+        $(".select-pos").find('select[data-selector="s' + sel + '"]').show();
+    });
+        </script>

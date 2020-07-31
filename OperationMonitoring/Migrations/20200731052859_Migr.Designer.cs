@@ -10,8 +10,8 @@ using OperationMonitoring.Data;
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200730125421_pizdec")]
-    partial class pizdec
+    [Migration("20200731052859_Migr")]
+    partial class Migr
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

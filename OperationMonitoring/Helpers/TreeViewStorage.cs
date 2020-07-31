@@ -25,7 +25,7 @@ namespace OperationMonitoring.Helpers
         {
             Storage = storage;
             state = new TreeViewItemState() { disabled = false, opened = true, selected = false };
-            a_attr = new LinkAttributes() { href = "/Storages/Details/id=" + id };
+            a_attr = new LinkAttributes() { href = "/Storages/Details/" + id };
         }
     }
 }

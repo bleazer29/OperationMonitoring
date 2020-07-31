@@ -49,7 +49,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input name="editName" required value="@Model.Name" class="form-control" />Н
+                <input name="editName" required value="@Model.Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
                 <input name="editAddress" required value="@Model.Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
@@ -63,7 +66,7 @@
             <div class="form-group">
                 <input type="submit" value="Save changes" class="btn btn-primary" />
             </div>
-        </form>
+</form>
     </div>
 </div>
 

@@ -33,37 +33,45 @@ namespace OperationMonitoring.Controllers
             {
                 treeViewStorages.Add(new TreeViewStorage(storage));
             }
-            //ViewBag.Providers = providers;
-
-            //// SEARCH
-            //providers = Searching(providers, searchField, searchString);
-
-            //// SORTING
-            //if (string.IsNullOrEmpty(newSortOrder))
-            //{
-            //    newSortOrder = "name";
-            //}
-            //else if (newSortOrder == oldSortOrder)
-            //{
-            //    newSortOrder += "_desc";
-            //}
-            //ViewBag.CurrentSort = newSortOrder;
-            //providers = Sorting(newSortOrder, providers);
-
-            //if (searchString != null)
-            //{
-            //    page = 1;
-            //}
-            //int pageNumber = (page ?? 1);
-
-
             return View(treeViewStorages);
-
         }
 
         // GET: StoragesController/Details/5
         public ActionResult Details(int id)
         {
+            var storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            ViewBag.Storages = storages;
+
+            var storage = storages.FirstOrDefault(i => i.Id == id);
+
+            List<Storage> storageParents = new List<Storage>();
+            var p = storage.ParentId;
+            while (p != null)
+            {
+                var item = storages.FirstOrDefault(x => x.Id == p);
+                storageParents.Add(item);
+                p = item.ParentId;
+            }
+            ViewBag.StorageParents = storageParents;
+            return View(storage);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditStorage(int storageId, string editName, string editAddress, int? parentId)
+        {
+            try
+            {
+                var storage = db.Storages.FirstOrDefault(x => x.Id == storageId);
+                storage.Name = editName;
+                storage.Location = editAddress;
+                storage.ParentId = parentId;
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = storageId });
+            }
+            catch
+            {
+                return RedirectToAction("Details", new { id = storageId });
+            }
             return View();
         }
 
@@ -72,7 +80,6 @@ namespace OperationMonitoring.Controllers
         {
             var storages = db.Storages.ToList();
             ViewBag.Storages = storages;
-            ViewBag.StoragesJS = JSConverter.SerializeObject(storages);
             return View();
         }
 
@@ -87,7 +94,6 @@ namespace OperationMonitoring.Controllers
                 {
                     db.Storages.Add(storage);
                     db.SaveChanges();
-                    // Logic to add the book to DB
                     return RedirectToAction("Index");
                 }
                 return RedirectToAction("Index");

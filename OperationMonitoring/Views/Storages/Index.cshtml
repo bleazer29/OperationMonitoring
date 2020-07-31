@@ -28,7 +28,7 @@
 <script>
     var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
     $('#storagesTreeView').jstree({
-        "plugins": ["wholerow", "contextmenu"],
+        "plugins": ["wholerow", "contextmenu", "search"],
         "core": {
             "multiple": false,
             "themes": {
@@ -37,7 +37,22 @@
                 "responsive":true
             },
             "data": storagesJSON
-        } 
+        },
+        "contextmenu": {
+            "items": function ($node) {
+                var tree = $("#storagesTreeView").jstree(true);
+                return {
+                    "Details": {
+                        "separator_before": false,
+                        "separator_after": false,
+                        "label": "Details",
+                        "action": function (obj) {
+                            window.location.href = $node.a_attr.href;
+                        }
+                    }
+                };
+            }
+        }
         
     });
 </script>
