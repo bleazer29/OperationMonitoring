@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring
 {
@@ -45,11 +46,11 @@ namespace OperationMonitoring
                 options.Password.RequiredUniqueChars = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-               
-
-
             }).AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
 
+            services.Configure<DataProtectionTokenProviderOptions>(o=>o.TokenLifespan = TimeSpan.FromHours(8));
+
+            services.AddSingleton<DataProtectionPurposeStrings>();
 
 
             services.AddControllersWithViews();

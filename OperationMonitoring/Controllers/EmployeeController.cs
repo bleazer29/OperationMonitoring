@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using Microsoft.EntityFrameworkCore;
+using OperationMonitoring.ModelsIdentity.Security;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace OperationMonitoring.Controllers
 {
@@ -13,22 +15,27 @@ namespace OperationMonitoring.Controllers
         // GET: Employee
 
         private readonly ApplicationContext db;
-
-        public EmployeeController(ApplicationContext db)
+        private readonly IDataProtector protector;
+        public EmployeeController(ApplicationContext db, IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings)
         {
             this.db = db;
+            protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
         }
 
 
         public ActionResult Index()
         {
-            return View(this.db.Employees.ToList());
+            return View(this.db.Employees.ToList().Select(e=> {
+                e.EncryptedId = protector.Protect(e.Id.ToString());
+                return e;
+            }));
         }
 
         // GET: Employee/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View(this.db.Employees.ToList().Where(x => x.Id == id).FirstOrDefault());
+            int employeeId = Convert.ToInt32(protector.Unprotect(id));
+            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
         }
 
         // GET: Employee/Create
@@ -65,19 +72,21 @@ namespace OperationMonitoring.Controllers
         }
 
         // GET: Employee/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View(this.db.Employees.ToList().Where(x => x.Id == id).FirstOrDefault());
+            int employeeId = Convert.ToInt32(protector.Unprotect(id));
+            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
         }
 
         // POST: Employee/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Employee employees)
+        public ActionResult Edit(string id, Employee employees)
         {
             try
             {
-
+                employees.EncryptedId = id;
+                employees.Id = Convert.ToInt32(this.protector.Unprotect(id));
                 this.db.Entry(employees).State = EntityState.Modified;
                 this.db.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -89,19 +98,20 @@ namespace OperationMonitoring.Controllers
         }
 
         // GET: Employee/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View(this.db.Employees.ToList().Where(x => x.Id == id).FirstOrDefault());
+            int employeeId = Convert.ToInt32(protector.Unprotect(id));
+            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
         }
 
         // POST: Employee/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(string id, IFormCollection collection)
         {
             try
             {
-                this.db.Employees.Remove(this.db.Employees.Where(x => x.Id == id).FirstOrDefault());
+                this.db.Employees.Remove(this.db.Employees.Where(x => x.Id == Convert.ToInt32(protector.Unprotect(id))).FirstOrDefault());
                 this.db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }

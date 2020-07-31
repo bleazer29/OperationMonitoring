@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using OperationMonitoring.ModelsIdentity;
+using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring.Controllers
 {
@@ -17,12 +19,18 @@ namespace OperationMonitoring.Controllers
         private readonly ApplicationContext db;
         private readonly UserManager<IdentityUser> userManager;
         private SignInManager<IdentityUser> signInManager { get; set; }
+        private readonly IDataProtector protector;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationContext db)
+        public AccountController(UserManager<IdentityUser> userManager, 
+                                    SignInManager<IdentityUser> signInManager, 
+                                    ApplicationContext db,
+                                    IDataProtectionProvider dataProtectionProvider, 
+                                    DataProtectionPurposeStrings dataProtectionPurposeStrings)
         {
             this.db = db;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
         }
 
 
@@ -143,7 +151,7 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel, string returnUrl)
         {
             try
             {
@@ -160,8 +168,12 @@ namespace OperationMonitoring.Controllers
                     }
 
                     var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, true);
-                    if (result.Succeeded) return RedirectToAction("Index", "Home");
-                    else  ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                    if (result.Succeeded)
+                    {
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
+                        else return RedirectToAction("Index", "Home");
+                    }
+                    else { ModelState.AddModelError("", "Неправильный логин и (или) пароль"); }
                     if (result.IsLockedOut)  return View("AccountLocked");
                 }
                 return View(loginViewModel);
@@ -238,10 +250,7 @@ namespace OperationMonitoring.Controllers
                 }
                 return View(model);
             }
-            catch
-            {
-                return View(model);
-            }
+            catch {  return View(model); }
             
         }
 
@@ -305,10 +314,7 @@ namespace OperationMonitoring.Controllers
                 await this.db.SaveChangesAsync();
                 return RedirectToAction(nameof(EditProfile));
             }
-            catch
-            {
-                return View();
-            }
+            catch { return View(); }
         }
 
 
