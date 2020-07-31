@@ -3,7 +3,7 @@
     ViewData["Title"] = "Storages";
 
 }
-    <div class="container">
+    <div class="flex-container">
         <div class="storagesTreeView-container">
             <div class="content-heading">
                 <h4>Storages</h4>
@@ -13,14 +13,67 @@
                 
             </div>
         </div>
-        <div class="storage-items-container">
-            <div class="container buttons">
-                Кнопки
+        <div class="storage-items-container">         
+            <div class="search-panel">
+                <div class="search-select">
+                    <select class="form-select">
+                        <option value="1" selected>Все</option>
+                        <option value="2" selected>Номенклатура</option>
+                        <option value="3" selected>Детали</option>
+                        <option value="4" selected>Оборудование</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary">Transfer</button>
             </div>
-            <div class="storage-items">
-                Айтемы
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="@(ViewBag.CurrentSort.ToString() == "name" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "name_desc" ? "sort-desc" : " ")">
+                            @Html.ActionLink("Name", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "name", searchString = ViewBag.CurrentFilter })
+                        </th>
+                        <th class="@(ViewBag.CurrentSort.ToString() == "address" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "address_desc" ? "sort-desc" : " ")">
+                            @Html.ActionLink("Address", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "address", searchString = ViewBag.CurrentFilter })
+                        </th>
+                        <th class="@(ViewBag.CurrentSort.ToString() == "EDRPOU" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "EDRPOU_desc" ? "sort-desc" : " ")">
+                            @Html.ActionLink("EDRPOU", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
+                        </th>
+                        <th>
+                            <!-- actions -->
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EDRPOU)
+                            </td>
+                            <td>
+                                <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+            <!-- PAGES -->
+            <div class="pages">
+                <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+                @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
+                        new { page, newSortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
             </div>
         </div>
+
+       
     </div>
     
 

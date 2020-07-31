@@ -1197,3 +1197,7 @@ td.nomenclature-list-amount{
 .storages-tree :last-child {
     display: none;
 }
+
+flex-container {
+    display:flex;
+}

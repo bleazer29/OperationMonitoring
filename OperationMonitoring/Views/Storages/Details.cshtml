@@ -2,17 +2,16 @@
 
 <div class="content-heading">
     <h4>
-        Information about provider -
+        Information about storage -
         @Html.DisplayFor(model => model.Name)
     </h4>
     <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>
 </div>
+@{List<OperationMonitoring.Models.Storage>
+        storageParents = ViewBag.StorageParents; }
 
-
-<!-- INFO -->
-
+    <!-- INFO -->
     <div class="form-pos form-info">
-
         <div class="form-info__item">
             <div class="form-info__label">
                 @Html.DisplayNameFor(model => model.Name)
@@ -35,13 +34,13 @@
             </div>
             <div class="form-info_data">
                 @{
-                    List<OperationMonitoring.Models.Storage> storageParents = ViewBag.StorageParents;
+
                     if (storageParents.Count != 0)
                     {
                         <div class="storages-list">
-                            @foreach (var item in storageParents)
+                            @for (int i = storageParents.Count-1; i >= 0; i--)
                             {
-                                <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                <a asp-controller="Storages" asp-action="Details" asp-route-id="@storageParents[i].Id">@storageParents[i].Name</a>
                                 <span>&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;</span>
                             }
                             <div>@Model.Name</div>
@@ -61,7 +60,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
-                    <input name="editName" required value="@Model.Name" class="form-control" />Н
+                    <input name="editName" required value="@Model.Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -77,14 +76,15 @@
                             List<int> listTemp = new List<int>();
                             if (l1.Count != 0)
                             {
-                                <label asp-for="ParentId" class="control-label">SELECT PATH</label>
+                                <label asp-for="ParentId" class="control-label">Select path</label>
                                 <select class="form-control form-select top-level">
                                     <option value="-1">Select level</option>
                                     @foreach (var build in l1)
                                     {
                                         if (build.ParentId == null)
                                         {
-                                            <option value="@build.Id">@build.Name</option>
+                                            if (Model.Id != build.Id)
+                                            { <option value="@build.Id">@build.Name</option>}
                                         }
                                         listTemp.Add(@build.Id);
                                     }
@@ -109,7 +109,10 @@
                                             {
                                                 if (build.ParentId == listTemp[0])
                                                 {
-                                                    <option value="@build.Id">@build.Name</option>
+                                                    if (Model.Id != build.Id)
+                                                    {
+                                                        <option value="@build.Id">@build.Name</option>
+                                                    } 
                                                 }
                                             }
                                         </select>
@@ -130,32 +133,37 @@
         </div>
     </div>
 
-        <script type="text/javascript">
-    const storageParentsList = JSON.parse('@Html.Raw(ViewBag.StorageParents)');
-        console.log(locList);
+    <script type="text/javascript">
+        const storageParentsJS = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(storageParents))');
+        console.log(storageParentsJS);
         var child = null;
-        for (var i = 0; i < locList.length; i++) {
-            var parent = locList[i];
+        var parent = null;
+        var prevSelect = null;
+        for (var i = 0; i < storageParentsJS.length; i++) {
+            parent = storageParentsJS[i];
+            prevSelect = parent.Id;
             $(".select-pos").find('select[data-selector="s' + parent.Id + '"]').show();
             if (child != null) {
                 $('select[data-selector="s' + parent.Id + '"]').val(child);
             }
             child = parent.Id;
-            parent = parent[i+1];
-    }
-    $('select.top-level').val(child);
+            parent = parent[i + 1];   
+        }
+        $('select.top-level').val(child);
 
-    var prevSelect;
-    $(".form-select").change(function () {
-        var sel = $(this).children("option:selected").val();
-        if (prevSelect == null) {
-            prevSelect = sel;
-        }
-        else if (sel == -1) {
-            sel = prevSelect;
-        }
-        $("#_parent").val(sel);
-        $(this).nextAll().hide();
-        $(".select-pos").find('select[data-selector="s' + sel + '"]').show();
-    });
-        </script>
+    
+        $(".form-select").change(function () {
+            var sel = $(this).children("option:selected").val();
+            if (prevSelect == null) {
+                prevSelect = sel;
+            }
+            else if (sel == -1) {
+                sel = prevSelect;
+            }
+            $("#_parent").val(sel);
+            $(this).nextAll().hide();
+            $(".select-pos").find('select[data-selector="s' + sel + '"]').show();
+        });
+
+
+    </script>

@@ -71,8 +71,7 @@ namespace OperationMonitoring.Controllers
             catch
             {
                 return RedirectToAction("Details", new { id = storageId });
-            }
-            return View();
+            }           
         }
 
         // GET: StoragesController/Create
