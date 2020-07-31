@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
 
-namespace OperationMonitoring.Data
+namespace OperationMonitoring.Data              
 {
     public class ApplicationContext : IdentityDbContext
     {
@@ -93,14 +93,14 @@ namespace OperationMonitoring.Data
                 });
 
             Provider[] providers = {
-                new Provider() { Id = 1, Name="Provider1", Address="Address1"},
-                new Provider() { Id = 2, Name="New Provider", Address="8 Wang Hoi Road, Kowloon Bay, Hong Kong"},
-                new Provider() { Id = 3, Name="AIP Company", Address="148 Wing Lok Street, Sheung Wan, Hong Kong"}};
+                new Provider() { Id = 1, Name="Provider1", Address="Address1", EDRPOU="32855961"},
+                new Provider() { Id = 2, Name="New Provider", Address="8 Wang Hoi Road, Kowloon Bay, Hong Kong", EDRPOU="38377143"},
+                new Provider() { Id = 3, Name="AIP Company", Address="148 Wing Lok Street, Sheung Wan, Hong Kong", EDRPOU="47855961"}};
             modelBuilder.Entity<Provider>().HasData(providers);
 
 
-            Storage st1 = new Storage() { Id = 1, Name = "Main Building" };
-            Storage st2 = new Storage() { Id = 2, Name = "Side Building" };
+            Storage st1 = new Storage() { Id = 1, Name = "Main Building", Location="Kyiv, Ukraine" };
+            Storage st2 = new Storage() { Id = 2, Name = "Side Building", Location = "Kyiv, Ukraine" };
             Storage st3 = new Storage() { Id = 3, Name = "Floor 1", ParentId = 1 };
             Storage st4 = new Storage() { Id = 4, Name = "Floor 2", ParentId = 2 };
             Storage st5 = new Storage() { Id = 5, Name = "Floor 3", ParentId = 1 };

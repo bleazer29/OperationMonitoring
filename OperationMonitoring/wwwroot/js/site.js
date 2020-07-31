@@ -12,6 +12,7 @@ $(document).ready(function () {
 
     $("select").each(function(){
         $(this).change(function () {
+            console.log("111");
             $(this).next(".text-danger").hide();
         });
     });
@@ -125,7 +126,7 @@ $(document).ready(function () {
     if($(".history").length){
         var i = 1;
         $('.history-pos').each( function(){
-            $(this).attr("id", "history" + i);
+            $(this).attr("id", "history" + i
             i++;
             $(this).simplePagination({
                 first_content: '&lt;&lt;',
@@ -138,16 +139,6 @@ $(document).ready(function () {
         })
     }    
 
-    if($("#nomenclature-list").length){
-        $("#nomenclature-list").simplePagination({
-            first_content: '&lt;&lt;',
-            previous_content: '<',
-            next_content: '>',
-            last_content: '>>',
-            items_per_page: 5,
-            number_of_visible_page_numbers: 10 // Treated as '9' (see below for explanation)
-        });
-    }
 
     $(".header-nav__icon").click(function(){
         if ($(this).hasClass("menu-open")){

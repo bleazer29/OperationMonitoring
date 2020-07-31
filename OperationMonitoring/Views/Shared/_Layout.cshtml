@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - OperationMonitoring</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/vakata-jstree-6dce227/dist/themes/default/style.min.css" />
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/jquery-simple-pagination-plugin.js"></script>
+    <script src="~/lib/vakata-jstree-6dce227/dist/jstree.min.js"></script>
 </head>
 <body>
     <div class="main">
@@ -48,6 +53,7 @@
     </div>
     <script src="~/js/jquery-simple-pagination-plugin.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
     @RenderSection("Scripts", required: false)
 </body>
 </html>
