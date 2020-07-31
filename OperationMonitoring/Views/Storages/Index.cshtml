@@ -1,5 +1,5 @@
 ﻿@model IList<OperationMonitoring.Helpers.TreeViewStorage>
-@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks}
+@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks;}
 @{
     ViewData["Title"] = "Storages";
 
@@ -26,21 +26,29 @@
             </div>
             <button class="btn btn-primary">Transfer</button>
         </div>
-        <div class="nomenclature-table">
+        <div class="paged-list nomenclature-table">
             <table class="table">
                 <thead>
                     <tr>
-                        <th class="@(ViewBag.CurrentSort.ToString() == "address" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "address_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("Vendor code", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "address", searchString = ViewBag.CurrentFilter })
+                        <th>
+                            <a href="#" data-sort="Id">
+                                Vendor code
+                            </a>
                         </th>
-                        <th class="@(ViewBag.CurrentSort.ToString() == "name" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "name_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("Name", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "name", searchString = ViewBag.CurrentFilter })
+                        <th class="sort-asc">
+                            <a href="#" data-sort="Name">
+                                Name
+                            </a>
                         </th>
-                        <th class="@(ViewBag.CurrentSort.ToString() == "EDRPOU" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "EDRPOU_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("Provider", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
+                        <th>
+                            <a href="#" data-sort="Provider">
+                                Provider
+                            </a>
                         </th>
-                        <th class="@(ViewBag.CurrentSort.ToString() == "EDRPOU" ? "sort-asc" : @ViewBag.CurrentSort.ToString() == "EDRPOU_desc" ? "sort-desc" : " ")">
-                            @Html.ActionLink("Amount", "Index", new { oldSortOrder = ViewBag.CurrentSort, newSortOrder = "EDRPOU", searchString = ViewBag.CurrentFilter })
+                        <th>
+                            <a href="#" data-sort="Amount">
+                                Amount
+                            </a>
                         </th>
                         <th>
                             @*actions*@
@@ -50,7 +58,7 @@
 
                 <tbody>
                     @foreach (var item in stocks)
-                     {
+                    {
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
@@ -73,14 +81,16 @@
                                 <a class="btn" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Id">Details</a>
                             </td>
                         </tr>
-                     }
+                    }
                 </tbody>
             </table>
             <!-- PAGES -->
-            <div class="pages">
-                <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
-                @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Index",
-                        new { page, newSortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+            <div class="simple-pagination">
+                <div class="simple-pagination-first"></div>
+                <div class="simple-pagination-previous"></div>
+                <div class="simple-pagination-page-numbers"></div>
+                <div class="simple-pagination-next"></div>
+                <div class="simple-pagination-last"></div>
             </div>
         </div>
 
@@ -131,49 +141,50 @@
 </script>
 
 <script>
-    $.GenList = function () {
-        $('#paged-list').simplePagination({
-            items_per_page: 5,
-            number_of_visible_page_numbers: 10,
-            first_content: '<<',
-            previous_content: '<',
-            next_content: '>',
-            last_content: '>>'
-        });
-    }
+    var search = "";
+    var sortField = "Name"; // default - "Title"
+    var sortAsc = true; // default
 
-    $.GenList();
+    var pagedList = "#paged-list";
+    GenList(pagedList);
 
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/data")
         .build();
 
     hubConnection.on("Receive", function (data) {
-
-        document.getElementById("CPTablebody").innerHTML = "";
+        $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
-            document.getElementById("CPTablebody").innerHTML += "<tr>" +
-                "<td>" + json[i].Id + "</td>"
-                + "<td>" + json[i].Title + "</td>"
-                + "<td>" + json[i].EDRPOU + "</td>"
-                + "<td>" + "</td>" +
-                "<td>" + "</td>" +
-                "</tr>";
+            var providerHTML = "";
+            if (json[i].Nomenclature.Provider != null) providerHTML = json[i].Nomenclature.Name
+            $(pagedList + " tbody").append(
+                "<tr>" +
+                    "<td>" + json[i].Nomenclature.VendorCode + "</td>" +
+                    "<td>" + json[i].Nomenclature.Name + "</td>" +
+                    "<td>" + providerHTML + "</td>" +
+                    "<td>" + json[i].Amount + "</td>" +
+                    "<td> </td>" +
+                "</tr>"
+            );
         }
-        $.GenList();
+        GenList(pagedList);
     });
 
-    var searchstring = "";
-    document.getElementById("SearchString").addEventListener("change", function (e) {
-        var inp = document.getElementById("SearchString");
-        searchstring = inp.value;
-    });
 
-    document.getElementById("signal-search-btn").addEventListener("click", function (e) {
-        const item = document.getElementById("searchTB");
-        hubConnection.invoke("CounterpartySearch", searchstring);
+    $(pagedList + " th a").click(function (e) {
+        e.preventDefault();
+        $(pagedList + " th").removeClass();
+        if (sortField == $(this).attr("data-sort")) {
+            sortAsc = false;
+            $(this).parent().addClass("sort-desc");
+        }
+        else {
+            sortAsc = true;
+            $(this).parent().addClass("sort-asc");
+            sortField = $(this).attr("data-sort");
+        }
+        hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
     });
-
     hubConnection.start();
 </script>
