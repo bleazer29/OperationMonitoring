@@ -437,7 +437,7 @@ p {
     position: relative;
 }
 
-.search-panel form {
+.search-panel .search-form {
     display: flex;
     align-items: stretch;
     width: 100%;
@@ -1010,14 +1010,14 @@ p {
     background: #DD2C00;
 }
 
-.history-navigation {
+.simple-pagination {
     margin-top: 15px;
     display: flex;
     justify-content: center;
     font-size: 16px;
 }
 
-.simple-navigation a {
+.simple-pagination a {
     display: block;
     text-align: center;
     width: 40px;
@@ -1066,7 +1066,7 @@ p {
 }
 
 @media only screen and (max-width: 768px) {
-    .search-panel form {
+    .search-panel .search-form {
         flex-wrap: wrap;
     }
 
