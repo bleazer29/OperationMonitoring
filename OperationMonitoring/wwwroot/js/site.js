@@ -158,8 +158,21 @@ $(document).ready(function () {
         $(this).next(".info-dropdown").stop().slideToggle();
     });
     
+
+   
     
 });
+
+function GenList(listId) {
+    $(listId).simplePagination({
+        items_per_page: 5,
+        number_of_visible_page_numbers: 10,
+        first_content: '<<',
+        previous_content: '<',
+        next_content: '>',
+        last_content: '>>'
+    });
+}
 
 function ValidateSelects(validatearray){
     var result = true;
@@ -171,3 +184,4 @@ function ValidateSelects(validatearray){
     }
     return result;
 };
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Castle.Core.Internal;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
@@ -20,14 +21,14 @@ namespace OperationMonitoring.Hubs
             db = context;
         }
 
-        public async Task SendCounterparties(string searchString, int sortField, bool isAscendingSort)
+        public async Task SendCounterparties(string searchString, string sortField, bool isAscendingSort)
         {
             List<Counterparty> counterparties = db.Counterparties.ToList();
-            if (string.IsNullOrEmpty(searchString) == false)
+            if (!searchString.IsNullOrEmpty())
             {
                 counterparties = SearchCounterparty(searchString, counterparties).Result;
             }
-            if(sortField != 0)
+            if(!sortField.IsNullOrEmpty())
             {
                 counterparties = SortCounterparties(sortField, isAscendingSort, counterparties).Result;
             }
@@ -42,7 +43,7 @@ namespace OperationMonitoring.Hubs
         /// <returns></returns>
         public async Task<List<Counterparty>> SearchCounterparty(string counterpartyName, List<Counterparty> counterparties)
         {
-            counterparties = counterparties.Where(x => x.Title.Contains(counterpartyName)).ToList();
+            counterparties = counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName.ToLower())).ToList();
             return counterparties;
         }
 
@@ -53,18 +54,38 @@ namespace OperationMonitoring.Hubs
         /// <param name="isAscending">ascending or descending sort</param>
         /// <param name="counterparties">list to sort</param>
         /// <returns></returns>
-        public async Task<List<Counterparty>> SortCounterparties(int sortField, bool isAscending,  List<Counterparty> counterparties)
+        public async Task<List<Counterparty>> SortCounterparties(string sortField, bool isAscending,  List<Counterparty> counterparties)
         {
-            if (sortField == 1)
+            switch (isAscending)
             {
-                if(isAscending) counterparties = counterparties.OrderBy(x => x.Id).ToList();
-                else counterparties = counterparties.OrderByDescending(x => x.Id).ToList();
-            }
-            else if (sortField == 2)
-            {
-                if (isAscending) counterparties = counterparties.OrderBy(x => x.Title).ToList();
-                else counterparties = counterparties.OrderByDescending(x => x.Title).ToList();
-            }
+                case true:
+                    switch (sortField)
+                    {
+                        case "Id":
+                            counterparties = counterparties.OrderBy(x => x.Id).ToList();
+                            break;
+                        case "Title":
+                            counterparties = counterparties.OrderBy(x => x.Title).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case false:
+                    switch (sortField)
+                    {
+                        case "Id":
+                            counterparties = counterparties.OrderByDescending(x => x.Id).ToList();
+                            break;
+                        case "Title":
+                            counterparties = counterparties.OrderByDescending(x => x.Title).ToList();
+                            break;
+                        default:                            
+                            break;
+                    }
+                    break;
+                default:
+            }            
             return counterparties;
         }
 
@@ -122,14 +143,14 @@ namespace OperationMonitoring.Hubs
             return providers;
         }
 
-        public async Task SendNomenclature(string searchString, int searchField, int sortField, bool isAscendingSort)
+        public async Task SendNomenclature(string searchString, string searchField, string sortField, bool isAscendingSort)
         {
             List<Nomenclature> nomenclature = db.Nomenclatures.ToList();
             if (string.IsNullOrEmpty(searchString) == false)
             {
                 nomenclature = SearchNomenclature(searchString, searchField, nomenclature).Result;
             }
-            if (sortField != 0)
+            if (!sortField.IsNullOrEmpty())
             {
                 nomenclature = SortNomenclature(sortField, isAscendingSort, nomenclature).Result;
             }
@@ -143,14 +164,14 @@ namespace OperationMonitoring.Hubs
         /// <param name="searchString"></param>
         /// <param name="searchField">1 - Search by Vendor code, 2 - Title, 3 - Provider name</param>
         /// <returns></returns>
-        public async Task<List<Nomenclature>> SearchNomenclature(string searchString, int searchField, List<Nomenclature> nomenclature)
+        public async Task<List<Nomenclature>> SearchNomenclature(string searchString, string searchField, List<Nomenclature> nomenclature)
         {
-            if (string.IsNullOrEmpty(searchString) == false)
-            {
-                if (searchField == 1) nomenclature = nomenclature.Where(x => x.VendorCode.Contains(searchString)).ToList();
-                else if (searchField == 2) nomenclature = nomenclature.Where(x => x.Name.Contains(searchString)).ToList();
-                else if (searchField == 3) nomenclature = nomenclature.Where(x => x.Provider.Name.Contains(searchString)).ToList();
-            }
+            //if (string.IsNullOrEmpty(searchString) == false)
+            //{
+            //    if (searchField == 1) nomenclature = nomenclature.Where(x => x.VendorCode.Contains(searchString)).ToList();
+            //    else if (searchField == 2) nomenclature = nomenclature.Where(x => x.Name.Contains(searchString)).ToList();
+            //    else if (searchField == 3) nomenclature = nomenclature.Where(x => x.Provider.Name.Contains(searchString)).ToList();
+            //}
             return nomenclature;
         }
 
@@ -161,23 +182,34 @@ namespace OperationMonitoring.Hubs
         /// <param name="isAscending">ascending or descending sort</param>
         /// <param name="counterparties">list to sort</param>
         /// <returns></returns>
-        public async Task<List<Nomenclature>> SortNomenclature(int sortField, bool isAscending, List<Nomenclature> nomenclature)
+        public async Task<List<Nomenclature>> SortNomenclature(string sortField, bool isAscending, List<Nomenclature> nomenclature)
         {
-            if (sortField == 1)
+            switch (sortField)
             {
-                if (isAscending) nomenclature = nomenclature.OrderBy(x => x.VendorCode).ToList();
-                else nomenclature = nomenclature.OrderByDescending(x => x.VendorCode).ToList();
+                case "VendorCode":
+                    break;
+                case "Name":
+                    break;
+                case "Provider":
+                    break;
+                default:
+                    break;
             }
-            else if (sortField == 2)
-            {
-                if (isAscending) nomenclature = nomenclature.OrderBy(x => x.Name).ToList();
-                else nomenclature = nomenclature.OrderByDescending(x => x.Name).ToList();
-            }
-            else if (sortField == 3)
-            {
-                if (isAscending) nomenclature = nomenclature.OrderBy(x => x.Provider.Name).ToList();
-                else nomenclature = nomenclature.OrderByDescending(x => x.Provider.Name).ToList();
-            }
+            //if (sortField == 1)
+            //{
+            //    if (isAscending) nomenclature = nomenclature.OrderBy(x => x.VendorCode).ToList();
+            //    else nomenclature = nomenclature.OrderByDescending(x => x.VendorCode).ToList();
+            //}
+            //else if (sortField == 2)
+            //{
+            //    if (isAscending) nomenclature = nomenclature.OrderBy(x => x.Name).ToList();
+            //    else nomenclature = nomenclature.OrderByDescending(x => x.Name).ToList();
+            //}
+            //else if (sortField == 3)
+            //{
+            //    if (isAscending) nomenclature = nomenclature.OrderBy(x => x.Provider.Name).ToList();
+            //    else nomenclature = nomenclature.OrderByDescending(x => x.Provider.Name).ToList();
+            //}
             return nomenclature;
         }
 
