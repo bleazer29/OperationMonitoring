@@ -28,33 +28,21 @@ namespace OperationMonitoring.Hubs
             {
                 counterparties = SearchCounterparty(searchString, counterparties).Result;
             }
-            if(!sortField.IsNullOrEmpty())
+            if (!sortField.IsNullOrEmpty())
             {
                 counterparties = SortCounterparties(sortField, isAscendingSort, counterparties).Result;
             }
-            var json= JsonConvert.SerializeObject(counterparties);
+            var json = JsonConvert.SerializeObject(counterparties);
             await Clients.Caller.SendAsync("Receive", json);
         }
 
-        /// <summary>
-        /// Counterparty search
-        /// </summary>
-        /// <param name="counterpartyName"></param>
-        /// <returns></returns>
         public async Task<List<Counterparty>> SearchCounterparty(string counterpartyName, List<Counterparty> counterparties)
         {
             counterparties = counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName.ToLower())).ToList();
             return counterparties;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sortField">1 - Id, 2 - Title</param>
-        /// <param name="isAscending">ascending or descending sort</param>
-        /// <param name="counterparties">list to sort</param>
-        /// <returns></returns>
-        public async Task<List<Counterparty>> SortCounterparties(string sortField, bool isAscending,  List<Counterparty> counterparties)
+        public async Task<List<Counterparty>> SortCounterparties(string sortField, bool isAscending, List<Counterparty> counterparties)
         {
             switch (isAscending)
             {
@@ -80,12 +68,12 @@ namespace OperationMonitoring.Hubs
                         case "Title":
                             counterparties = counterparties.OrderByDescending(x => x.Title).ToList();
                             break;
-                        default:                            
+                        default:
                             break;
                     }
                     break;
                 default:
-            }            
+            }
             return counterparties;
         }
 
@@ -104,18 +92,12 @@ namespace OperationMonitoring.Hubs
             await Clients.Caller.SendAsync("Receive", json);
         }
 
-        /// <summary>
-        /// Provider search on index page
-        /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="searchField">1 - Search by Name, 2 - Address, 3 - EDRPOU</param>
-        /// <returns></returns>
         public async Task<List<Provider>> SearchProvider(string searchString, string searchField, List<Provider> providers)
         {
             switch (searchField)
             {
-                case "Name":
-                    providers = providers.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                case "Title":
+                    providers = providers.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 case "Address":
                     providers = providers.Where(x => x.Address.ToLower().Contains(searchString.ToLower())).ToList();
@@ -129,13 +111,6 @@ namespace OperationMonitoring.Hubs
             return providers;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sortField">1 - Name, 2 - Address</param>
-        /// <param name="isAscending">ascending or descending sort</param>
-        /// <param name="counterparties">list to sort</param>
-        /// <returns></returns>
         public async Task<List<Provider>> SortProviders(string sortField, bool isAscending, List<Provider> providers)
         {
             switch (isAscending)
@@ -143,8 +118,8 @@ namespace OperationMonitoring.Hubs
                 case true:
                     switch (sortField)
                     {
-                        case "Name":
-                            providers = providers.OrderBy(x => x.Name).ToList();
+                        case "Title":
+                            providers = providers.OrderBy(x => x.Title).ToList();
                             break;
                         case "Address":
                             providers = providers.OrderBy(x => x.Address).ToList();
@@ -156,8 +131,8 @@ namespace OperationMonitoring.Hubs
                 case false:
                     switch (sortField)
                     {
-                        case "Name":
-                            providers = providers.OrderByDescending(x => x.Name).ToList();
+                        case "Title":
+                            providers = providers.OrderByDescending(x => x.Title).ToList();
                             break;
                         case "Address":
                             providers = providers.OrderByDescending(x => x.Address).ToList();
@@ -186,12 +161,6 @@ namespace OperationMonitoring.Hubs
             await Clients.Caller.SendAsync("Receive", json);
         }
 
-        /// <summary>
-        /// Nomenclature search on index page
-        /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="searchField">1 - Search by Vendor code, 2 - Title, 3 - Provider name</param>
-        /// <returns></returns>
         public async Task<List<Nomenclature>> SearchNomenclature(string searchString, string searchField, List<Nomenclature> nomenclature)
         {
             switch (searchField)
@@ -199,11 +168,11 @@ namespace OperationMonitoring.Hubs
                 case "VendorCode":
                     nomenclature = nomenclature.Where(x => x.VendorCode.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
-                case "Name":
-                    nomenclature = nomenclature.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                case "Title":
+                    nomenclature = nomenclature.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                    nomenclature = nomenclature.Where(x => x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 default:
                     break;
@@ -211,13 +180,6 @@ namespace OperationMonitoring.Hubs
             return nomenclature;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sortField">1 - Vndor code, 2 - Name, 3 - Provider name</param>
-        /// <param name="isAscending">ascending or descending sort</param>
-        /// <param name="counterparties">list to sort</param>
-        /// <returns></returns>
         public async Task<List<Nomenclature>> SortNomenclature(string sortField, bool isAscending, List<Nomenclature> nomenclature)
         {
             switch (isAscending)
@@ -228,11 +190,11 @@ namespace OperationMonitoring.Hubs
                         case "VendorCode":
                             nomenclature = nomenclature.OrderBy(x => x.VendorCode).ToList();
                             break;
-                        case "Name":
-                            nomenclature = nomenclature.OrderBy(x => x.Name).ToList();
+                        case "Title":
+                            nomenclature = nomenclature.OrderBy(x => x.Title).ToList();
                             break;
                         case "Provider":
-                            nomenclature = nomenclature.OrderBy(x => x.Provider.Name).ToList();
+                            nomenclature = nomenclature.OrderBy(x => x.Provider.Title).ToList();
                             break;
                         default:
                             break;
@@ -244,13 +206,13 @@ namespace OperationMonitoring.Hubs
                         case "VendorCode":
                             nomenclature = nomenclature.OrderByDescending(x => x.VendorCode).ToList();
                             break;
-                        case "Name":
-                            nomenclature = nomenclature.OrderByDescending(x => x.Name).ToList();
+                        case "Title":
+                            nomenclature = nomenclature.OrderByDescending(x => x.Title).ToList();
                             break;
                         case "Provider":
                             break;
                         default:
-                            nomenclature = nomenclature.OrderByDescending(x => x.Provider.Name).ToList();
+                            nomenclature = nomenclature.OrderByDescending(x => x.Provider.Title).ToList();
                             break;
                     }
                     break;
@@ -274,13 +236,6 @@ namespace OperationMonitoring.Hubs
             await Clients.Caller.SendAsync("Receive", json);
         }
 
-        /// <summary>
-        ///  Order search on index page
-        /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="searchField">1 - Search by counterparty name, 2 - agreement number, 3 - well name</param>
-        /// <param name="searchOnlyActive">True - search only active orders, False - only inactive</param>
-        /// <returns></returns>
         public async Task<List<Order>> SearchOrders(string searchString, string searchField, bool searchOnlyActive, List<Order> orders)
         {
             switch (searchField)
@@ -308,13 +263,6 @@ namespace OperationMonitoring.Hubs
             return orders;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sortField">1 - Id, 2 - Counterparty name, 3 - Agreement number, 4 - Well name</param>
-        /// <param name="isAscending">ascending or descending sort</param>
-        /// <param name="counterparties">list to sort</param>
-        /// <returns></returns>
         public async Task<List<Order>> SortOrders(string sortField, bool isAscending, List<Order> orders)
         {
             switch (isAscending)
@@ -373,13 +321,6 @@ namespace OperationMonitoring.Hubs
             await Clients.Caller.SendAsync("Receive", json);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sortField">1 - Id, 2 - Status, 3 - Start date, 4 - Finish date</param>
-        /// <param name="isAscending">ascending or descending sort</param>
-        /// <param name="counterparties">list to sort</param>
-        /// <returns></returns>
         public async Task<List<Maintenance>> SortMaintenances(string sortField, bool isAscending, List<Maintenance> maintenances)
         {
             switch (isAscending)
@@ -423,7 +364,7 @@ namespace OperationMonitoring.Hubs
                     }
                     break;
                 default:
-            }            
+            }
             return maintenances;
         }
 
@@ -434,22 +375,10 @@ namespace OperationMonitoring.Hubs
             {
                 equipment = SearchEquipment(searchStatus, searchString, searchField, equipment).Result;
             }
-            //if (!sortField.IsNullOrEmpty())
-            //{
-            //    maintenances = SortMaintenances(sortField, isAscendingSort, maintenances).Result;
-            //}
             var json = JsonConvert.SerializeObject(equipment);
             await Clients.Caller.SendAsync("Receive", json);
         }
-        /// <summary>
-        ///  Equipment search on index page
-        /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="searchField">1 - Search by department, 2 - category, 3 - type, 4 - Name, 5 - SerialNum
-        /// 6 - Outer diameter, 7 - Inner diameter, 8 - Length
-        /// </param>
-        /// <param name="searchOnlyActive">True - search equipment that is currently in use, False - only inactive</param>
-        /// <returns></returns>
+
         public async Task<List<Equipment>> SearchEquipment(string searchStatus, string searchString, string searchField, List<Equipment> equipment)
         {
             int result;
@@ -472,22 +401,22 @@ namespace OperationMonitoring.Hubs
                     equipment = equipment.Where(x => x.SerialNum.Contains(searchString)).ToList();
                     break;
                 case "DiameterOuter":
-                    if (isInt) 
+                    if (isInt)
                         equipment = equipment.Where(x => x.DiameterOuter == result).ToList();
                     else
-                        equipment = equipment.Where(x => x.Id == null).ToList();
+                        equipment = new List<Equipment>();
                     break;
                 case "DiameterInner":
                     if (isInt)
                         equipment = equipment.Where(x => x.DiameterInner == result).ToList();
                     else
-                        equipment = equipment.Where(x => x.Id == null).ToList();
-                        break;
+                        equipment = new List<Equipment>();
+                    break;
                 case "Length":
                     if (isInt)
                         equipment = equipment.Where(x => x.Length == result).ToList();
                     else
-                        equipment = equipment.Where(x => x.Id == null).ToList();
+                        equipment = new List<Equipment>();
                     break;
                 default:
                     break;
@@ -562,7 +491,7 @@ namespace OperationMonitoring.Hubs
                             equipment = equipment.OrderByDescending(x => x.Category.Title).ToList();
                             break;
                         case "Type":
-                            equipment = equipment.OrderByDescending(x => x.Type.Title).ToList();                            
+                            equipment = equipment.OrderByDescending(x => x.Type.Title).ToList();
                             break;
                         case "Title":
                             equipment = equipment.OrderByDescending(x => x.Title).ToList();
@@ -581,8 +510,41 @@ namespace OperationMonitoring.Hubs
                     }
                     break;
                 default:
-            }            
+            }
             return equipment;
         }
+
+        public async Task SendStocks(string searchString, int? storageId, string searchField)
+        {
+            List<Stock> stocks = db.Stocks.ToList();
+            if (string.IsNullOrEmpty(searchString) == false)
+            {
+                stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
+            }
+            var json = JsonConvert.SerializeObject(stocks);
+            await Clients.Caller.SendAsync("Recieve", json);
+        }
+
+        public async Task<List<Stock>> SearchStocks(string searchString, int? storageId, string searchField, List<Stock> stocks)
+        {
+            if (storageId != null)
+            {
+                stocks = stocks.Where(x => x.Storage.Id == storageId).ToList();
+            }
+            switch (searchField)
+            {
+                case "Title":
+                    stocks = stocks.Where(x =>
+                       x.Nomenclature.Title.Contains(searchString)
+                    || x.Equipment.Title.Contains(searchString)
+                    || x.Part.Title.Contains(searchString)).ToList();
+                    break;
+                default:
+                    break;
+            }
+            return stocks;
+        }
+
+
     }
 }

@@ -12,8 +12,6 @@ namespace OperationMonitoring.Models
     public class EquipmentHistory: IHistory
     {
         public int Id { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }       

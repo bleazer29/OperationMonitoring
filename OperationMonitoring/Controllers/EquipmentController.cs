@@ -82,11 +82,11 @@ namespace OperationMonitoring.Controllers
             switch (searchField)
             {
                 case "Title":
-                    nomenclature = nomenclature.Where(x => x.Name.ToLower()
+                    nomenclature = nomenclature.Where(x => x.Title.ToLower()
                         .Contains(searchString.ToLower())).ToList();
                     break;
                 case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider.Name.ToLower()
+                    nomenclature = nomenclature.Where(x => x.Provider.Title.ToLower()
                         .Contains(searchString.ToLower())).ToList();
                     break;
                 case "Code":

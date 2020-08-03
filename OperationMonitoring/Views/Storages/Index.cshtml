@@ -42,8 +42,113 @@
 </script>
 
 <script>
-    //$(function () {
-    //    $('#storagesTreeView').on("select_node.jstree", function (e, data) { window.location.href = "/Storages/Details/id=" + data.node.id; });
-    //});
-    
+    var search = "";
+    var sortField = "Title"; // default - "Title"
+    var sortAsc = true; // default
+
+    var pagedList = "#paged-list";
+    GenList(pagedList);
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/data")
+        .build();
+
+    $(function () {
+        $('#storagesTreeView').on("select_node.jstree", function (e, data) {
+            search = $("#searchString").val();
+            hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
+        });
+    });
+
+    function parseTitle(jsonObj) {
+        if (jsonObj.Part.Title == null && jsonObj.Equipment.Title) {
+            titleHTML = " ";
+        }
+        else {
+            if (jsonObj.Part.Title == null) {
+                titleHTML = jsonObj.Part.Title;
+            }
+            if (jsonObj.Equipment.Title == null) {
+                titleHTML = jsonObj.Equipment.Title;
+            }
+        }
+    }
+
+    function parseStatus(jsonObj) {
+        if (jsonObj.Part.Status.Title == null && jsonObj.Equipment.Status.Title == null) {
+            statusHTML = " ";
+        }
+        else {
+            if (jsonObj.Part.Status.Title == null) {
+                statusHTML = jsonObj.Equipment.Status.Title;
+            }
+            else {
+                statusHTML = jsonObj.Part.Status.Title;
+            }
+        }
+    }
+
+    function parseVendorCode(jsonObj) {
+        if (jsonObj.Nomenclature.VendorCode == null) {
+            vendorCodeHTML = " ";
+        }
+        else {
+            vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
+        }
+    }
+
+    function parseProvider(jsonObj) {
+        if (jsonObj.Provider.Title == null) {
+            providerHTML = " ";
+        }
+        else {
+            providerHTML = jsonObj.Provider.Title;
+        }
+    }
+
+    function parseOperatingTime(jsonObj) {
+        if (jsonObj.Part.OperatingTime == null && jsonObj.Equipment.OperatingTime == null) {
+            operatingTimeHTML = " ";
+        }
+        else {
+            if (jsonObj.Part.OperatingTime == null) {
+                operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+            }
+            if (jsonObj.Equipment.OperatingTime == null) {
+                operatingTimeHTML = jsonObj.Part.OperatingTime;
+            }
+        }
+    }
+
+    var titleHTML;
+    var statusHTML;
+    var vendorCodeHTML;
+    var providerHTML;
+    var operatingTimeHTML;
+
+    hubConnection.on("Receive", function (data) {
+        $(pagedList + " tbody").empty();
+        var json = JSON.parse(data);
+        for (let i = 0; i < json.length; i++) {
+            parseTitle(json[i]);
+            parseStatus(json[i]);
+            parseVendorCode(json[i]);
+            parseProvider(json[i]);
+            parseOperatingTime(json[i]);
+
+            $(pagedList + " tbody").append(
+                "<tr>" +
+                "<td>" + titleHTML  + "</td>" +
+                "<td>" + statusHTML + "</td>" +
+                "<td>" + vendorCodeHTML + "</td>" +
+                "<td>" + providerHTML + "</td>" +
+                "<td>" + operatingTimeHTML + "</td>" +
+                "<td> </td>" +
+                "</tr>"
+            );
+        }
+        GenList(pagedList);
+    });
+
+    hubConnection.start();
 </script>

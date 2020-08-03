@@ -26,8 +26,8 @@ namespace OperationMonitoring.Controllers
         {
             switch (searchField)
             {
-                case "Name":
-                    providers = providers.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                case "Title":
+                    providers = providers.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 case "Address":
                     providers = providers.Where(x => x.Address != null && x.Address.ToLower().Contains(searchString.ToLower())).ToList();
@@ -47,7 +47,7 @@ namespace OperationMonitoring.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    providers = providers.OrderByDescending(s => s.Name).ToList();
+                    providers = providers.OrderByDescending(s => s.Title).ToList();
                     break;
                 case "address_desc":
                     providers = providers.OrderByDescending(s => s.Address).ToList();
@@ -62,7 +62,7 @@ namespace OperationMonitoring.Controllers
                     providers = providers.OrderBy(s => s.EDRPOU).ToList();
                     break;
                 default:
-                    providers = providers.OrderBy(s => s.Name).ToList();
+                    providers = providers.OrderBy(s => s.Title).ToList();
                     break;
             }
             return providers;
@@ -81,10 +81,10 @@ namespace OperationMonitoring.Controllers
                     stocks = stocks.OrderBy(s => s.Amount).ToList();
                     break;
                 case "storage_desc":
-                    stocks = stocks.OrderByDescending(s => s.Storage.Name).ToList();
+                    stocks = stocks.OrderByDescending(s => s.Storage.Title).ToList();
                     break;
                 case "storage":
-                    stocks = stocks.OrderBy(s => s.Storage.Name).ToList();
+                    stocks = stocks.OrderBy(s => s.Storage.Title).ToList();
                     break;
                 default:
                     stocks = stocks.OrderBy(s => s.Nomenclature.VendorCode).ToList();
@@ -97,7 +97,7 @@ namespace OperationMonitoring.Controllers
         public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, string searchField, int? page)
         {
             ViewBag.CurrentFilter = searchString;
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Name" : searchField;
+            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
           
             var providers = db.Providers.ToList();
             ViewBag.Providers = providers;
@@ -218,7 +218,7 @@ namespace OperationMonitoring.Controllers
                 ViewBag.Stocks = stocks;
 
                 var provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
-                provider.Name = editName;
+                provider.Title = editName;
                 provider.Address = editAddress;
                 provider.EDRPOU = editEDRPOU;
                 db.SaveChanges();
