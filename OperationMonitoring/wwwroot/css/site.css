@@ -899,6 +899,10 @@ p {
     margin-top: 20px;
 }
 
+.form-padding {
+    padding: 20px;
+}
+
 .small-form {
     margin-top: 30px;
 }
@@ -1198,6 +1202,8 @@ td.nomenclature-list-amount{
     display: none;
 }
 
-flex-container {
-    display:flex;
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }

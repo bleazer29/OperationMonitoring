@@ -12,44 +12,47 @@
 
     <!-- INFO -->
     <div class="form-pos form-info">
-        <div class="form-info__item">
-            <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.Name)
+        <div class="form-padding">
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Name)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Name)
+                </div>
             </div>
-            <div class="form-info_data">
-                @Html.DisplayFor(model => model.Name)
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Location)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Location)
+                </div>
             </div>
-        </div>
-        <div class="form-info__item">
-            <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.Location)
-            </div>
-            <div class="form-info_data">
-                @Html.DisplayFor(model => model.Location)
-            </div>
-        </div>
-        <div class="form-info__item">
-            <div class="form-info__label">
-                Path
-            </div>
-            <div class="form-info_data">
-                @{
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    Path
+                </div>
+                <div class="form-info_data">
+                    @{
 
-                    if (storageParents.Count != 0)
-                    {
-                        <div class="storages-list">
-                            @for (int i = storageParents.Count-1; i >= 0; i--)
-                            {
-                                <a asp-controller="Storages" asp-action="Details" asp-route-id="@storageParents[i].Id">@storageParents[i].Name</a>
-                                <span>&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;</span>
-                            }
-                            <div>@Model.Name</div>
-                        </div>
+                        if (storageParents.Count != 0)
+                        {
+                            <div class="storages-list">
+                                @for (int i = storageParents.Count - 1; i >= 0; i--)
+                                {
+                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@storageParents[i].Id">@storageParents[i].Name</a>
+                                    <span>&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;</span>
+                                }
+                                <div>@Model.Name</div>
+                            </div>
+                        }
                     }
-                }
+                </div>
             </div>
+            <div class="btn btn-primary js-btn-edit">Edit information</div>
         </div>
-        <div class="btn btn-primary js-btn-edit">Edit information</div>
+       
     </div>
 
 

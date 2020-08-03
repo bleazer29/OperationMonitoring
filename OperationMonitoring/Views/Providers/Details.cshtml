@@ -13,33 +13,36 @@
 <!-- INFO -->
 <div>
     <div class="form-pos form-info">
-        <div class="form-info__item">
-            <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.Name)
+        <div class="form-padding">
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Name)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Name)
+                </div>
             </div>
-            <div class="form-info_data">
-                @Html.DisplayFor(model => model.Name)
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Address)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Address)
+                </div>
             </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.EDRPOU)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.EDRPOU)
+                </div>
+            </div>
+            <div class="btn btn-primary edit-button">Edit information</div>
         </div>
-        <div class="form-info__item">
-            <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.Address)
-            </div>
-            <div class="form-info_data">
-                @Html.DisplayFor(model => model.Address)
-            </div>
+            
         </div>
-        <div class="form-info__item">
-            <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.EDRPOU)
-            </div>
-            <div class="form-info_data">
-                @Html.DisplayFor(model => model.EDRPOU)
-            </div>
-        </div>
-        <div class="btn btn-primary edit-button">Edit information</div>
     </div>
-</div>
 
 
 <!-- EDIT FORM -->
