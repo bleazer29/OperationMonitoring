@@ -138,6 +138,7 @@
         .build();
 
     hubConnection.on("Receive", function (data) {
+        console.log('sended');
         $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
@@ -157,6 +158,7 @@
     $(".js-btn-search").click(function () {
         search = $("#searchString").val();
         hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
+        console.log('sended');
     });
 
     $(pagedList + " th a").click(function (e) {

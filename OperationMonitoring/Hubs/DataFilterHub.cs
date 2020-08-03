@@ -514,37 +514,70 @@ namespace OperationMonitoring.Hubs
             return equipment;
         }
 
-        public async Task SendStocks(string searchString, int? storageId, string searchField)
+        public async Task SendStocks(string searchString, int storageId, string searchField)
         {
-            List<Stock> stocks = db.Stocks.ToList();
+            List<Stock> stocks = new List<Stock>();
+            stocks = db.Stocks.Include(x => x.Storage)
+                .Include(x => x.Nomenclature)
+                .ThenInclude(x => x.Provider)
+                .Include(x => x.Part)
+                .ThenInclude(x => x.Status)
+                .Include(x => x.Equipment)
+                .ThenInclude(x => x.Status)
+                .ToList();
+            stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
+            var json = JsonConvert.SerializeObject(stocks);
+            await Clients.All.SendAsync("Receive", json);
+        }
+
+        private List<Storage> childrenStorages = new List<Storage>();
+
+        public List<Storage> FindStorageChildren(int storageId)
+        {
+            List<Storage> Storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            foreach (var storage in Storages)
+            {
+                if (storage.Parent != null)
+                {
+                    if(storage.Parent.Id == storageId)
+                    {
+                        childrenStorages.Add(storage);
+                        FindStorageChildren(storage.Id);
+                    }
+                }
+            }
+            return childrenStorages;
+        }
+
+        public async Task<List<Stock>> SearchStocks(string searchString, int storageId, string searchField, List<Stock> stocks)
+        {
+            List<Stock> temp = new List<Stock>();
+            if (storageId != 0)
+            {
+                childrenStorages = new List<Storage>();
+                childrenStorages.Add(db.Storages.FirstOrDefault(x => x.Id == storageId));
+                childrenStorages = FindStorageChildren(storageId);
+                foreach(var child in childrenStorages)
+                {
+                    temp.AddRange(stocks.Where(x => x.Storage.Id == child.Id && (x.Amount > 0 || x.Part.Amount > 0)).ToList());
+                }
+            }
             if (string.IsNullOrEmpty(searchString) == false)
             {
-                stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
+                switch (searchField)
+                {
+                    case "Title":
+                        temp = temp.Where(x =>
+                           x.Nomenclature.Title.Contains(searchString)
+                        || x.Equipment.Title.Contains(searchString)
+                        || x.Part.Title.Contains(searchString)).ToList();
+                        break;
+                    default:
+                        break;
+                }
             }
-            var json = JsonConvert.SerializeObject(stocks);
-            await Clients.Caller.SendAsync("Recieve", json);
+            return temp;
         }
-
-        public async Task<List<Stock>> SearchStocks(string searchString, int? storageId, string searchField, List<Stock> stocks)
-        {
-            if (storageId != null)
-            {
-                stocks = stocks.Where(x => x.Storage.Id == storageId).ToList();
-            }
-            switch (searchField)
-            {
-                case "Title":
-                    stocks = stocks.Where(x =>
-                       x.Nomenclature.Title.Contains(searchString)
-                    || x.Equipment.Title.Contains(searchString)
-                    || x.Part.Title.Contains(searchString)).ToList();
-                    break;
-                default:
-                    break;
-            }
-            return stocks;
-        }
-
 
     }
 }
