@@ -36,7 +36,7 @@
                     </div>
                 }
             </div>
-            <div class="paged-list nomenclature-table">
+            <div id ="paged-list" class="nomenclature-table">
                 <table class="table table-equipment">
                     <thead>
                         <tr>
@@ -85,6 +85,7 @@
                             </th>
                         </tr>
                     </thead>
+                    
                     @if (stocks != null)
                     {
                         @foreach (var item in stocks)
@@ -487,21 +488,13 @@
         $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
-            console.log(json[i]);
             var title = parseTitle(json[i]);
-            console.log(title);
-            var status = parseStatus(json[i]);
-            console.log(status);
-            var vendorcode = parseVendorCode(json[i]);
-            console.log(vendorcode);
-            var provider = parseProvider(json[i]);
-            console.log(provider);
-            var opertime = parseOperatingTime(json[i]);
-            console.log(opertime);
+            var status = parseStatus(json[i]);       
+            var vendorcode = parseVendorCode(json[i]);         
+            var provider = parseProvider(json[i]);    
+            var opertime = parseOperatingTime(json[i]);          
             var serialnum = parseSerialNumber(json[i]);
-            console.log(serialnum);
             var amount = parseAmount(json[i]);
-            console.log(amount);
 
             $(pagedList + " tbody").append( 
                 "<tr>" +
