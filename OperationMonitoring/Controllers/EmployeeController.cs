@@ -7,6 +7,7 @@ using OperationMonitoring.Models;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.ModelsIdentity.Security;
 using Microsoft.AspNetCore.DataProtection;
+using System.Threading.Tasks;
 
 namespace OperationMonitoring.Controllers
 {
@@ -22,28 +23,24 @@ namespace OperationMonitoring.Controllers
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
         }
 
-
         public ActionResult Index()
         {
-            return View(this.db.Employees.ToList().Select(e=> {
+            return View(db.Employees.AsNoTracking().ToList().Select(e =>
+            {
                 e.EncryptedId = protector.Protect(e.Id.ToString());
                 return e;
             }));
         }
 
+
         // GET: Employee/Details/5
         public ActionResult Details(string id)
         {
-            int employeeId = Convert.ToInt32(protector.Unprotect(id));
-            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
+            return View(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
         }
 
         // GET: Employee/Create
-        public ActionResult Create()
-        {
-
-            return View();
-        }
+        public ActionResult Create() { return View();  }
 
         // POST: Employee/Create
         [HttpPost]
@@ -55,27 +52,21 @@ namespace OperationMonitoring.Controllers
                 Employee employee = new Employee
                 {
                     BirthDate = employees.BirthDate,
-                    //Email = employees.Email,
                     FirstName = employees.FirstName,
                     LastName = employees.LastName,
                     Patronymic = employees.Patronymic
-                    //UserGUID = Convert.ToString(Guid.NewGuid())
                 };
-                this.db.Add(employee);
-                this.db.SaveChanges();
+                db.Add(employee);
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            catch {   return View();   }
         }
 
         // GET: Employee/Edit/5
         public ActionResult Edit(string id)
         {
-            int employeeId = Convert.ToInt32(protector.Unprotect(id));
-            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
+            return View(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
         }
 
         // POST: Employee/Edit/5
@@ -86,9 +77,9 @@ namespace OperationMonitoring.Controllers
             try
             {
                 employees.EncryptedId = id;
-                employees.Id = Convert.ToInt32(this.protector.Unprotect(id));
-                this.db.Entry(employees).State = EntityState.Modified;
-                this.db.SaveChanges();
+                employees.Id = Convert.ToInt32(protector.Unprotect(id));
+                db.Entry(employees).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -100,8 +91,7 @@ namespace OperationMonitoring.Controllers
         // GET: Employee/Delete/5
         public ActionResult Delete(string id)
         {
-            int employeeId = Convert.ToInt32(protector.Unprotect(id));
-            return View(this.db.Employees.ToList().Where(x => x.Id == employeeId).FirstOrDefault());
+            return View(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
         }
 
         // POST: Employee/Delete/5
@@ -111,14 +101,11 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                this.db.Employees.Remove(this.db.Employees.Where(x => x.Id == Convert.ToInt32(protector.Unprotect(id))).FirstOrDefault());
-                this.db.SaveChanges();
+                db.Employees.Remove(db.Employees.FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            catch { return View(); }
         }
     }
 }

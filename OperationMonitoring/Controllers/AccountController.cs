@@ -20,7 +20,6 @@ namespace OperationMonitoring.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private SignInManager<IdentityUser> signInManager { get; set; }
         private readonly IDataProtector protector;
-
         public AccountController(UserManager<IdentityUser> userManager, 
                                     SignInManager<IdentityUser> signInManager, 
                                     ApplicationContext db,
@@ -88,14 +87,10 @@ namespace OperationMonitoring.Controllers
                         db.SaveChanges();
                    
                         var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
                         EmailServices emailService = new EmailServices();
                         await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
-                        //var result1 = await userManager.ConfirmEmailAsync(user, code);  //первое подтверждение по умолчанию
-                        //if (result1.Succeeded)
-                        //{
-                        //    return View();
-                        //}
+                       
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             return RedirectToAction("ListUsers", "Admin");
@@ -183,17 +178,11 @@ namespace OperationMonitoring.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+        public IActionResult AccessDenied() {  return View();  }
 
         [HttpGet]
         [Authorize]
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
+        public IActionResult ChangePassword()  {   return View(); }
 
         [HttpPost]
         [Authorize]
@@ -226,10 +215,7 @@ namespace OperationMonitoring.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
+        public IActionResult ForgotPassword()  {  return View();  }
 
 
         [HttpPost]
@@ -243,7 +229,7 @@ namespace OperationMonitoring.Controllers
                     var user = await userManager.FindByEmailAsync(model.Email);
                     if (user == null || !await userManager.IsEmailConfirmedAsync(user)) return View("ForgotPasswordConfirmation");
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                    var callbackUrl = Url.Action("ResetPassword", "Account", new { token = token, email = model.Email }, Request.Scheme);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { token, email = model.Email }, Request.Scheme);
                     EmailServices emailService = new EmailServices();
                     await emailService.SendEmailAsync(model.Email, "Reset Password", $"Для сброса пароля пройдите по ссылке: <a href='{callbackUrl}'>link</a>");
                     return View("ForgotPasswordConfirmation");
@@ -270,7 +256,6 @@ namespace OperationMonitoring.Controllers
                 if (ModelState.IsValid)
                 {
                     var user = await userManager.FindByEmailAsync(model.Email);
-
                     if (user != null)
                     {
                         var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
@@ -284,9 +269,9 @@ namespace OperationMonitoring.Controllers
                     }
                     return View("ResetPasswordConfirmation");
                 }
-                return View(model);
             }
-            catch  { return View(model);  }
+            catch  { }
+            return View(model);
         }
 
 
@@ -296,9 +281,9 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                var userId = this.userManager.GetUserId(HttpContext.User);
+                var userId = userManager.GetUserId(HttpContext.User);
                 if (userId == null) return View();
-                else return View(await db.Employees.FirstOrDefaultAsync(x => x.IdentityUser.Id.Equals(userId)));
+                else return View(await db.Employees.AsNoTracking().FirstOrDefaultAsync(x => x.IdentityUser.Id.Equals(userId)));
             }
             catch { return View(); }
         }
@@ -310,13 +295,12 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                this.db.Entry(employees).State = EntityState.Modified;
-                await this.db.SaveChangesAsync();
-                return RedirectToAction(nameof(EditProfile));
+                db.Entry(employees).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
             }
-            catch { return View(); }
+            catch { return Content("Your data not save!"); }
         }
-
 
     }
 }

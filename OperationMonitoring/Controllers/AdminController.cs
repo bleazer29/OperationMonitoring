@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
 
 namespace OperationMonitoring.Controllers
@@ -23,9 +24,9 @@ namespace OperationMonitoring.Controllers
         {
             return View();
         }
-        public IActionResult ListUsers()
+        public async Task<IActionResult> ListUsers()
         {
-            return View(userManager.Users);
+            return View(await userManager.Users.AsNoTracking().ToListAsync());
         }
 
         [HttpGet]
@@ -72,6 +73,7 @@ namespace OperationMonitoring.Controllers
                     user.UserName = model.UserName;
                     var result = await userManager.UpdateAsync(user);
                     if (result.Succeeded)  return RedirectToAction("ListUsers");
+                    
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
@@ -124,17 +126,14 @@ namespace OperationMonitoring.Controllers
                 }
                 return View(model);
             }
-            catch
-            {
-                return View(model);
-            }
+            catch { return View(model); }
             
         }
 
         [HttpGet]
-        public IActionResult ListRoles()
+        public async Task<IActionResult> ListRoles()
         {
-            return View(roleManager.Roles);
+            return View(await roleManager.Roles.AsNoTracking().ToListAsync());
         }
 
         [HttpGet]
@@ -153,16 +152,13 @@ namespace OperationMonitoring.Controllers
                     Id = role.Id,
                     RoleName = role.Name
                 };
-                foreach (var user in userManager.Users)
+                foreach (var user in userManager.Users) 
                 {
                     if (await userManager.IsInRoleAsync(user, role.Name)) model.Users.Add(user.UserName);
                 }
                 return View(model);
             }
-            catch
-            {
-                return View();
-            }
+            catch { return View(); }
         }
 
         [HttpPost]
