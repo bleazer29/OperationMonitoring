@@ -21,7 +21,7 @@ namespace OperationMonitoring.Hubs
         }
 
         public async Task SendCounterparties(string searchString, int sortField, bool isAscendingSort)
-        {
+        {   
             List<Counterparty> counterparties = db.Counterparties.ToList();
             if (string.IsNullOrEmpty(searchString) == false)
             {
@@ -318,7 +318,8 @@ namespace OperationMonitoring.Hubs
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sortField">1 - Id, 2 - Counterparty name, 3 - Agreement number, 4 - Well name</param>
+        /// <param name="sortField">1 - Id, 2 - Status, 3 - Department, 4 - Category,
+        /// 5 - Type, 6 - Title, 7 - DiameterInner, 8 - DiameterOuter</param>
         /// <param name="isAscending">ascending or descending sort</param>
         /// <param name="counterparties">list to sort</param>
         /// <returns></returns>
@@ -357,6 +358,11 @@ namespace OperationMonitoring.Hubs
             else if (sortField == 7)
             {
                 if (isAscending) equipment = equipment.OrderBy(x => x.DiameterInner).ToList();
+                else equipment = equipment.OrderByDescending(x => x.DiameterInner).ToList();
+            }
+            else if (sortField == 8)
+            {
+                if (isAscending) equipment = equipment.OrderBy(x => x.DiameterOuter).ToList();
                 else equipment = equipment.OrderByDescending(x => x.DiameterOuter).ToList();
             }
             return equipment;

@@ -38,7 +38,7 @@ namespace OperationMonitoring.Models
         public int DiameterOuter { get; set; }
 
         [Display(Name = "Diameter Inner")]
-        [Required]
+        [Required]  
         public int DiameterInner { get; set; }
 
         [Display(Name = "Length")]

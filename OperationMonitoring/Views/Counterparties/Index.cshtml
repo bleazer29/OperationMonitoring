@@ -167,10 +167,9 @@
     });
 
     document.getElementById("signal-search-btn").addEventListener("click", function (e) {
-        const item = document.getElementById("searchTB");
         hubConnection.invoke("CounterpartySearch", searchstring);
     });
 
     hubConnection.start();
 </script>
-
+    
