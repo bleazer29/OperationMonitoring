@@ -36,7 +36,7 @@
                     </div>
                 }
             </div>
-            <div class="paged-list nomenclature-table">
+            <div id="paged-list" class="nomenclature-table">
                 <table class="table">
                     <thead>
                         <tr>
@@ -249,8 +249,10 @@
 
 <script>
     var search = "";
+    var searchField = "Title"; // default - "Title"
     var sortField = "Title"; // default - "Title"
     var sortAsc = true; // default
+    var storageId = 0;
 
     var pagedList = "#paged-list";
     GenList(pagedList);
@@ -262,7 +264,10 @@
     $(function () {
         $('#storagesTreeView').on("select_node.jstree", function (e, data) {
             search = $("#searchString").val();
-            hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
+            console.log(typeof storageId);
+            storageId = Number(data.selected);
+            console.log(typeof storageId);
+            hubConnection.invoke("SendStocks", search, storageId, searchField);
         });
     });
 
@@ -326,11 +331,36 @@
         }
     }
 
+    function parseSerialNumber(jsonObj) {
+        if (jsonObj.Equipment.SerialNum == null) {
+            serialNumberHTML = " ";
+        }
+        else {
+            serialNumberHTML = jsonObj.Equipment.SerialNum;
+        }
+    }
+
+    function parseAmount(jsonObj) {
+        if (jsonObj.Amount == null && jsonObj.Part.Amount == null) {
+            amountHTML = "1";
+        }
+        else {
+            if (jsonObj.Amount == null) {
+                amountHTML = jsonObj.Part.Amount;
+            }
+            if (jsonObj.Part.Amount == null) {
+                amountHTML = jsonObj.Amount;
+            }
+        }
+    }
+
     var titleHTML;
     var statusHTML;
     var vendorCodeHTML;
     var providerHTML;
     var operatingTimeHTML;
+    var serialNumberHTML;
+    var amountHTML;
 
     hubConnection.on("Receive", function (data) {
         $(pagedList + " tbody").empty();
@@ -341,12 +371,14 @@
             parseVendorCode(json[i]);
             parseProvider(json[i]);
             parseOperatingTime(json[i]);
+            parseSerialNumber(json[i]);
 
             $(pagedList + " tbody").append(
                 "<tr>" +
-                "<td>" + titleHTML  + "</td>" +
                 "<td>" + statusHTML + "</td>" +
                 "<td>" + vendorCodeHTML + "</td>" +
+                "<td>" + serialNumberHTML + "</td>" +
+                "<td>" + titleHTML  + "</td>" +
                 "<td>" + providerHTML + "</td>" +
                 "<td>" + operatingTimeHTML + "</td>" +
                 "<td> </td>" +

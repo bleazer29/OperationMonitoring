@@ -514,37 +514,37 @@ namespace OperationMonitoring.Hubs
             return equipment;
         }
 
-        public async Task SendStocks(string searchString, int? storageId, string searchField)
+        public async Task SendStocks(string searchString, int storageId, string searchField)
         {
-            List<Stock> stocks = db.Stocks.ToList();
-            if (string.IsNullOrEmpty(searchString) == false)
-            {
-                stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
-            }
+            List<Stock> stocks = new List<Stock>();
+            stocks = db.Stocks.Include(x => x.Storage).Include(x => x.Nomenclature).Include(x => x.Part).Include(x => x.Equipment).ToList();
+            stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
             var json = JsonConvert.SerializeObject(stocks);
             await Clients.Caller.SendAsync("Recieve", json);
         }
 
-        public async Task<List<Stock>> SearchStocks(string searchString, int? storageId, string searchField, List<Stock> stocks)
+        public async Task<List<Stock>> SearchStocks(string searchString, int storageId, string searchField, List<Stock> stocks)
         {
-            if (storageId != null)
+            if (storageId != 0)
             {
-                stocks = stocks.Where(x => x.Storage.Id == storageId).ToList();
+                stocks = stocks.Where(x => x.Storage.Id == storageId && (x.Amount > 0 || x.Part.Amount > 0)).ToList();
             }
-            switch (searchField)
+            if (string.IsNullOrEmpty(searchString) == false)
             {
-                case "Title":
-                    stocks = stocks.Where(x =>
-                       x.Nomenclature.Title.Contains(searchString)
-                    || x.Equipment.Title.Contains(searchString)
-                    || x.Part.Title.Contains(searchString)).ToList();
-                    break;
-                default:
-                    break;
+                switch (searchField)
+                {
+                    case "Title":
+                        stocks = stocks.Where(x =>
+                           x.Nomenclature.Title.Contains(searchString)
+                        || x.Equipment.Title.Contains(searchString)
+                        || x.Part.Title.Contains(searchString)).ToList();
+                        break;
+                    default:
+                        break;
+                }
             }
             return stocks;
         }
-
 
     }
 }
