@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OperationMonitoring.Data;
 
 namespace OperationMonitoring.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200729052709_WED-29-07--01")]
+    partial class WED290701
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -382,9 +384,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Patronymic")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PositionId")
@@ -764,7 +763,7 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Common maintenance"
+                            Name = "Write-off"
                         },
                         new
                         {
@@ -773,8 +772,8 @@ namespace OperationMonitoring.Migrations
                         },
                         new
                         {
-                            Id = 3,
-                            Name = "Additional meintenance"
+                            Id = 4,
+                            Name = "Common maintenance"
                         });
                 });
 
@@ -863,9 +862,6 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("EstimateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsOpen")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");
 
@@ -925,9 +921,6 @@ namespace OperationMonitoring.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
 
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
@@ -1090,21 +1083,18 @@ namespace OperationMonitoring.Migrations
                         {
                             Id = 1,
                             Address = "Address1",
-                            EDRPOU = "32855961",
                             Name = "Provider1"
                         },
                         new
                         {
                             Id = 2,
                             Address = "8 Wang Hoi Road, Kowloon Bay, Hong Kong",
-                            EDRPOU = "38377143",
                             Name = "New Provider"
                         },
                         new
                         {
                             Id = 3,
                             Address = "148 Wing Lok Street, Sheung Wan, Hong Kong",
-                            EDRPOU = "47855961",
                             Name = "AIP Company"
                         });
                 });
@@ -1125,61 +1115,12 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsageTypeId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsageTypeId");
-
                     b.ToTable("Specifications");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Height = 0.0,
-                            OperatingTime = 12000,
-                            Weight = 3000.0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Height = 30.0,
-                            OperatingTime = 9000,
-                            Weight = 30.0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Height = 20.0,
-                            OperatingTime = 5000,
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Height = 0.0,
-                            OperatingTime = 12000,
-                            Weight = 200.0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Height = 40.0,
-                            OperatingTime = 12000,
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Height = 0.0,
-                            OperatingTime = 10000,
-                            Weight = 100.0
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
@@ -1265,13 +1206,11 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Location = "Kyiv, Ukraine",
                             Name = "Main Building"
                         },
                         new
                         {
                             Id = 2,
-                            Location = "Kyiv, Ukraine",
                             Name = "Side Building"
                         },
                         new
@@ -1325,9 +1264,6 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
@@ -1343,7 +1279,10 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StockId")
+                    b.Property<int?>("PartId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StorageFromId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StorageToId")
@@ -1355,38 +1294,13 @@ namespace OperationMonitoring.Migrations
 
                     b.HasIndex("HistoryTypeId");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("StorageFromId");
 
                     b.HasIndex("StorageToId");
 
                     b.ToTable("StorageHistory");
-                });
-
-            modelBuilder.Entity("OperationMonitoring.Models.UsageType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsageTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "General"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Special"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
@@ -1664,13 +1578,6 @@ namespace OperationMonitoring.Migrations
                         .HasForeignKey("PresetId");
                 });
 
-            modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
-                {
-                    b.HasOne("OperationMonitoring.Models.UsageType", "UsageType")
-                        .WithMany()
-                        .HasForeignKey("UsageTypeId");
-                });
-
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
@@ -1707,9 +1614,13 @@ namespace OperationMonitoring.Migrations
                         .WithMany()
                         .HasForeignKey("HistoryTypeId");
 
-                    b.HasOne("OperationMonitoring.Models.Stock", "Stock")
+                    b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
-                        .HasForeignKey("StockId");
+                        .HasForeignKey("PartId");
+
+                    b.HasOne("OperationMonitoring.Models.Storage", "StorageFrom")
+                        .WithMany()
+                        .HasForeignKey("StorageFromId");
 
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
