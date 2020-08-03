@@ -88,19 +88,19 @@ namespace OperationMonitoring.Controllers
                         db.SaveChanges();
                    
                         var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                        //var callbackUrl = Url.Action("ConfirmEmail", "Account",new { userId = user.Id, code = code },protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
-                        //EmailServices emailService = new EmailServices();
-                        //await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
-                        var result1 = await userManager.ConfirmEmailAsync(user, code);  //первое подтверждение по умолчанию
-                        if (result1.Succeeded)
-                        {
-                            return View();
-                        }
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
+                        EmailServices emailService = new EmailServices();
+                        await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                        //var result1 = await userManager.ConfirmEmailAsync(user, code);  //первое подтверждение по умолчанию
+                        //if (result1.Succeeded)
+                        //{
+                        //    return View();
+                        //}
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             return RedirectToAction("ListUsers", "Admin");
                         }
-                        //return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                        return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
                        
                     }
                     else
