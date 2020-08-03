@@ -342,12 +342,10 @@
             </div>
             <div id="storagesTreeView">
 
-            </div>
         </div>
-
     </div>
 
-
+</div>
 
 <script>
     var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
@@ -377,14 +375,15 @@
                 };
             }
         }
-
     });
 </script>
 
 <script>
     var search = "";
+    var searchField = "Title"; // default - "Title"
     var sortField = "Title"; // default - "Title"
     var sortAsc = true; // default
+    var storageId = 0;
 
     var pagedList = "#paged-list";
     GenList(pagedList);
@@ -393,101 +392,139 @@
         .withUrl("/data")
         .build();
 
-    $(function () {
-        $('#storagesTreeView').on("select_node.jstree", function (e, data) {
-            search = $("#searchString").val();
-            hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
-        });
-    });
 
     function parseTitle(jsonObj) {
-        if (jsonObj.Part.Title == null && jsonObj.Equipment.Title) {
-            titleHTML = " ";
+        var titleHTML;
+        if (jsonObj.Nomenclature == null) {
+            if (jsonObj.Part == null) {
+                if (jsonObj.Equipment == null) {
+                    titleHTML = " ";
+                }
+                else titleHTML = jsonObj.Equipment.Title;
+            }
+            else titleHTML = jsonObj.Part.Title;
         }
         else {
-            if (jsonObj.Part.Title == null) {
-                titleHTML = jsonObj.Part.Title;
-            }
-            if (jsonObj.Equipment.Title == null) {
-                titleHTML = jsonObj.Equipment.Title;
-            }
+            titleHTML = jsonObj.Nomenclature.Title;
         }
+        return titleHTML;
     }
 
     function parseStatus(jsonObj) {
-        if (jsonObj.Part.Status.Title == null && jsonObj.Equipment.Status.Title == null) {
-            statusHTML = " ";
-        }
-        else {
-            if (jsonObj.Part.Status.Title == null) {
-                statusHTML = jsonObj.Equipment.Status.Title;
+        var statusHTML;
+        if (jsonObj.Part == null) {
+            if (jsonObj.Equipment == null) {
+                statusHTML = " ";
             }
             else {
-                statusHTML = jsonObj.Part.Status.Title;
+                statusHTML = jsonObj.Equipment.Status.Title;
             }
         }
+        else statusHTML = jsonObj.Part.Status.Title;
+        return statusHTML;
     }
 
     function parseVendorCode(jsonObj) {
-        if (jsonObj.Nomenclature.VendorCode == null) {
+        var vendorCodeHTML;
+        if (jsonObj.Nomenclature == null) {
             vendorCodeHTML = " ";
         }
         else {
             vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
         }
+        return vendorCodeHTML;
     }
 
     function parseProvider(jsonObj) {
-        if (jsonObj.Provider.Title == null) {
+        var providerHTML;
+        if (jsonObj.Nomenclature == null) {
             providerHTML = " ";
         }
         else {
-            providerHTML = jsonObj.Provider.Title;
+            providerHTML = jsonObj.Nomenclature.Provider.Title;
         }
+        return providerHTML;
     }
 
     function parseOperatingTime(jsonObj) {
-        if (jsonObj.Part.OperatingTime == null && jsonObj.Equipment.OperatingTime == null) {
-            operatingTimeHTML = " ";
-        }
-        else {
-            if (jsonObj.Part.OperatingTime == null) {
-                operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+        var operatingTimeHTML;
+        if (jsonObj.Part == null) {
+            if (jsonObj.Equipment == null) {
+                operatingTimeHTML = " ";
             }
-            if (jsonObj.Equipment.OperatingTime == null) {
-                operatingTimeHTML = jsonObj.Part.OperatingTime;
-            }
+            else operatingTimeHTML = jsonObj.Equipment.OperatingTime;
         }
+        else operatingTimeHTML = jsonObj.Part.OperatingTime;
+        return operatingTimeHTML;
     }
 
-    var titleHTML;
-    var statusHTML;
-    var vendorCodeHTML;
-    var providerHTML;
-    var operatingTimeHTML;
+    function parseSerialNumber(jsonObj) {
+        var serialNumberHTML;
+        if (jsonObj.Equipment == null) {
+            serialNumberHTML = " ";
+        }
+        else {
+            serialNumberHTML = jsonObj.Equipment.SerialNum;
+        }
+        return serialNumberHTML;
+    }
+
+    function parseAmount(jsonObj) {
+        var amountHTML;
+        if (jsonObj.Amount == null) {
+            if (jsonObj.Part == null) {
+                amountHTML = Number(1);
+            }
+            else amountHTML = Number(jsonObj.Part.Amount);
+        }
+        else amountHTML = Number(jsonObj.Amount);
+
+        return amountHTML;
+    }
 
     hubConnection.on("Receive", function (data) {
+        console.log('recieved');
         $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
-            parseTitle(json[i]);
-            parseStatus(json[i]);
-            parseVendorCode(json[i]);
-            parseProvider(json[i]);
-            parseOperatingTime(json[i]);
+            console.log(json[i]);
+            var title = parseTitle(json[i]);
+            console.log(title);
+            var status = parseStatus(json[i]);
+            console.log(status);
+            var vendorcode = parseVendorCode(json[i]);
+            console.log(vendorcode);
+            var provider = parseProvider(json[i]);
+            console.log(provider);
+            var opertime = parseOperatingTime(json[i]);
+            console.log(opertime);
+            var serialnum = parseSerialNumber(json[i]);
+            console.log(serialnum);
+            var amount = parseAmount(json[i]);
+            console.log(amount);
 
-            $(pagedList + " tbody").append(
+            $(pagedList + " tbody").append( 
                 "<tr>" +
-                "<td>" + titleHTML  + "</td>" +
-                "<td>" + statusHTML + "</td>" +
-                "<td>" + vendorCodeHTML + "</td>" +
-                "<td>" + providerHTML + "</td>" +
-                "<td>" + operatingTimeHTML + "</td>" +
+                "<td>" + status + "</td>" +
+                "<td>" + vendorcode + "</td>" +
+                "<td>" + serialnum + "</td>" +
+                "<td>" + title + "</td>" +
+                "<td>" + provider + "</td>" +
+                "<td>" + opertime + "</td>" +
+                "<td>" + amount + "</td>" +
                 "<td> </td>" +
                 "</tr>"
             );
         }
         GenList(pagedList);
+    });
+
+    $(function () {
+        $('#storagesTreeView').on("select_node.jstree", function (e, data) {
+            search = $("#searchString").val();
+            storageId = Number(data.selected);
+            hubConnection.invoke("SendStocks", search, storageId, searchField);
+        });
     });
 
     hubConnection.start();

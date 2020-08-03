@@ -42,7 +42,6 @@ namespace OperationMonitoring
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(60);
             });
         }
 
