@@ -103,6 +103,8 @@
                                             }
                                         }
                                     </td>
+
+
                                     <td>
                                         @{
                                             if (item.Nomenclature != null)
@@ -187,7 +189,14 @@
                                     <td>
                                         <a class="btn" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Id">Details</a>
                                     </td>
-                                    <td colspan="7">
+
+
+
+
+
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
                                         <p class="time-text">
                                             Operating time left:
                                             <strong class="hours">
@@ -230,10 +239,11 @@
                                         </p>
                                     </td>
                                 </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                           
+                             }
+                         }
+                        </tbody>
+                    </table>
                 <!-- PAGES -->
                 <div class="simple-pagination">
                     <div class="simple-pagination-first"></div>
