@@ -17,9 +17,9 @@
             <span asp-validation-for="VendorCode" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
         </div>
     </div>
     <div class="form-pos">
@@ -59,7 +59,7 @@
                             int i = 0;
                             while (i < providers.Count)
                             {
-                                <option value="@providers[i].Id">@providers[i].Name</option>
+                                <option value="@providers[i].Id">@providers[i].Title</option>
                                 i++;
                             }
                         }
@@ -69,9 +69,9 @@
             </div>
             <div class="provider-form" name="provider-form-fields">
                 <div class="form-group">
-                    <label asp-for="@Model.Provider.Name" class="control-label"></label>
+                    <label asp-for="@Model.Provider.Title" class="control-label"></label>
                     <input name="providerName" class="form-control" />
-                    <span asp-validation-for="@Model.Provider.Name" class="text-danger"></span>
+                    <span asp-validation-for="@Model.Provider.Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Provider.Address" class="control-label"></label>

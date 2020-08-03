@@ -1,11 +1,11 @@
 ﻿@model OperationMonitoring.Models.Nomenclature
 
-<div class="content-heading">   
+<div class="content-heading">
     <h4>
         Information about nomenclature -
-        @Html.DisplayFor(model => model.Name)
+        @Html.DisplayFor(model => model.Title)
     </h4>
-    <a class="btn btn-primary" asp-action="Index">Back to List</a>   
+    <a class="btn btn-primary" asp-action="Index">Back to List</a>
 </div>
 
 <!-- INFO -->
@@ -16,10 +16,10 @@
         </div>
         <div class="form-info__item">
             <div class="form-info__label">
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Title)
             </div>
             <div class="form-info_data">
-                @Html.DisplayFor(model => model.Name)
+                @Html.DisplayFor(model => model.Title)
             </div>
         </div>
         <div class="form-info__item">
@@ -76,7 +76,7 @@
             {
                 <div class="form-info_data">
                     <a asp-controller="Providers" asp-action="Details" asp-route-id="@Model.Provider.Id">
-                        @Model.Provider.Name,
+                        @Model.Provider.Title,
                         <br /> @Model.Provider.Address,
                         <br /> @Model.Provider.EDRPOU
                     </a>
@@ -95,9 +95,9 @@
         <div class="form-pos">
             <label class="form-info__label">General information:</label>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input name="editName" required value="@Model.Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Title" class="control-label"></label>
+                <input name="editName" required value="@Model.Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="VendorCode" class="control-label"></label>
@@ -172,7 +172,7 @@
                                 int i = 0;
                                 while (i < providers.Count)
                                 {
-                                    <option value="@providers[i].Id">@providers[i].Name</option>
+                                    <option value="@providers[i].Id">@providers[i].Title</option>
                                     i++;
                                 }
                             }
@@ -182,9 +182,9 @@
                 </div>
                 <div class="provider-form" name="provider-form-fields">
                     <div class="form-group">
-                        <label asp-for="@Model.Provider.Name" class="control-label"></label>
+                        <label asp-for="@Model.Provider.Title" class="control-label"></label>
                         <input name="providerName" class="form-control" />
-                        <span asp-validation-for="@Model.Provider.Name" class="text-danger"></span>
+                        <span asp-validation-for="@Model.Provider.Title" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="@Model.Provider.Address" class="control-label"></label>

@@ -4,7 +4,7 @@
 <div class="content-heading"> 
     <h4>
         Information about provider -
-        @Html.DisplayFor(model => model.Name)
+        @Html.DisplayFor(model => model.Title)
     </h4>
     <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>   
 </div>
@@ -16,10 +16,10 @@
         <div class="form-padding">
             <div class="form-info__item">
                 <div class="form-info__label">
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Title)
                 </div>
                 <div class="form-info_data">
-                    @Html.DisplayFor(model => model.Name)
+                    @Html.DisplayFor(model => model.Title)
                 </div>
             </div>
             <div class="form-info__item">
@@ -37,12 +37,11 @@
                 <div class="form-info_data">
                     @Html.DisplayFor(model => model.EDRPOU)
                 </div>
-            </div>
+            </div> 
             <div class="btn btn-primary edit-button">Edit information</div>
-        </div>
-            
-        </div>
+        </div>         
     </div>
+</div>
 
 
 <!-- EDIT FORM -->
@@ -51,9 +50,9 @@
         <form asp-controller="Providers" asp-action="EditProvider" method="post" asp-route-providerId="@Model.Id">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input name="editName" required value="@Model.Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Title" class="control-label"></label>
+                <input name="editName" required value="@Model.Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
@@ -104,7 +103,7 @@
                     </td>
                     <td>
                         <a asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">
-                            @item.Nomenclature.Name
+                            @item.Nomenclature.Title
                         </a>
                     </td>
 
@@ -114,7 +113,7 @@
                                 var storage = item.Storage;
                                 while (storage != null)
                                 {
-                                    @storage.Name
+                                    @storage.Title
                                     if (storage.Parent != null)
                                     {
                                         <br />
@@ -144,7 +143,7 @@
 
 <script>
     $(".edit-button").click(function () {
-        $(this).parent().parent().hide().next().fadeIn();
+        $(this).parent().parent().parent().hide().next().fadeIn();
     });
 </script>
 

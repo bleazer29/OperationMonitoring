@@ -62,7 +62,7 @@ namespace OperationMonitoring.Controllers
             try
             {
                 var storage = db.Storages.FirstOrDefault(x => x.Id == storageId);
-                storage.Name = editName;
+                storage.Title = editName;
                 storage.Location = editAddress;
                 storage.ParentId = parentId;
                 db.SaveChanges();

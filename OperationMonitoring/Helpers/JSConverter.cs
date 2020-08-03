@@ -15,10 +15,5 @@ namespace OperationMonitoring.Helpers
             return JsonConvert.SerializeObject(value);
         }
 
-        public static string SerializeStoragesToTreeView(List<Storage> value)
-        {
-
-            return JsonConvert.SerializeObject(value);
-        }
     }
 }

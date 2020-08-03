@@ -3,7 +3,7 @@
 <div class="content-heading">
     <h4>
         Information about storage -
-        @Html.DisplayFor(model => model.Name)
+        @Html.DisplayFor(model => model.Title)
     </h4>
     <a class="btn btn-primary btn-right" asp-action="Index">Back to List</a>
 </div>
@@ -15,10 +15,10 @@
         <div class="form-padding">
             <div class="form-info__item">
                 <div class="form-info__label">
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Title)
                 </div>
                 <div class="form-info_data">
-                    @Html.DisplayFor(model => model.Name)
+                    @Html.DisplayFor(model => model.Title)
                 </div>
             </div>
             <div class="form-info__item">
@@ -41,10 +41,10 @@
                             <div class="storages-list">
                                 @for (int i = storageParents.Count - 1; i >= 0; i--)
                                 {
-                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@storageParents[i].Id">@storageParents[i].Name</a>
+                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@storageParents[i].Id">@storageParents[i].Title</a>
                                     <span>&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;</span>
                                 }
-                                <div>@Model.Name</div>
+                                <div>@Model.Title</div>
                             </div>
                         }
                     }
@@ -62,9 +62,9 @@
             <form asp-controller="Storages" asp-action="EditStorage" method="post" asp-route-storageId="@Model.Id">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input name="editName" required value="@Model.Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="Title" class="control-label"></label>
+                    <input name="editName" required value="@Model.Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Location" class="control-label"></label>
@@ -87,7 +87,7 @@
                                         if (build.ParentId == null)
                                         {
                                             if (Model.Id != build.Id)
-                                            { <option value="@build.Id">@build.Name</option>}
+                                            { <option value="@build.Id">@build.Title</option>}
                                         }
                                         listTemp.Add(@build.Id);
                                     }
@@ -114,7 +114,7 @@
                                                 {
                                                     if (Model.Id != build.Id)
                                                     {
-                                                        <option value="@build.Id">@build.Name</option>
+                                                        <option value="@build.Id">@build.Title</option>
                                                     } 
                                                 }
                                             }

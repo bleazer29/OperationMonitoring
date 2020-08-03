@@ -66,13 +66,13 @@
                             @Html.DisplayFor(modelItem => item.VendorCode)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Name)
+                            @Html.DisplayFor(modelItem => item.Title)
                         </td>
                         <td>
                             @if (item.Provider != null)
                             {
                                 <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Provider.Id">
-                                    @Html.DisplayFor(modelItem => item.Provider.Name)
+                                    @Html.DisplayFor(modelItem => item.Provider.Title)
                                 </a>
                             }
                         </td>

@@ -28,7 +28,7 @@ namespace OperationMonitoring.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
@@ -204,13 +204,13 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "LoginProvider", "Title");
+                    b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
                 });
@@ -236,6 +236,9 @@ namespace OperationMonitoring.Migrations
 
                     b.Property<int?>("DocId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -629,17 +632,17 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Write-off"
+                            Title = "Write-off"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Transportation"
+                            Title = "Transportation"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Supply"
+                            Title = "Supply"
                         });
                 });
 
@@ -764,17 +767,17 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Common maintenance"
+                            Title = "Common maintenance"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Outer meintenance"
+                            Title = "Outer meintenance"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Additional meintenance"
+                            Title = "Additional meintenance"
                         });
                 });
 
@@ -785,14 +788,14 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ProviderId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SpecificationId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VendorCode")
                         .HasColumnType("nvarchar(max)");
@@ -809,32 +812,32 @@ namespace OperationMonitoring.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Motor"
+                            Title = "Motor"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Spacer"
+                            Title = "Spacer"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Ring"
+                            Title = "Ring"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Shaft"
+                            Title = "Shaft"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Ring"
+                            Title = "Ring"
                         },
                         new
                         {
                             Id = 6,
-                            Name = "Shaft"
+                            Title = "Shaft"
                         });
                 });
 
@@ -949,9 +952,6 @@ namespace OperationMonitoring.Migrations
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("SerialNum")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
@@ -1091,21 +1091,21 @@ namespace OperationMonitoring.Migrations
                             Id = 1,
                             Address = "Address1",
                             EDRPOU = "32855961",
-                            Name = "Provider1"
+                            Title = "Provider1"
                         },
                         new
                         {
                             Id = 2,
                             Address = "8 Wang Hoi Road, Kowloon Bay, Hong Kong",
                             EDRPOU = "38377143",
-                            Name = "New Provider"
+                            Title = "New Provider"
                         },
                         new
                         {
                             Id = 3,
                             Address = "148 Wing Lok Street, Sheung Wan, Hong Kong",
                             EDRPOU = "47855961",
-                            Name = "AIP Company"
+                            Title = "AIP Company"
                         });
                 });
 
@@ -1249,11 +1249,11 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1266,55 +1266,55 @@ namespace OperationMonitoring.Migrations
                         {
                             Id = 1,
                             Location = "Kyiv, Ukraine",
-                            Name = "Main Building"
+                            Title = "Main Building"
                         },
                         new
                         {
                             Id = 2,
                             Location = "Kyiv, Ukraine",
-                            Name = "Side Building"
+                            Title = "Side Building"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Floor 1",
-                            ParentId = 1
+                            ParentId = 1,
+                            Title = "Floor 1"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Floor 2",
-                            ParentId = 2
+                            ParentId = 2,
+                            Title = "Floor 2"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Floor 3",
-                            ParentId = 1
+                            ParentId = 1,
+                            Title = "Floor 3"
                         },
                         new
                         {
                             Id = 6,
-                            Name = "Room 4",
-                            ParentId = 3
+                            ParentId = 3,
+                            Title = "Room 4"
                         },
                         new
                         {
                             Id = 7,
-                            Name = "Room 5",
-                            ParentId = 4
+                            ParentId = 4,
+                            Title = "Room 5"
                         },
                         new
                         {
                             Id = 8,
-                            Name = "Room 6",
-                            ParentId = 5
+                            ParentId = 5,
+                            Title = "Room 6"
                         },
                         new
                         {
                             Id = 9,
-                            Name = "Room 7",
-                            ParentId = 4
+                            ParentId = 4,
+                            Title = "Room 7"
                         });
                 });
 

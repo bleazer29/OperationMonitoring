@@ -53,7 +53,7 @@
                 <div class="selected-parts__item-provider">
                     @if (@item.Nomenclature.Provider != null)
                     {
-                        @item.Nomenclature.Provider.Name
+                        @item.Nomenclature.Provider.Title
                     }
                     else
                     {
@@ -61,7 +61,7 @@
                     }
                 </div>
                 <div class="selected-parts__item-title">
-                    @item.Nomenclature.Name
+                    @item.Nomenclature.Title
                     @if (@item.Nomenclature.Specification != null)
                     {
                         <p>
@@ -175,7 +175,7 @@
                     <td>
                         @if (item.Provider != null)
                         {
-                            @item.Provider.Name
+                            @item.Provider.Title
                         }
                         else
                         {
@@ -183,7 +183,7 @@
                         }
                     </td>
                     <td>
-                        @item.Name
+                        @item.Title
                         @if (@item.Specification != null)
                         {
                             <p>

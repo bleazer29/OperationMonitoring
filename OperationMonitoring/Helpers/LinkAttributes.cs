@@ -8,9 +8,5 @@ namespace OperationMonitoring.Helpers
     public class LinkAttributes
     {
         public string href { get; set; }
-        public LinkAttributes()
-        {
-
-        }
     }
 }

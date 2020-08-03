@@ -164,10 +164,23 @@ namespace OperationMonitoring.Controllers
                 var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == nomenclatureId);
                 nomenclature.Title = editName;
                 nomenclature.VendorCode = editVendorCode;
-                if (editHeight !=null) nomenclature.Specification.Height = (double)editHeight;
-                if (editWeight != null) nomenclature.Specification.Weight = (double)editWeight;
-                if (editOperatingTime != null) nomenclature.Specification.OperatingTime = (int)editOperatingTime;
-                nomenclature.Specification.Material = editMaterial;
+                if (nomenclature.Specification == null)
+                {
+                    Specification spec = new Specification();
+                    if (editHeight != null) spec.Height = (double)editHeight;
+                    if (editWeight != null) spec.Weight = (double)editWeight;
+                    if (editOperatingTime != null) spec.OperatingTime = (int)editOperatingTime;
+                    spec.Material = editMaterial;
+                    db.Specifications.Add(spec);
+                    nomenclature.Specification = spec;
+                }
+                else
+                {
+                    if (editHeight != null) nomenclature.Specification.Height = (double)editHeight;
+                    if (editWeight != null) nomenclature.Specification.Weight = (double)editWeight;
+                    if (editOperatingTime != null) nomenclature.Specification.OperatingTime = (int)editOperatingTime;
+                    nomenclature.Specification.Material = editMaterial;
+                }
                 int providerId = int.Parse(provider);
                 if (providerId == -1)
                 {
