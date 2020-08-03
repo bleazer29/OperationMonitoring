@@ -22,11 +22,15 @@ namespace OperationMonitoring.Controllers
         }
 
         // GET: StoragesController
-        public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, string searchField, int? page)
+        public ActionResult Index()
         {
-            ViewBag.CurrentFilter = searchString;
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
-
+            //ViewBag.CurrentFilter = searchString;
+            //ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
+            List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x=> x.Provider)
+                .Include(x => x.Equipment).ThenInclude(x => x.Status)
+                .Include(x => x.Part).ThenInclude(x => x.Status)
+                .ToList();
+            ViewBag.Stocks = stocks;
             List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
             List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
             foreach(Storage storage in storages)

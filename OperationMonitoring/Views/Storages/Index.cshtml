@@ -103,11 +103,23 @@
                                             }
                                         }
                                     </td>
+
+
                                     <td>
                                         @{
                                             if (item.Nomenclature != null)
                                             {
                                                 @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.Equipment != null)
+                                            {
+                                                <span class="equip-current-status">
+                                                    @Html.DisplayFor(model => item.Equipment.SerialNum)
+                                                </span>
                                             }
                                         }
                                     </td>
@@ -138,43 +150,86 @@
                                         }
                                     </td>
                                     <td>
+                                        @if (item.Part != null)
+                                        {
+                                            @(item.Part.OperatingTime / 60) @:
+                                            {
+                                                string minutes;
+                                                if (item.Part.OperatingTime % 60 < 10)
+                                                {
+                                                    minutes = "0" + (item.Part.OperatingTime % 60);
+                                                }
+                                                else
+                                                {
+                                                    minutes = (item.Part.OperatingTime % 60).ToString();
+                                                }
+                                                @minutes
+                                            }
+                                        }
+                                        else if (item.Equipment != null)
+                                        {
+                                            @(item.Equipment.OperatingTime / 60) @:
+                                            {
+                                                string minutes;
+                                                if (item.Equipment.OperatingTime % 60 < 10)
+                                                {
+                                                    minutes = "0" + (item.Equipment.OperatingTime % 60);
+                                                }
+                                                else
+                                                {
+                                                    minutes = (item.Equipment.OperatingTime % 60).ToString();
+                                                }
+                                                @minutes
+                                            }
+                                        }
+                                    </td>
+                                    <td>
                                         @Html.DisplayFor(modelItem => item.Amount)
                                     </td>
                                     <td>
                                         <a class="btn" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Id">Details</a>
                                     </td>
-                                    <td colspan="7">
+
+
+
+
+
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
                                         <p class="time-text">
                                             Operating time left:
                                             <strong class="hours">
                                                 @if (item.Equipment != null)
                                                 {
-                                                    @(item.Equipment.OperatingTime / 60) @:
+                                                    int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
+                                                    @(timeLeft / 60) @:
                                                     {
                                                         string minutes;
-                                                        if (item.Equipment.OperatingTime % 60 < 10)
+                                                        if (timeLeft % 60 < 10)
                                                         {
-                                                            minutes = "0" + (item.Equipment.OperatingTime % 60);
+                                                            minutes = "0" + (timeLeft % 60);
                                                         }
                                                         else
                                                         {
-                                                            minutes = (item.Equipment.OperatingTime % 60).ToString();
+                                                            minutes = (timeLeft % 60).ToString();
                                                         }
                                                         @minutes
                                                     }
                                                 }
                                                 else if (item.Part != null)
                                                 {
-                                                    @(item.Part.OperatingTime / 60) @:
+                                                    int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
+                                                    @(timeLeft / 60) @:
                                                     {
                                                         string minutes;
-                                                        if (item.Part.OperatingTime % 60 < 10)
+                                                        if (timeLeft % 60 < 10)
                                                         {
-                                                            minutes = "0" + (item.Part.OperatingTime % 60);
+                                                            minutes = "0" + (timeLeft % 60);
                                                         }
                                                         else
                                                         {
-                                                            minutes = (item.Part.OperatingTime % 60).ToString();
+                                                            minutes = (timeLeft % 60).ToString();
                                                         }
                                                         @minutes
                                                     }
@@ -184,10 +239,11 @@
                                         </p>
                                     </td>
                                 </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                           
+                             }
+                         }
+                        </tbody>
+                    </table>
                 <!-- PAGES -->
                 <div class="simple-pagination">
                     <div class="simple-pagination-first"></div>
