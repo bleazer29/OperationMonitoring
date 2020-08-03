@@ -9,6 +9,6 @@ namespace OperationMonitoring.Models
     public class HistoryType
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
     }
 }

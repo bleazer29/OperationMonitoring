@@ -28,7 +28,7 @@ namespace OperationMonitoring.Controllers
                 var equipment = db.Equipment.Include(x => x.Status)
                     .FirstOrDefault(x => x.Id == equipmentId);
                 var maintenance = db.Maintenances.Where(x => x.Id == entityId).FirstOrDefault();
-                var type = db.HistoryTypes.FirstOrDefault(x => x.Name == entityType);
+                var type = db.HistoryTypes.FirstOrDefault(x => x.Title == entityType);
                 MaintenanceHistory history = new MaintenanceHistory()
                 {
                     Date = DateTime.Now,

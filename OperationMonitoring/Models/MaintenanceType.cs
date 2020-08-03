@@ -8,6 +8,6 @@ namespace OperationMonitoring.Models
     public class MaintenanceType
     {
         public int Id { get; set; }
-        public string Name { get; set; } //Внешний ремонт, списано, починено (на склад)
+        public string Title { get; set; } //Внешний ремонт, списано, починено (на склад)
     }
 }

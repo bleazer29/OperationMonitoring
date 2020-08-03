@@ -26,14 +26,14 @@ namespace OperationMonitoring.Controllers
         {
             switch (searchField)
             {
-                case "Name":
-                    nomenclature = nomenclature.Where(x => x.Name != null && x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                case "Title":
+                    nomenclature = nomenclature.Where(x => x.Title != null && x.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 case "VendorCode":
                     nomenclature = nomenclature.Where(x => x.VendorCode != null && x.VendorCode.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider != null && x.Provider.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                    nomenclature = nomenclature.Where(x => x.Provider != null && x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToList();
                     break;
                 default:
                     break;
@@ -47,7 +47,7 @@ namespace OperationMonitoring.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    nomenclature = nomenclature.OrderByDescending(s => s.Name).ToList();
+                    nomenclature = nomenclature.OrderByDescending(s => s.Title).ToList();
                     break;
                 case "vendorCode_desc":
                     nomenclature = nomenclature.OrderByDescending(s => s.VendorCode).ToList();
@@ -56,13 +56,13 @@ namespace OperationMonitoring.Controllers
                     nomenclature = nomenclature.OrderBy(s => s.VendorCode).ToList();
                     break;
                 case "providerName_desc":
-                    nomenclature = nomenclature.OrderByDescending(s => s.Provider.Name).ToList();
+                    nomenclature = nomenclature.OrderByDescending(s => s.Provider.Title).ToList();
                     break;
                 case "providerName":
-                    nomenclature = nomenclature.OrderBy(s => s.Provider.Name).ToList();
+                    nomenclature = nomenclature.OrderBy(s => s.Provider.Title).ToList();
                     break;
                 default:
-                    nomenclature = nomenclature.OrderBy(s => s.Name).ToList();
+                    nomenclature = nomenclature.OrderBy(s => s.Title).ToList();
                     break;
             }
             return nomenclature;
@@ -72,7 +72,7 @@ namespace OperationMonitoring.Controllers
         public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, string searchField, int? page)
         {
             ViewBag.CurrentFilter = searchString;
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Name" : searchField;
+            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
 
             var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).ToList();
             ViewBag.Nomenclature = nomenclature;
@@ -137,7 +137,7 @@ namespace OperationMonitoring.Controllers
                 int providerId = int.Parse(provider);
                 if (providerId == -1)
                 {
-                    Provider pr = new Provider() { Name = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
+                    Provider pr = new Provider() { Title = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
                     db.Providers.Add(pr);
                     nomenclature.Provider = pr;
                 }
@@ -162,7 +162,7 @@ namespace OperationMonitoring.Controllers
             try
             {
                 var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == nomenclatureId);
-                nomenclature.Name = editName;
+                nomenclature.Title = editName;
                 nomenclature.VendorCode = editVendorCode;
                 if (editHeight !=null) nomenclature.Specification.Height = (double)editHeight;
                 if (editWeight != null) nomenclature.Specification.Weight = (double)editWeight;
@@ -171,7 +171,7 @@ namespace OperationMonitoring.Controllers
                 int providerId = int.Parse(provider);
                 if (providerId == -1)
                 {
-                    Provider pr = new Provider() { Name = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
+                    Provider pr = new Provider() { Title = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
                     db.Providers.Add(pr);
                     nomenclature.Provider = pr;
                 }

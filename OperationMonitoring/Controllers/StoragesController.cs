@@ -25,7 +25,7 @@ namespace OperationMonitoring.Controllers
         public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, string searchField, int? page)
         {
             ViewBag.CurrentFilter = searchString;
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Name" : searchField;
+            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
 
             List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
             List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();

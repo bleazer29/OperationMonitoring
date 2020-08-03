@@ -962,7 +962,7 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "HistoryTypes",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "Title" },
                 values: new object[,]
                 {
                     { 1, "Write-off" },
@@ -972,7 +972,7 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "MaintenanceTypes",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "Title" },
                 values: new object[,]
                 {
                     { 3, "Additional meintenance" },
@@ -982,7 +982,7 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "Nomenclatures",
-                columns: new[] { "Id", "Name", "ProviderId", "SpecificationId", "VendorCode" },
+                columns: new[] { "Id", "Title", "ProviderId", "SpecificationId", "VendorCode" },
                 values: new object[,]
                 {
                     { 1, "Motor", null, null, null },
@@ -995,7 +995,7 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "Providers",
-                columns: new[] { "Id", "Address", "EDRPOU", "Name" },
+                columns: new[] { "Id", "Address", "EDRPOU", "Title" },
                 values: new object[,]
                 {
                     { 2, "8 Wang Hoi Road, Kowloon Bay, Hong Kong", "38377143", "New Provider" },
@@ -1016,7 +1016,7 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Title", "ParentId" },
                 values: new object[,]
                 {
                     { 1, "Kyiv, Ukraine", "Main Building", null },
@@ -1034,22 +1034,22 @@ namespace OperationMonitoring.Migrations
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Title", "ParentId" },
                 values: new object[] { 3, null, "Floor 1", 1 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Title", "ParentId" },
                 values: new object[] { 5, null, "Floor 3", 1 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Title", "ParentId" },
                 values: new object[] { 4, null, "Floor 2", 2 });
 
             migrationBuilder.InsertData(
                 table: "Storages",
-                columns: new[] { "Id", "Location", "Name", "ParentId" },
+                columns: new[] { "Id", "Location", "Title", "ParentId" },
                 values: new object[,]
                 {
                     { 6, null, "Room 4", 3 },

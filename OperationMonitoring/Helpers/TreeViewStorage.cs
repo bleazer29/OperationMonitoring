@@ -9,8 +9,8 @@ namespace OperationMonitoring.Helpers
     public class TreeViewStorage
     {
         public string id { get { return Storage.Id.ToString(); } }
-        public string text { get { return Storage.Name; } }
-        public string icon { get { return Storage.Name; } }
+        public string text { get { return Storage.Title; } }
+        public string icon { get { return Storage.Title; } }
         public string parent { 
             get {
                 if (Storage.Parent != null)

@@ -15,8 +15,6 @@ namespace OperationMonitoring.Models
         public int? Amount { get; set; }
         public virtual Storage StorageTo { get; set; }
         public virtual HistoryType HistoryType { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }
