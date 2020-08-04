@@ -3,81 +3,87 @@
     ViewData["Title"] = "AdminPanel";
 }
 
-<div class="container">
-    <h2> Admin Panel </h2>
-    <div class="tab">
-        <button class="tablinks active" onclick="openCity(event, 'Users')">List Users</button>
-        <button class="tablinks" onclick="openCity(event, 'Roles')">List Roles</button>
-        <button class="tablinks" onclick="openCity(event, 'Employees')">List Employees</button>
+    <div class="container">
+        <h2> Admin Panel </h2>
+        @*<div class="tab">
+            <button class="tablinks active" onclick="openCity(event, 'Users')">List Users</button>
+            <button class="tablinks" onclick="openCity(event, 'Roles')">List Roles</button>
+            <button class="tablinks" onclick="openCity(event, 'Employees')">List Employees</button>
+        </div>*@
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a data-toggle="tab" href="#sectionA">List Users</a></li>
+            <li><a data-toggle="tab" href="#sectionB">List Roles</a></li>
+            <li><a data-toggle="tab" href="#sectionC">List Employees</a></li>
+        </ul>
     </div>
-</div>
 
 <div class="container">
-
     @{
         IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
         IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
         IEnumerable<Employee> Employee = ViewBag.Employee;
-        <div id="Users" class="tabcontent active">
-            <h1>All Users</h1>
-            @if (identityUser.Any())
-            {
-                <a asp-action="Register" asp-controller="Account"
-                   class="btn btn-primary mb-3" style="width:auto">
-                    Add new user
-                </a>
+        <div class="tab-content">
 
-                foreach (var user in identityUser)
+
+
+            <div id="sectionA" class="tab-pane fade in active">
+                <h1>All Users</h1>
+                @if (identityUser.Any())
                 {
-                    <div class="card mb-3">
+                    <a asp-action="Register" asp-controller="Account"
+                       class="btn btn-primary mb-3" style="width:auto">
+                        Add new user
+                    </a>
+                    foreach (var user in identityUser)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                User Id : @user.Id
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@user.UserName</h5>
+                            </div>
+                            <div class="card-footer">
+                                <form method="post" asp-action="DeleteUser" asp-controller="Admin" asp-route-id="@user.Id">
+                                    <a asp-controller="Admin" asp-action="Edituser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+
+                                    <span id="confirmDeleteSpan_@user.Id" style="display:none">
+                                        <span>Are you sure you want to delete?</span>
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-primary"
+                                           onclick="confirmDelete('@user.Id', false)">No</a>
+                                    </span>
+
+                                    <span id="deleteSpan_@user.Id">
+                                        <a href="#" class="btn btn-danger"
+                                           onclick="confirmDelete('@user.Id', true)">Delete</a>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card">
                         <div class="card-header">
-                            User Id : @user.Id
+                            No users created yet
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">@user.UserName</h5>
-                        </div>
-                        <div class="card-footer">
-                            <form method="post" asp-action="DeleteUser" asp-controller="Admin" asp-route-id="@user.Id">
-                                <a asp-controller="Admin" asp-action="Edituser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
-
-                                <span id="confirmDeleteSpan_@user.Id" style="display:none">
-                                    <span>Are you sure you want to delete?</span>
-                                    <button type="submit" class="btn btn-danger">Yes</button>
-                                    <a href="#" class="btn btn-primary"
-                                       onclick="confirmDelete('@user.Id', false)">No</a>
-                                </span>
-
-                                <span id="deleteSpan_@user.Id">
-                                    <a href="#" class="btn btn-danger"
-                                       onclick="confirmDelete('@user.Id', true)">Delete</a>
-                                </span>
-                            </form>
+                            <h5 class="card-title">
+                                Use the button below to create a user
+                            </h5>
+                            <a class="btn btn-primary" style="width:auto"
+                               asp-controller="Account" asp-action="Register">
+                                Add new user
+                            </a>
                         </div>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="card">
-                    <div class="card-header">
-                        No users created yet
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Use the button below to create a user
-                        </h5>
-                        <a class="btn btn-primary" style="width:auto"
-                           asp-controller="Account" asp-action="Register">
-                            Add new user
-                        </a>
-                    </div>
-                </div>
-            }
-        </div>
+            </div>
 
-
-        <div id="Roles" class="tabcontent">
-            <h1>All Roles</h1>
+            <div id="sectionB" class="tab-pane fade">
+                <h1>All Roles</h1>
                 @if (identityRoles.Any())
                 {
                     <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="admin">Add new role</a>
@@ -123,53 +129,52 @@
                             </a>
                         </div>
                     </div>
-                 }
+                }
+            </div>
+
+
+            <div id="sectionC" class="tab-pane fade">
+                <h1>List Employees</h1>
+                <p>
+                    <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create New</a>
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>Patronymic </th>
+                            <th>FullName</th>
+                            <th>BirthDate</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Employee)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Patronymic)</td>
+                                <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.BirthDate)</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
+                                    @Html.ActionLink("Details", "Details", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
+                                    @Html.ActionLink("Delete", "Delete", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+
         </div>
-
-
     }
-
-
-
-<div id="Employees" class="tabcontent">
-    <h1>List Employees</h1>
-    <p>
-        <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>Patronymic </th>
-                <th>FullName</th>
-                <th>BirthDate</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Employee)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Patronymic)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.BirthDate)</td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit","Employee" ,new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
-                        @Html.ActionLink("Details", "Details", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
-                        @Html.ActionLink("Delete", "Delete", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-
 </div>
 
 
@@ -177,31 +182,39 @@
 
 @section Scripts{
     <script type="text/javascript">
-        //$("tab").click(function(){
-        //    $(this).addClass("active").siblings().removeClass("active");
-        //    $("tabcontent").hide().eq($(this).index()).fadeIn();
+        //document.getElementById('Users').style.display = "block";
+        //function openCity(evt, cityName) {
+        //    var i, tabcontent, tablinks;
+        //    tabcontent = document.getElementsByClassName("tabcontent");
+        //    for (i = 0; i < tabcontent.length; i++) {
+        //        tabcontent[i].style.display = "none";
+        //    }
+        //    tablinks = document.getElementsByClassName("tablinks");
+        //    for (i = 0; i < tablinks.length; i++) {
+        //        tablinks[i].className = tablinks[i].className.replace(" active", "");
+        //    }
+        //    document.getElementById(cityName).style.display = "block";
+        //    evt.currentTarget.className += " active";
 
-        //});
+        //}
+        $(document).ready(function () {
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                $('#myTab a[href="' + activeTab + '"]').tab('show');
+            }
+        });
 
-        document.getElementById('Users').style.display = "block";
-        function openCity(evt, cityName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
     </script>
     <script src="~/js/site.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 }
 
-<style>
+@*<style>
     /* Style the tab */
     .tab {
         overflow: hidden;
@@ -237,5 +250,5 @@
         border: 1px solid #ccc;
         border-top: none;
     }
-</style>
+</style>*@
 

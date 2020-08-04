@@ -93,7 +93,7 @@ namespace OperationMonitoring.Controllers
                        
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
-                            return RedirectToAction("ListUsers", "Admin");
+                            return RedirectToAction("AdminPanel", "Admin");
                         }
                         return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
                        

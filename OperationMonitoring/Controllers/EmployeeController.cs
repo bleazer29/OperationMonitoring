@@ -58,7 +58,7 @@ namespace OperationMonitoring.Controllers
                 };
                 db.Add(employee);
                 db.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("AdminPanel","Admin");
             }
             catch {   return View();   }
         }
@@ -80,7 +80,7 @@ namespace OperationMonitoring.Controllers
                 employees.Id = Convert.ToInt32(protector.Unprotect(id));
                 db.Entry(employees).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("AdminPanel", "Admin");
             }
             catch
             {
@@ -103,7 +103,7 @@ namespace OperationMonitoring.Controllers
             {
                 db.Employees.Remove(db.Employees.FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
                 db.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("AdminPanel", "Admin");
             }
             catch { return View(); }
         }

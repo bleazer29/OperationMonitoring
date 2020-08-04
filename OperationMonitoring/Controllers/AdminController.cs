@@ -80,7 +80,7 @@ namespace OperationMonitoring.Controllers
                     user.Email = model.Email;
                     user.UserName = model.UserName;
                     var result = await userManager.UpdateAsync(user);
-                    if (result.Succeeded)  return RedirectToAction("ListUsers");
+                    if (result.Succeeded)  return RedirectToAction("AdminPanel");
                     
                     foreach (var error in result.Errors)
                     {
@@ -95,25 +95,25 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-                var user = await userManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                    ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                    return View("NotFound");
-                }
-                else
-                {
+            var user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
                 try
                 {
-                        if (db.Employees.Any(x => x.IdentityUser.Id.Equals(id)))
-                        {
-                            db.Employees.Remove(db.Employees.FirstOrDefault(x => x.IdentityUser.Id.Equals(id)));
-                            db.SaveChanges();
-                        }
+                    if (db.Employees.Any(x => x.IdentityUser.Id.Equals(id)))
+                    {
+                        db.Employees.Remove(db.Employees.FirstOrDefault(x => x.IdentityUser.Id.Equals(id)));
+                        db.SaveChanges();
+                    }
                     var result = await userManager.DeleteAsync(user);
                     if (result.Succeeded) return RedirectToAction(nameof(ListUsers));
-                    foreach (var error in result.Errors)  {  ModelState.AddModelError("", error.Description);  }
-                    return View(nameof(ListUsers));
+                    foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
+                    return View(nameof(AdminPanel));
                 }
                 catch
                 {
@@ -121,8 +121,8 @@ namespace OperationMonitoring.Controllers
                     ViewBag.ErrorMessage = $"Она не может быть удалена, обратитесь к сисадмину за помощью!";
                     return View("Error");
                 }
-                     
-                }
+
+            }
         }
 
         [HttpGet]
@@ -137,7 +137,7 @@ namespace OperationMonitoring.Controllers
                 {
                     IdentityRole identityRole = new IdentityRole {  Name = model.RoleName  };
                     IdentityResult result = await roleManager.CreateAsync(identityRole);
-                    if (result.Succeeded) return RedirectToAction("listroles", "admin");
+                    if (result.Succeeded) return RedirectToAction("AdminPanel", "Admin");
                     foreach (IdentityError error in result.Errors) { ModelState.AddModelError("", error.Description);}
                 }
                 return View(model);
@@ -192,7 +192,7 @@ namespace OperationMonitoring.Controllers
                 {
                     role.Name = model.RoleName;
                     var result = await roleManager.UpdateAsync(role);
-                    if (result.Succeeded) return RedirectToAction("ListRoles");
+                    if (result.Succeeded) return RedirectToAction("AdminPanel");
                     foreach (var error in result.Errors)  {  ModelState.AddModelError("", error.Description); }
                     return View(model);
                 }
@@ -203,21 +203,20 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
-           
-                var role = await roleManager.FindByIdAsync(id);
-                if (role == null)
-                {
-                    ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                    return View("NotFound");
-                }
-                else
-                {
+            var role = await roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
                 try
                 {
                     var result = await roleManager.DeleteAsync(role);
-                    if (result.Succeeded) return RedirectToAction("ListRoles");
+                    if (result.Succeeded) return RedirectToAction("AdminPanel");
                     foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
-                    return View("ListRoles");
+                    return View("AdminPanel");
                 }
                 catch
                 {
@@ -226,7 +225,6 @@ namespace OperationMonitoring.Controllers
                     return View("Error");
                 }
             }
-          
         }
 
         [HttpGet]
@@ -312,9 +310,6 @@ namespace OperationMonitoring.Controllers
             return View();
         }
 
-      
-
 
     }
-
 }
