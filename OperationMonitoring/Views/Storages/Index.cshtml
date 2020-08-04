@@ -320,7 +320,7 @@
         if (jsonObj.Nomenclature == null) {
             if (jsonObj.Part == null) {
                 if (jsonObj.Equipment == null) {
-                    titleHTML = " ";
+                    titleHTML = "-";
                 }
                 else titleHTML = jsonObj.Equipment.Title;
             }
@@ -336,7 +336,7 @@
         var statusHTML;
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                statusHTML = " ";
+                statusHTML = "-";
             }
             else {
                 statusHTML = jsonObj.Equipment.Status.Title;
@@ -349,7 +349,7 @@
     function parseVendorCode(jsonObj) {
         var vendorCodeHTML;
         if (jsonObj.Nomenclature == null) {
-            vendorCodeHTML = " ";
+            vendorCodeHTML = "-";
         }
         else {
             vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
@@ -360,7 +360,7 @@
     function parseProvider(jsonObj) {
         var providerHTML;
         if (jsonObj.Nomenclature == null) {
-            providerHTML = " ";
+            providerHTML = "-";
         }
         else {
             providerHTML = jsonObj.Nomenclature.Provider.Title;
@@ -372,7 +372,7 @@
         var operatingTimeHTML;
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                operatingTimeHTML = " ";
+                operatingTimeHTML = "-";
             }
             else operatingTimeHTML = jsonObj.Equipment.OperatingTime;
         }
@@ -383,7 +383,7 @@
     function parseSerialNumber(jsonObj) {
         var serialNumberHTML;
         if (jsonObj.Equipment == null) {
-            serialNumberHTML = " ";
+            serialNumberHTML = "-";
         }
         else {
             serialNumberHTML = jsonObj.Equipment.SerialNum;
@@ -405,27 +405,18 @@
     }
 
     hubConnection.on("Receive", function (data) {
-        console.log('recieved');
         $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
-            console.log(json[i]);
             var title = parseTitle(json[i]);
-            console.log(title);
             var status = parseStatus(json[i]);
-            console.log(status);
             var vendorcode = parseVendorCode(json[i]);
-            console.log(vendorcode);
             var provider = parseProvider(json[i]);
-            console.log(provider);
             var opertime = parseOperatingTime(json[i]);
-            console.log(opertime);
             var serialnum = parseSerialNumber(json[i]);
-            console.log(serialnum);
             var amount = parseAmount(json[i]);
-            console.log(amount);
 
-            $(pagedList + " tbody").append( 
+            $(pagedList + " table").append( 
                 "<tr>" +
                 "<td>" + status + "</td>" +
                 "<td>" + vendorcode + "</td>" +

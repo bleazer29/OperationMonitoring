@@ -148,7 +148,10 @@ namespace OperationMonitoring.Hubs
 
         public async Task SendNomenclature(string searchString, string searchField, string sortField, bool isAscendingSort)
         {
-            List<Nomenclature> nomenclature = db.Nomenclatures.ToList();
+            List<Nomenclature> nomenclature = db.Nomenclatures
+                .Include(x => x.Provider)
+                .Include(x => x.Specification)
+                .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
                 nomenclature = SearchNomenclature(searchString, searchField, nomenclature).Result;
@@ -223,7 +226,10 @@ namespace OperationMonitoring.Hubs
 
         public async Task SendOrders(string searchString, string searchField, bool searchOnlyActive, string sortField, bool isAscendingSort)
         {
-            List<Order> orders = db.Orders.ToList();
+            List<Order> orders = db.Orders.Include(x => x.Equipment)
+                .Include(x => x.Well)
+                .Include(x => x.Agreement).ThenInclude(x => x.Counterparty)
+                .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
                 orders = SearchOrders(searchString, searchField, searchOnlyActive, orders).Result;
@@ -312,7 +318,14 @@ namespace OperationMonitoring.Hubs
 
         public async Task SendMaintenances(string sortField, bool isAscendingSort)
         {
-            List<Maintenance> maintenances = db.Maintenances.ToList();
+            List<Maintenance> maintenances = db.Maintenances
+                .Include(x => x.MaintenanceCategory)
+                .Include(x => x.MaintenanceType)
+                .Include(x => x.Responsible)
+                .Include(x => x.ReturnStorage)
+                .Include(x => x.Counterparty)
+                .Include(x => x.Equipment)
+                .ToList();
             if (!sortField.IsNullOrEmpty())
             {
                 maintenances = SortMaintenances(sortField, isAscendingSort, maintenances).Result;
@@ -370,7 +383,11 @@ namespace OperationMonitoring.Hubs
 
         public async Task SendEquipment(string searchStatus, string searchString, string searchField, string sortField, bool isAscendingSort)
         {
-            List<Equipment> equipment = db.Equipment.ToList();
+            List<Equipment> equipment = db.Equipment
+                .Include(x => x.Status)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
                 equipment = SearchEquipment(searchStatus, searchString, searchField, equipment).Result;
