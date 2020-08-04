@@ -29,15 +29,11 @@
             <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
             <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
             <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
-            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
-            <a asp-controller="Adminpanel" asp-action="Index" class="header-nav__item">Adminpanel</a>*@
-
+            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>*@
 
                             @if (User.IsInRole("Admin"))
                             {
-                                <a class="header-nav__item" asp-controller="Admin"  asp-action="ListUsers">Users</a>
-                                <a class="header-nav__item" asp-controller="Admin" asp-action="ListRoles">Roles</a>
-                                <a class="header-nav__item" asp-controller="Employee" asp-action="Index">List Employee</a>
+                                <a class="header-nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
                             }
                             <a class="header-nav__item" asp-controller="Account" asp-action="ChangePassword">
                                 Password
@@ -89,3 +85,11 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+    </script>
+
+}

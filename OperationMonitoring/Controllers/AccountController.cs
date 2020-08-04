@@ -40,7 +40,7 @@ namespace OperationMonitoring.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterEmployeePageViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             try
             {
@@ -48,12 +48,12 @@ namespace OperationMonitoring.Controllers
                 {
                     var user = new IdentityUser
                     {
-                        UserName = model.RegisterViewModel.Email,
-                        Email = model.RegisterViewModel.Email
+                        UserName = model.Email,
+                        Email = model.Email
                     };
 
                     // добавляем пользователя
-                    var result = await userManager.CreateAsync(user, model.RegisterViewModel.Password);
+                    var result = await userManager.CreateAsync(user, model.Password);
                    
                     /////////////////////////////////////////////////////////////
 
@@ -89,7 +89,7 @@ namespace OperationMonitoring.Controllers
                         var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);  //подтверждение почты на gmail
                         EmailServices emailService = new EmailServices();
-                        await emailService.SendEmailAsync(model.RegisterViewModel.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                        await emailService.SendEmailAsync(model.Email, "Confirm your account", $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
                        
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
@@ -198,10 +198,7 @@ namespace OperationMonitoring.Controllers
                     var result = await userManager.ChangePasswordAsync(user,  model.CurrentPassword, model.NewPassword);
                     if (!result.Succeeded)
                     {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
+                        foreach (var error in result.Errors) {  ModelState.AddModelError(string.Empty, error.Description); }
                         return View();
                     }
                     await signInManager.RefreshSignInAsync(user);
@@ -291,7 +288,7 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(int id, Employee employees)
+        public async Task<IActionResult> EditProfile(Employee employees)
         {
             try
             {

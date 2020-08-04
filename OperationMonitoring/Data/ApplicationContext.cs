@@ -54,6 +54,11 @@ namespace OperationMonitoring.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+ 
             EquipmentStatus[] statuses = {
                 new EquipmentStatus() { Id = 1, Title = "NA" },
                 new EquipmentStatus() { Id = 2, Title = "RFU" },
@@ -119,11 +124,7 @@ namespace OperationMonitoring.Data
             modelBuilder.Entity<Stock>().HasData(stocks);
 
 
-            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
-            }
-
+          
         }
     }
 }

@@ -2,10 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using OperationMonitoring.Data;
 using OperationMonitoring.Models;
+using OperationMonitoring.ModelsIdentity;
+using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring.Controllers
 {
@@ -14,16 +19,20 @@ namespace OperationMonitoring.Controllers
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IDataProtector protector;
+        private readonly ApplicationContext db;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+
+        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationContext db,
+            IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings)
         {
+            this.db = db;
             this.roleManager = roleManager;
             this.userManager = userManager;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
+            protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
+        }  
+        
+        public IActionResult Index() {  return View();  }
         public async Task<IActionResult> ListUsers()
         {
             return View(await userManager.Users.AsNoTracking().ToListAsync());
@@ -54,7 +63,6 @@ namespace OperationMonitoring.Controllers
             }
             catch  { return View(); }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
@@ -87,8 +95,6 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            try
-            {
                 var user = await userManager.FindByIdAsync(id);
                 if (user == null)
                 {
@@ -97,20 +103,30 @@ namespace OperationMonitoring.Controllers
                 }
                 else
                 {
+                try
+                {
+                        if (db.Employees.Any(x => x.IdentityUser.Id.Equals(id)))
+                        {
+                            db.Employees.Remove(db.Employees.FirstOrDefault(x => x.IdentityUser.Id.Equals(id)));
+                            db.SaveChanges();
+                        }
                     var result = await userManager.DeleteAsync(user);
                     if (result.Succeeded) return RedirectToAction(nameof(ListUsers));
                     foreach (var error in result.Errors)  {  ModelState.AddModelError("", error.Description);  }
                     return View(nameof(ListUsers));
                 }
-            }
-            catch { return View(); }
+                catch
+                {
+                    ViewBag.ErrorTitle = $"Почта привязана к роли!";
+                    ViewBag.ErrorMessage = $"Она не может быть удалена, обратитесь к сисадмину за помощью!";
+                    return View("Error");
+                }
+                     
+                }
         }
 
         [HttpGet]
-        public IActionResult CreateRole()
-        {
-            return View();
-        }
+        public IActionResult CreateRole() {return View(); }
 
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
@@ -187,8 +203,7 @@ namespace OperationMonitoring.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            try
-            {
+           
                 var role = await roleManager.FindByIdAsync(id);
                 if (role == null)
                 {
@@ -197,13 +212,21 @@ namespace OperationMonitoring.Controllers
                 }
                 else
                 {
+                try
+                {
                     var result = await roleManager.DeleteAsync(role);
                     if (result.Succeeded) return RedirectToAction("ListRoles");
                     foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
                     return View("ListRoles");
                 }
+                catch
+                {
+                    ViewBag.ErrorTitle = $"{role.Name} role is in use";
+                    ViewBag.ErrorMessage = $"{role.Name} role cannot be deleted as there are users in this role. If you want to delete this role, please remove the users from the role and then try to delete";
+                    return View("Error");
+                }
             }
-            catch {  return View(); }
+          
         }
 
         [HttpGet]
@@ -274,5 +297,24 @@ namespace OperationMonitoring.Controllers
             catch  { return View("NotFound"); }
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> AdminPanel()
+        {
+            ViewBag.IdentityUsers = await userManager.Users.AsNoTracking().ToListAsync() as IEnumerable<IdentityUser>;
+            ViewBag.IdentityRoles = await roleManager.Roles.AsNoTracking().ToListAsync() as IEnumerable<IdentityRole>;
+            ViewBag.Employee = db.Employees.AsNoTracking().ToList().Select(e =>
+            {
+                e.EncryptedId = protector.Protect(e.Id.ToString());
+                return e;
+            }) as IEnumerable<Employee>;
+            return View();
+        }
+
+      
+
+
     }
+
 }
