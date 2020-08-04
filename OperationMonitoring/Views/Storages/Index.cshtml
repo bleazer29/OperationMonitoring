@@ -413,7 +413,7 @@
         if (jsonObj.Nomenclature == null) {
             if (jsonObj.Part == null) {
                 if (jsonObj.Equipment == null) {
-                    titleHTML = " ";
+                    titleHTML = "-";
                 }
                 else titleHTML = jsonObj.Equipment.Title;
             }
@@ -429,7 +429,7 @@
         var statusHTML;
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                statusHTML = " ";
+                statusHTML = "-";
             }
             else {
                 statusHTML = jsonObj.Equipment.Status.Title;
@@ -442,7 +442,7 @@
     function parseVendorCode(jsonObj) {
         var vendorCodeHTML;
         if (jsonObj.Nomenclature == null) {
-            vendorCodeHTML = " ";
+            vendorCodeHTML = "-";
         }
         else {
             vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
@@ -453,7 +453,7 @@
     function parseProvider(jsonObj) {
         var providerHTML;
         if (jsonObj.Nomenclature == null) {
-            providerHTML = " ";
+            providerHTML = "-";
         }
         else {
             providerHTML = jsonObj.Nomenclature.Provider.Title;
@@ -465,7 +465,7 @@
         var operatingTimeHTML;
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                operatingTimeHTML = " ";
+                operatingTimeHTML = "-";
             }
             else operatingTimeHTML = jsonObj.Equipment.OperatingTime;
         }
@@ -476,7 +476,7 @@
     function parseSerialNumber(jsonObj) {
         var serialNumberHTML;
         if (jsonObj.Equipment == null) {
-            serialNumberHTML = " ";
+            serialNumberHTML = "-";
         }
         else {
             serialNumberHTML = jsonObj.Equipment.SerialNum;
@@ -498,15 +498,14 @@
     }
 
     hubConnection.on("Receive", function (data) {
-        console.log('recieved');
         $(pagedList + " tbody").empty();
         var json = JSON.parse(data);
         for (let i = 0; i < json.length; i++) {
             var title = parseTitle(json[i]);
-            var status = parseStatus(json[i]);       
-            var vendorcode = parseVendorCode(json[i]);         
-            var provider = parseProvider(json[i]);    
-            var opertime = parseOperatingTime(json[i]);          
+            var status = parseStatus(json[i]);
+            var vendorcode = parseVendorCode(json[i]);
+            var provider = parseProvider(json[i]);
+            var opertime = parseOperatingTime(json[i]);
             var serialnum = parseSerialNumber(json[i]);
             var amount = parseAmount(json[i]);
 
