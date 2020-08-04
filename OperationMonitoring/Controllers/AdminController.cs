@@ -111,7 +111,7 @@ namespace OperationMonitoring.Controllers
                         db.SaveChanges();
                     }
                     var result = await userManager.DeleteAsync(user);
-                    if (result.Succeeded) return RedirectToAction(nameof(ListUsers));
+                    if (result.Succeeded) return RedirectToAction(nameof(AdminPanel));
                     foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
                     return View(nameof(AdminPanel));
                 }
@@ -121,7 +121,6 @@ namespace OperationMonitoring.Controllers
                     ViewBag.ErrorMessage = $"Она не может быть удалена, обратитесь к сисадмину за помощью!";
                     return View("Error");
                 }
-
             }
         }
 
