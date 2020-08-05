@@ -13,6 +13,9 @@
     </div>
 
     <div class="container">
+        <div>
+           Time =  @ViewBag.TotalTime
+        </div>
         @{
             IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
             IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
@@ -134,6 +137,7 @@
 
             <div id="Employees" class="tabcontent">
                 <h1>List Employees</h1>
+
                 <p>
                     <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create New</a>
                 </p>

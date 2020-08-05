@@ -9,6 +9,9 @@ using OperationMonitoring.ModelsIdentity.Security;
 using Microsoft.AspNetCore.DataProtection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OperationMonitoring.Controllers
 {
@@ -19,23 +22,29 @@ namespace OperationMonitoring.Controllers
         private readonly ApplicationContext db;
         private readonly IDataProtector protector;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IMemoryCache memoryCache;
+
+
         public EmployeeController(ApplicationContext db, IDataProtectionProvider dataProtectionProvider,
-            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager)
+            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager,
+            IMemoryCache memoryCache)
         {
             this.db = db;
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
+            this.memoryCache = memoryCache;
         }
 
-        public async Task<ActionResult> Index()
-        {
-            var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
-            return View(listEmployees.Select(e =>
-            {
-                e.EncryptedId = protector.Protect(e.Id.ToString());
-                return e;
-            }));
-        }
+        //public async Task<ActionResult> Index()
+        //{
+        //    var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+
+        //    return View(listEmployees.Select(e =>
+        //    {
+        //        e.EncryptedId = protector.Protect(e.Id.ToString());
+        //        return e;
+        //    }));
+        //}
 
 
         // GET: Employee/Details/5
