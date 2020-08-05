@@ -5,28 +5,21 @@
 
     <div class="container">
         <h2> Admin Panel </h2>
-        @*<div class="tab">
+        <div class="tab">
             <button class="tablinks active" onclick="openCity(event, 'Users')">List Users</button>
             <button class="tablinks" onclick="openCity(event, 'Roles')">List Roles</button>
             <button class="tablinks" onclick="openCity(event, 'Employees')">List Employees</button>
-        </div>*@
-        <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a data-toggle="tab" href="#sectionA">List Users</a></li>
-            <li><a data-toggle="tab" href="#sectionB">List Roles</a></li>
-            <li><a data-toggle="tab" href="#sectionC">List Employees</a></li>
-        </ul>
+        </div>
     </div>
 
-<div class="container">
-    @{
-        IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
-        IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
-        IEnumerable<Employee> Employee = ViewBag.Employee;
-        <div class="tab-content">
+    <div class="container">
+        @{
+            IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
+            IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
+            IEnumerable<Employee> Employee = ViewBag.Employee;
 
 
-
-            <div id="sectionA" class="tab-pane fade in active">
+            <div id="Users" class="tabcontent active">
                 <h1>All Users</h1>
                 @if (identityUser.Any())
                 {
@@ -51,12 +44,16 @@
                                         <span>Are you sure you want to delete?</span>
                                         <button type="submit" class="btn btn-danger">Yes</button>
                                         <button type="button" class="btn btn-primary"
-                                           onclick="confirmDelete('@user.Id', false)">No</button>
+                                                onclick="confirmDelete('@user.Id', false)">
+                                            No
+                                        </button>
                                     </span>
 
                                     <span id="deleteSpan_@user.Id">
                                         <button type="button" class="btn btn-danger"
-                                           onclick="confirmDelete('@user.Id', true)">Delete</button>
+                                                onclick="confirmDelete('@user.Id', true)">
+                                            Delete
+                                        </button>
                                     </span>
                                 </form>
                             </div>
@@ -82,7 +79,7 @@
                 }
             </div>
 
-            <div id="sectionB" class="tab-pane fade">
+            <div id="Roles" class="tabcontent">
                 <h1>All Roles</h1>
                 @if (identityRoles.Any())
                 {
@@ -102,12 +99,16 @@
                                     <span>Are you sure you want to delete?</span>
                                     <button type="submit" class="btn btn-danger">Yes</button>
                                     <button type="button" class="btn btn-primary"
-                                       onclick="confirmDelete('@role.Id', false)">No</button>
+                                            onclick="confirmDelete('@role.Id', false)">
+                                        No
+                                    </button>
                                 </span>
 
                                 <span id="deleteSpan_@role.Id">
                                     <button type="button" class="btn btn-danger"
-                                       onclick="confirmDelete('@role.Id', true)">Delete</button>
+                                            onclick="confirmDelete('@role.Id', true)">
+                                        Delete
+                                    </button>
                                 </span>
                             </form>
                         </div>
@@ -133,7 +134,7 @@
             </div>
 
 
-            <div id="sectionC" class="tab-pane fade">
+            <div id="Employees" class="tabcontent">
                 <h1>List Employees</h1>
                 <p>
                     <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create New</a>
@@ -171,50 +172,48 @@
                 </table>
             </div>
 
-
-
-        </div>
-    }
-</div>
+        }
+    </div>
 
 
 
 
 @section Scripts{
     <script type="text/javascript">
-        //document.getElementById('Users').style.display = "block";
-        //function openCity(evt, cityName) {
-        //    var i, tabcontent, tablinks;
-        //    tabcontent = document.getElementsByClassName("tabcontent");
-        //    for (i = 0; i < tabcontent.length; i++) {
-        //        tabcontent[i].style.display = "none";
-        //    }
-        //    tablinks = document.getElementsByClassName("tablinks");
-        //    for (i = 0; i < tablinks.length; i++) {
-        //        tablinks[i].className = tablinks[i].className.replace(" active", "");
-        //    }
-        //    document.getElementById(cityName).style.display = "block";
-        //    evt.currentTarget.className += " active";
-
-        //}
-        $(document).ready(function () {
-            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-                localStorage.setItem('activeTab', $(e.target).attr('href'));
-            });
-            var activeTab = localStorage.getItem('activeTab');
-            if (activeTab) {
-                $('#myTab a[href="' + activeTab + '"]').tab('show');
+        document.getElementById('Users').style.display = "block";
+        function openCity(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
             }
-        });
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+
+        //$(document).ready(function () {
+        //    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        //        localStorage.setItem('activeTab', $(e.target).attr('href'));
+        //    });
+        //    var activeTab = localStorage.getItem('activeTab');
+        //    if (activeTab) {
+        //        $('#myTab a[href="' + activeTab + '"]').tab('show');
+        //    }
+        //});
 
     </script>
     <script src="~/js/site.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>*@
 }
 
-@*<style>
+<style>
     /* Style the tab */
     .tab {
         overflow: hidden;
@@ -250,5 +249,5 @@
         border: 1px solid #ccc;
         border-top: none;
     }
-</style>*@
+</style>
 
