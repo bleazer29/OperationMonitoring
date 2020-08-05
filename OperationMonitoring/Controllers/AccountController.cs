@@ -98,13 +98,8 @@ namespace OperationMonitoring.Controllers
                         return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
                        
                     }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                    }
+                    else  foreach (var error in result.Errors)  {   ModelState.AddModelError(string.Empty, error.Description); }
+                    
                 }
                 return View(model);
             } 
@@ -138,10 +133,7 @@ namespace OperationMonitoring.Controllers
 
 
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() { return View(); }
 
         [HttpPost]
         [AllowAnonymous]

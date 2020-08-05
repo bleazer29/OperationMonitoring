@@ -294,8 +294,6 @@ namespace OperationMonitoring.Controllers
             catch  { return View("NotFound"); }
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> AdminPanel()
         {
