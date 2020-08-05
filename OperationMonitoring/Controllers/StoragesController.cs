@@ -148,5 +148,26 @@ namespace OperationMonitoring.Controllers
                 return View();
             }
         }
+
+        // GET: StoragesController/Delete/5
+        public ActionResult Transfer(int id)
+        {
+            return View();
+        }
+
+        // POST: StoragesController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Transfer(int id, IFormCollection collection)
+        {
+            try
+            {
+                
+            }
+            catch
+            {
+               
+            }
+        }
     }
 }

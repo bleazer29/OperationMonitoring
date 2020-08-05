@@ -1,0 +1,332 @@
+﻿@model IList<OperationMonitoring.Helpers.TreeViewStorage>
+@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks;}
+@{
+    ViewData["Title"] = "Transfer storages";
+}
+    <div class="container">
+        <form>
+            <div class="storage-items-container" style="max-width:initial">
+                <div id="paged-list" class="nomenclature-table">
+                    <div class="scrollable-table" style="overflow-x:scroll;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        <a href="#" data-sort="Status">
+                                            Status
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="VendorCode">
+                                            Vendor code
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="SerialNumber">
+                                            Serial number
+                                        </a>
+                                    </th>
+                                    <th class="sort-asc">
+                                        <a href="#" data-sort="Name">
+                                            Name
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="Provider">
+                                            Provider
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="Operationtime">
+                                            Operation time
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="Amount">
+                                            Amount
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" data-sort="Storage">
+                                            Storage
+                                        </a>
+                                    </th>
+                                    <th>
+                                        @*actions*@
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (stocks != null)
+                                {
+                                    @foreach (var item in stocks)
+                                    {
+                                        var tableClass = "";
+                                        if (item.Nomenclature != null)
+                                        {
+                                            <tr class="@tableClass">
+                                                <td style="vertical-align:middle;align-content:center">
+                                                    <label class="checkBox-container" for="nom-@item.Nomenclature.Id">
+                                                        <input class="transferCheck" type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id" value="nom-@item.Nomenclature.Id">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Nomenclature.Title)
+                                                </td>
+                                                <td>
+                                                    @if (item.Nomenclature.Provider != null)
+                                                    {
+                                                        <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">@item.Nomenclature.Provider.Title</a>
+                                                    }
+
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Amount)
+                                                </td>
+                                                <td>
+                                                    @if (item.Storage != null)
+                                                    {
+                                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">Details</a>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                        else if (item.Part != null)
+                                        {
+                                            tableClass = (item.Part.OperatingTime > 0) ? (item.Part.OperatingTime < item.Part.WarningTime ? ((item.Part.OperatingTime == item.Part.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
+                                            <tr class="@tableClass">
+                                                <td style="vertical-align: middle; align-content: center">
+                                                    <label class="checkBox-container" for="part-@item.Part.Id">
+                                                        <input class="transferCheck" type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id" value="part-@item.Part.Id">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        if (item.Part.Status != null)
+                                                        {
+                                                            <span class="equip-current-status">
+                                                                @Html.DisplayFor(model => item.Part.Status.Title)
+                                                            </span>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Part.Title)
+                                                </td>
+                                                <td> </td>
+                                                <td>
+                                                    @{
+                                                        int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
+                                                        if (timeLeft > 0)
+                                                        {
+                                                            @(timeLeft / 60)<span>:</span>{
+                                                                string minutes;
+                                                                if (timeLeft % 60 < 10)
+                                                                {
+                                                                    minutes = "0" + (timeLeft % 60);
+                                                                }
+                                                                else
+                                                                {
+                                                                    minutes = (timeLeft % 60).ToString();
+                                                                }
+                                                                @minutes
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            timeLeft *= -1;
+                                                            <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
+                                                                string minutes;
+                                                                if (timeLeft % 60 < 10)
+                                                                {
+                                                                    minutes = "0" + (timeLeft % 60);
+                                                                }
+                                                                else
+                                                                {
+                                                                    minutes = (timeLeft % 60).ToString();
+                                                                }
+                                                                @minutes
+                                                            }
+                                                            <p>No operating time left! Needs maintenance!</p>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Amount)
+                                                </td>
+                                                <td>
+                                                    @if (item.Storage != null)
+                                                    {
+                                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary" asp-controller="Parts" asp-action="Details" asp-route-id="@item.Part.Id">Details</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else if (item.Equipment != null)
+                                        {
+                                            tableClass = (item.Equipment.OperatingTime > 0) ? (item.Equipment.OperatingTime < item.Equipment.WarningTime ? ((item.Equipment.OperatingTime == item.Equipment.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
+
+                                            <tr class="@tableClass">
+                                                <td style="vertical-align: middle; align-content: center">
+                                                    <label class="checkBox-container" for="eq-@item.Equipment.Id">
+                                                        <input class="transferCheck" type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id" value="eq-@item.Equipment.Id">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        if (item.Equipment.Status != null)
+                                                        {
+                                                            <span class="equip-current-status">
+                                                                @Html.DisplayFor(model => item.Equipment.Status.Title)
+                                                            </span>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    @Html.DisplayFor(model => item.Equipment.SerialNum)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Equipment.Title)
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    @{
+                                                        int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
+                                                        if (timeLeft > 0)
+                                                        {
+                                                            @(timeLeft / 60)<span>:</span>{
+                                                                string minutes;
+                                                                if (timeLeft % 60 < 10)
+                                                                {
+                                                                    minutes = "0" + (timeLeft % 60);
+                                                                }
+                                                                else
+                                                                {
+                                                                    minutes = (timeLeft % 60).ToString();
+                                                                }
+                                                                @minutes
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            timeLeft *= -1;
+                                                            <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
+                                                                string minutes;
+                                                                if (timeLeft % 60 < 10)
+                                                                {
+                                                                    minutes = "0" + (timeLeft % 60);
+                                                                }
+                                                                else
+                                                                {
+                                                                    minutes = (timeLeft % 60).ToString();
+                                                                }
+                                                                @minutes
+                                                            }
+                                                            <p>No operating time left! Needs maintenance!</p>
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Amount)
+                                                </td>
+                                                <td>
+                                                    @if (item.Storage != null)
+                                                    {
+                                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary" asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Equipment.Id">Details</a>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGES -->
+                    <div class="simple-pagination">
+                        <div class="simple-pagination-first"></div>
+                        <div class="simple-pagination-previous"></div>
+                        <div class="simple-pagination-page-numbers"></div>
+                        <div class="simple-pagination-next"></div>
+                        <div class="simple-pagination-last"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="storagesTreeView-container hidden">
+                <div class="content-heading">
+                    <h4>Storages</h4>
+                </div>
+                <div id="storagesTreeViewImport">
+
+                </div>
+            </div>
+        </form>
+        <input  />
+        <input />
+        <button class="btn btn-primary" type="submit" style="display:block;width:100%;">Transfer</button>
+    </div>
+
+<script>
+    var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
+    $('#storagesTreeViewImport').jstree({
+        "plugins": ["wholerow", "contextmenu", "search"],
+        "core": {
+            "multiple": false,
+            "themes": {
+                "dots": false,
+                "icons": false,
+                "responsive": false
+            },
+            "data": storagesJSON
+        },
+        "contextmenu": {
+            "items": function ($node) {
+                var tree = $("#storagesTreeViewImport").jstree(true);
+                return {
+                    "Details": {
+                        "separator_before": false,
+                        "separator_after": false,
+                        "label": "Details",
+                        "action": function (obj) {
+                            window.location.href = $node.a_attr.href;
+                        }
+                    }
+                };
+            }
+        }
+    });
+
+    $(".transfer-button").click(function () {
+        $(this).parent().next().fadeIn();
+        $(".storage-items-container")[0].style.maxWidth = "800px";
+        $(this).next()[0].style.display = "block";
+        $(this).hide();
+    }); 
+</script>
