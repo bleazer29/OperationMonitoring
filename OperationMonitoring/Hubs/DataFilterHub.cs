@@ -531,7 +531,7 @@ namespace OperationMonitoring.Hubs
 
         private List<Storage> childrenStorages = new List<Storage>();
 
-        public List<Storage> FindStorageChildren(int storageId)
+        public async Task<List<Storage>> FindStorageChildren(int storageId)
         {
             List<Storage> Storages = db.Storages
                 .Include(x => x.Parent).ThenInclude(x => x.Parent)
@@ -540,10 +540,10 @@ namespace OperationMonitoring.Hubs
             {
                 if (storage.Parent != null)
                 {
-                    if(storage.Parent.Id == storageId)
+                    if (storage.Parent.Id == storageId)
                     {
                         childrenStorages.Add(storage);
-                        FindStorageChildren(storage.Id);
+                        await FindStorageChildren(storage.Id);
                     }
                 }
             }
@@ -557,7 +557,7 @@ namespace OperationMonitoring.Hubs
             {
                 childrenStorages = new List<Storage>();
                 childrenStorages.Add(db.Storages.FirstOrDefault(x => x.Id == storageId));
-                childrenStorages = FindStorageChildren(storageId);
+                childrenStorages = await FindStorageChildren(storageId);
                 foreach(var child in childrenStorages)
                 {
                     temp.AddRange(stocks.Where(x => x.Storage.Id == child.Id && (x.Amount > 0 || x.Part.Amount > 0)).ToList());
@@ -595,6 +595,85 @@ namespace OperationMonitoring.Hubs
                 }
             }
             return temp;
+        }
+
+        public async Task ImportStock(Stock stock, Storage importStorage, string stockType)
+        {
+            Stock importStock = null;
+            switch (stockType)
+            {
+                case "Nomenclature":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id);
+                    break;
+                case "Part":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id);
+                    break;
+                case "Equipment":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id);
+                    break;
+            }
+            if (importStock != null)
+            {
+                importStock.Amount += stock.Amount;
+            }
+            else
+            {
+                importStock = new Stock(); 
+                switch (stockType)
+                {
+                    case "Nomenclature":
+                        importStock.Nomenclature = stock.Nomenclature;
+                        break;
+                    case "Part":
+                        importStock.Part = stock.Part;
+                        break;
+                    case "Equipment":
+                        importStock.Equipment = stock.Equipment;
+                        break;
+                }
+                importStock.Amount = stock.Amount;
+                importStock.Storage = importStorage;
+                db.Stocks.Add(importStock);
+            }
+            StorageHistory newEntry = new StorageHistory()
+            {
+                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
+                Amount = stock.Amount,
+                Message = "Stock transfered",
+                Stock = stock,
+                StorageTo = importStorage,
+                Date = DateTime.Now
+            };
+            await db.StorageHistory.AddAsync(newEntry);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task TranserStock(int exportStorageId, int importStorageId, string jsonStocks)
+        {
+            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
+            Storage exportStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == exportStorageId);
+            Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
+            if(exportStorage != null && importStorage != null)
+            {
+                foreach (var stock in stocks)
+                {
+                    Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
+                    dbStock.Amount -= stock.Amount;
+
+                    if (stock.Nomenclature != null)
+                    {
+                        await ImportStock(stock, importStorage, "Nomenclature");
+                    }
+                    else if(stock.Part != null)
+                    {
+                        await ImportStock(stock, importStorage, "Part");
+                    }
+                    else if (stock.Equipment != null)
+                    {
+                        await ImportStock(stock, importStorage, "Equipment");
+                    }
+                }
+            }
         }
 
     }
