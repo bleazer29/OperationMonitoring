@@ -107,9 +107,11 @@
                                     if (item.Nomenclature != null)
                                     {
                             <tr class="@tableClass">
-                                <td>
-                                    <input type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id">
-                                    <label for="nom-@item.Nomenclature.Id"></label><br>
+                                <td style="vertical-align:middle;align-content:center">
+                                    <label class="checkBox-container" for="nom-@item.Nomenclature.Id">
+                                        <input class="transferCheck" type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id" value="nom-@item.Nomenclature.Id">
+                                        <span class="checkmark"></span>
+                                    </label>
                                 </td>
                                 <td></td>
                                 <td>
@@ -146,9 +148,11 @@
                                     {
                                         tableClass = (item.Part.OperatingTime > 0) ? (item.Part.OperatingTime < item.Part.WarningTime ? ((item.Part.OperatingTime == item.Part.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
                         <tr class="@tableClass">
-                            <td>
-                                <input type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id">
-                                <label for="part-@item.Part.Id"></label><br>
+                            <td style="vertical-align: middle; align-content: center">
+                                <label class="checkBox-container" for="part-@item.Part.Id">
+                                    <input class="transferCheck" type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id" value="part-@item.Part.Id">
+                                    <span class="checkmark"></span>
+                                </label>
                             </td>
                             <td>
                                 @{
@@ -222,9 +226,11 @@
                                         tableClass = (item.Equipment.OperatingTime > 0) ? (item.Equipment.OperatingTime < item.Equipment.WarningTime ? ((item.Equipment.OperatingTime == item.Equipment.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
 
                         <tr class="@tableClass">
-                            <td>
-                                <input type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id">
-                                <label for="eq-@item.Equipment.Id"></label><br>
+                            <td style="vertical-align: middle; align-content: center">
+                                <label class="checkBox-container" for="eq-@item.Equipment.Id">
+                                    <input class="transferCheck" type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id" value="eq-@item.Equipment.Id">
+                                    <span class="checkmark"></span>
+                                </label>  
                             </td>
                             <td>
                                 @{
@@ -410,6 +416,7 @@
 
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/data")
+        .configureLogging(signalR.LogLevel.Information)
         .build();
 
 
@@ -418,7 +425,7 @@
         if (jsonObj.Nomenclature == null) {
             if (jsonObj.Part == null) {
                 if (jsonObj.Equipment == null) {
-                    titleHTML = "-";
+                    titleHTML = "";
                 }
                 else titleHTML = jsonObj.Equipment.Title;
             }
@@ -434,7 +441,7 @@
         var statusHTML;
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                statusHTML = "-";
+                statusHTML = "";
             }
             else {
                 statusHTML = jsonObj.Equipment.Status.Title;
@@ -447,10 +454,14 @@
     function parseVendorCode(jsonObj) {
         var vendorCodeHTML;
         if (jsonObj.Nomenclature == null) {
-            vendorCodeHTML = "-";
+            vendorCodeHTML = "";
         }
         else {
-            vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
+            if (jsonObj.Nomenclature.VendorCode == null) {
+                vendorCodeHTML = "";
+            }
+            else
+                vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
         }
         return vendorCodeHTML;
     }
@@ -458,30 +469,86 @@
     function parseProvider(jsonObj) {
         var providerHTML;
         if (jsonObj.Nomenclature == null) {
-            providerHTML = "-";
+            providerHTML = "";
         }
         else {
-            providerHTML = jsonObj.Nomenclature.Provider.Title;
+            if (jsonObj.Nomenclature.Provider == null) {
+                providerHTML = "";
+            }
+            else
+                providerHTML = jsonObj.Nomenclature.Provider.Title;
+        }
+        return providerHTML;
+    }
+
+    function parseProviderId(jsonObj) {
+        var providerHTML;
+        if (jsonObj.Nomenclature == null) {
+            providerHTML = "";
+        }
+        else {
+            if (jsonObj.Nomenclature.Provider == null) {
+                providerHTML = "";
+            }
+            else
+                providerHTML = jsonObj.Nomenclature.Provider.Id;
         }
         return providerHTML;
     }
 
     function parseOperatingTime(jsonObj) {
         var operatingTimeHTML;
+        var warningTimeHTML;
+        var result = "";
         if (jsonObj.Part == null) {
             if (jsonObj.Equipment == null) {
-                operatingTimeHTML = "-";
+                operatingTimeHTML = "";
+                warningTimeHTML = "";
             }
-            else operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+            else {
+                operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+                warningTimeHTML = jsonObj.Equipment.WarningTime;
+            }
         }
-        else operatingTimeHTML = jsonObj.Part.OperatingTime;
-        return operatingTimeHTML;
+        else {
+            operatingTimeHTML = jsonObj.Part.OperatingTime;
+            warningTimeHTML = jsonObj.Part.WarningTime;
+        }
+
+        if (operatingTimeHTML != "" && warningTimeHTML != "") {
+            var timeLeft = warningTimeHTML - operatingTimeHTML;
+            if (timeLeft > 0) {
+                var minutes;
+                if (timeLeft % 60 < 10) {
+                    minutes = "0" + (timeLeft % 60);
+                }
+                else {
+                    minutes = (timeLeft % 60);
+                }
+                result = "<span>" + Math.round(timeLeft / 60) + ":" + minutes + "</span>";
+            }
+            else {
+                timeLeft *= -1;
+
+                var minutes;
+                if (timeLeft % 60 < 10) {
+                    minutes = "0" + (timeLeft % 60);
+                }
+                else {
+                    minutes = (timeLeft % 60);
+                }
+                result = "<span>Overwork by " + Math.round(timeLeft / 60) + ":" + minutes + "</span>" + "<p>No operating time left! Needs maintenance!</p>"
+            }
+        }
+
+
+        return result;
     }
 
     function parseSerialNumber(jsonObj) {
         var serialNumberHTML;
         if (jsonObj.Equipment == null) {
-            serialNumberHTML = "-";
+            serialNumberHTML = " ";
         }
         else {
             serialNumberHTML = jsonObj.Equipment.SerialNum;
@@ -502,41 +569,100 @@
         return amountHTML;
     }
 
-    hubConnection.on("Receive", function (data) {
-        $(pagedList + " tbody").empty();
-        var json = JSON.parse(data);
-        for (let i = 0; i < json.length; i++) {
-            var title = parseTitle(json[i]);
-            var status = parseStatus(json[i]);
-            var vendorcode = parseVendorCode(json[i]);
-            var provider = parseProvider(json[i]);
-            var opertime = parseOperatingTime(json[i]);
-            var serialnum = parseSerialNumber(json[i]);
-            var amount = parseAmount(json[i]);
-
-            $(pagedList + " tbody").append( 
-                "<tr>" +
-                "<td> </td>" +
-                "<td>" + status + "</td>" +
-                "<td>" + vendorcode + "</td>" +
-                "<td>" + serialnum + "</td>" +
-                "<td>" + title + "</td>" +
-                "<td>" + provider + "</td>" +
-                "<td>" + opertime + "</td>" +
-                "<td>" + amount + "</td>" +
-                "<td> </td>" +
-                "</tr>"
-            );
+    function parseButton(jsonObj) {
+        var res = "";
+        if (jsonObj.Nomenclature != null) {
+            res = "<a class='btn btn-primary' href='/Nomenclature/Details/" + jsonObj.Nomenclature.Id + "'>Details</a>";
         }
-        GenList(pagedList);
+        else if (jsonObj.Part != null) {
+            res = "<a class='btn btn-primary' href='/Parts/Details/" + jsonObj.Part.Id + "'>Details</a>";
+        } if (jsonObj.Equipment != null) {
+            res = "<a class='btn btn-primary' href='/Equipment/Details/" + jsonObj.Equipment.Id + "'>Details</a>";
+        }
+        return res;
+    }
+    function parseCheckBox(jsonObj) {
+        var res = "";
+        if (jsonObj.Nomenclature != null) {
+            res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck' type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+        }
+        else if (jsonObj.Part != null) {
+            res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck' type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+        } if (jsonObj.Equipment != null) {
+            res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck' type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+        }
+
+        return res;
+    }
+
+    function parseStyle(jsonObj) {
+    var rowStyle = "";
+    if (jsonObj.Part != null) {
+        if (jsonObj.Part.OperatingTime > 0) {
+            if (jsonObj.Part.OperatingTime < jsonObj.Part.WarningTime) {
+                if (jsonObj.Part.OperatingTime === jsonObj.Part.WarningTime) {
+                    rowStyle = "table-time-warning"
+                }
+            }
+            else rowStyle = "table-time-danger"
+        }
+    }
+    else if (jsonObj.Equipment != null) {
+        if (jsonObj.Equipment.OperatingTime > 0) {
+            if (jsonObj.Equipment.OperatingTime < jsonObj.Equipment.WarningTime) {
+                if (jsonObj.Equipment.OperatingTime === jsonObj.Equipment.WarningTime) {
+                    rowStyle = "table-time-warning"
+                }
+            }
+            else rowStyle = "table-time-danger"
+        }
+    }
+    return rowStyle;
+    }
+
+    hubConnection.on("Receive", function (data) {
+    $(pagedList + " tbody").empty();
+    var json = JSON.parse(data);
+    for (let i = 0; i < json.length; i++) {
+        console.log(json[i]);
+        var title = parseTitle(json[i]);
+        var status = parseStatus(json[i]);
+        var vendorcode = parseVendorCode(json[i]);
+        var provider = parseProvider(json[i]);
+        var providerId = parseProviderId(json[i]);
+
+        var opertime = parseOperatingTime(json[i]);
+        var serialnum = parseSerialNumber(json[i]);
+        var amount = parseAmount(json[i]);
+        var trclass = parseStyle(json[i]);
+        var btnDetails = parseButton(json[i]);
+        var checkBox = parseCheckBox(json[i]);
+        console.log(opertime);
+
+        $(pagedList + " tbody").append(
+            "<tr class='" + trclass + "'>" +
+            "<td>" + checkBox + "</td>" +
+            "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
+            "<td>" + vendorcode + "</td>" +
+            "<td>" + serialnum + "</td>" +
+            "<td>" + title + "</td>" +
+            "<td>" + "<a href='/Providers/Details/" + providerId + "'>" + provider + "</a></td>" +
+            "<td>" + opertime + "</td>" +
+            "<td>" + amount + "</td>" +
+            "<td>" + "<a href='/Storages/Details/" + json[i].Storage.Id + "'>" + json[i].Storage.Title + "</a></td>" +
+            "<td>" + btnDetails + "</td>" +
+            "</tr>"
+        );
+    }
+    GenList(pagedList);
     });
 
     $(function () {
-        $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
-            search = $("#searchString").val();
-            storageId = Number(data.selected);
-            hubConnection.invoke("SendStocks", search, storageId, searchField);
-        });
+    $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+        search = $("#searchString").val();
+        storageId = Number(data.selected);
+        hubConnection.invoke("SendStocks", search, storageId, searchField);
+    });
     });
 
     hubConnection.start();
