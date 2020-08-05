@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OperationMonitoring.Data;
 using OperationMonitoring.Helpers;
 using OperationMonitoring.Models;
@@ -15,6 +16,7 @@ namespace OperationMonitoring.Controllers
     public class StoragesController : Controller
     {
         private readonly ApplicationContext db;
+        private int pageSize = 10;
         private int pageSize = 10;
         public StoragesController(ApplicationContext context)
         {
@@ -39,7 +41,41 @@ namespace OperationMonitoring.Controllers
             }
             return View(treeViewStorages);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(string JSONId)
+        {
+            try
+            {
+                List<int> idsList = JsonConvert.DeserializeObject<List<int>>(JSONId);
+                List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
+               .Include(x => x.Equipment).ThenInclude(x => x.Status)
+               .Include(x => x.Part).ThenInclude(x => x.Status)
+               .ToList();
+                List<Stock> selected = new List<Stock>();
+                for (int i=0; i < idsList.Count; i++)
+                {
+                    Stock st = stocks.FirstOrDefault(x => x.Id == idsList[i]);
+                    if (st != null) selected.Add(st);
+                }
+                
+                TempData["Stocks"] = selected;
 
+                List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+                List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
+                foreach (Storage storage in storages)
+                {
+                    treeViewStorages.Add(new TreeViewStorage(storage));
+                }
+                
+                TempData["TreeViewStorages"] = treeViewStorages;
+                return RedirectToAction("Transfer");
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
         // GET: StoragesController/Details/5
         public ActionResult Details(int id)
         {
@@ -150,24 +186,24 @@ namespace OperationMonitoring.Controllers
         }
 
         // GET: StoragesController/Delete/5
-        public ActionResult Transfer(int id)
+        public ActionResult Transfer()
         {
             return View();
         }
 
-        // POST: StoragesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Transfer(int id, IFormCollection collection)
-        {
-            try
-            {
+        //// POST: StoragesController/Delete/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Transfer()
+        //{
+        //    try
+        //    {
                 
-            }
-            catch
-            {
+        //    }
+        //    catch
+        //    {
                
-            }
-        }
+        //    }
+        //}
     }
 }
