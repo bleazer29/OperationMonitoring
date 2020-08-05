@@ -118,7 +118,7 @@ namespace OperationMonitoring.Controllers
                 {
                     db.Employees.Remove(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
                     await db.SaveChangesAsync();
-                    return RedirectToAction("AdminPanel", "Admin");
+                    return RedirectToAction("AdminPanel", "Admin") ;
                 }
                 else
                 {
