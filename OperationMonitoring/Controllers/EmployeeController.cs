@@ -122,7 +122,7 @@ namespace OperationMonitoring.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("ErrorEmployee","Employee");
+                    return RedirectToAction(nameof(ErrorEmployee));
                 }
             }
             catch { return View(); }

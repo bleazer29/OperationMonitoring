@@ -17,8 +17,6 @@
             IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
             IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
             IEnumerable<Employee> Employee = ViewBag.Employee;
-
-
             <div id="Users" class="tabcontent active">
                 <h1>All Users</h1>
                 @if (identityUser.Any())
@@ -194,23 +192,8 @@
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
         }
-
-
-        //$(document).ready(function () {
-        //    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-        //        localStorage.setItem('activeTab', $(e.target).attr('href'));
-        //    });
-        //    var activeTab = localStorage.getItem('activeTab');
-        //    if (activeTab) {
-        //        $('#myTab a[href="' + activeTab + '"]').tab('show');
-        //    }
-        //});
-
     </script>
     <script src="~/js/site.js"></script>
-    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>*@
 }
 
 <style>
