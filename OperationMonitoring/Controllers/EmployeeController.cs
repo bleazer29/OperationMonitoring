@@ -106,7 +106,7 @@ namespace OperationMonitoring.Controllers
             try
             {
                 var userId = userManager.GetUserId(HttpContext.User);
-                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
+                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))) ;
                
                 if (employee.IdentityUser ==null || employee.IdentityUser.Id != userId)
                 {
