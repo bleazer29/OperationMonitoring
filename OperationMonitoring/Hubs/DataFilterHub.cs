@@ -77,17 +77,14 @@ namespace OperationMonitoring.Hubs
             return counterparties;
         }
 
-        public async Task SendProviders(string searchString, string searchField, string sortField, bool isAscendingSort)
+        public async Task SendProviders(string searchString, string searchField, bool isAscendingSort)
         {
             List<Provider> providers = db.Providers.ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
                 providers = SearchProvider(searchString, searchField, providers).Result;
             }
-            if (!sortField.IsNullOrEmpty())
-            {
-                providers = SortProviders(sortField, isAscendingSort, providers).Result;
-            }
+                providers = SortProviders(isAscendingSort, providers).Result;
             var json = JsonConvert.SerializeObject(providers);
             await Clients.Caller.SendAsync("Receive", json);
         }
@@ -111,37 +108,16 @@ namespace OperationMonitoring.Hubs
             return providers;
         }
 
-        public async Task<List<Provider>> SortProviders(string sortField, bool isAscending, List<Provider> providers)
+        public async Task<List<Provider>> SortProviders(bool isAscending, List<Provider> providers)
         {
             switch (isAscending)
             {
                 case true:
-                    switch (sortField)
-                    {
-                        case "Title":
-                            providers = providers.OrderBy(x => x.Title).ToList();
-                            break;
-                        case "Address":
-                            providers = providers.OrderBy(x => x.Address).ToList();
-                            break;
-                        default:
-                            break;
-                    }
+                    providers = providers.OrderBy(x => x.Title).ToList();
                     break;
                 case false:
-                    switch (sortField)
-                    {
-                        case "Title":
-                            providers = providers.OrderByDescending(x => x.Title).ToList();
-                            break;
-                        case "Address":
-                            providers = providers.OrderByDescending(x => x.Address).ToList();
-                            break;
-                        default:
-                            break;
-                    }
+                    providers = providers.OrderByDescending(x => x.Title).ToList();
                     break;
-                default:
             }
             return providers;
         }
@@ -531,52 +507,77 @@ namespace OperationMonitoring.Hubs
             return equipment;
         }
 
-        public async Task SendStocks(string searchString, int storageId, string searchField)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <param name="storageId"></param>
+        /// <param name="searchField"></param>
+        /// <param name="searchedObjType">Номенклатура, оборудование или же детали оборудования</param>
+        /// <returns></returns>
+        public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType)
         {
             List<Stock> stocks = new List<Stock>();
-            stocks = db.Stocks.Include(x => x.Storage)
-                .Include(x => x.Nomenclature)
-                .ThenInclude(x => x.Provider)
-                .Include(x => x.Part)
-                .ThenInclude(x => x.Status)
-                .Include(x => x.Equipment)
-                .ThenInclude(x => x.Status)
+            stocks = db.Stocks
+                .Include(x => x.Storage)
+                .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
+                .Include(x => x.Part).ThenInclude(x => x.Status)
+                .Include(x => x.Equipment).ThenInclude(x => x.Status)
                 .ToList();
-            stocks = SearchStocks(searchString, storageId, searchField, stocks).Result;
+            stocks = SearchStocks(searchString, storageId, searchField, searchedObjType, stocks).Result;
             var json = JsonConvert.SerializeObject(stocks);
             await Clients.All.SendAsync("Receive", json);
         }
 
         private List<Storage> childrenStorages = new List<Storage>();
 
-        public List<Storage> FindStorageChildren(int storageId)
+        public async Task<List<Storage>> FindStorageChildren(int storageId)
         {
-            List<Storage> Storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            List<Storage> Storages = db.Storages
+                .Include(x => x.Parent).ThenInclude(x => x.Parent)
+                .ToList();
             foreach (var storage in Storages)
             {
                 if (storage.Parent != null)
                 {
-                    if(storage.Parent.Id == storageId)
+                    if (storage.Parent.Id == storageId)
                     {
                         childrenStorages.Add(storage);
-                        FindStorageChildren(storage.Id);
+                        await FindStorageChildren(storage.Id);
                     }
                 }
             }
             return childrenStorages;
         }
 
-        public async Task<List<Stock>> SearchStocks(string searchString, int storageId, string searchField, List<Stock> stocks)
+        public async Task<List<Stock>> SearchStocks(string searchString, int storageId, string searchField, string searchedObjType, List<Stock> stocks)
         {
             List<Stock> temp = new List<Stock>();
             if (storageId != 0)
             {
                 childrenStorages = new List<Storage>();
                 childrenStorages.Add(db.Storages.FirstOrDefault(x => x.Id == storageId));
-                childrenStorages = FindStorageChildren(storageId);
+                childrenStorages = await FindStorageChildren(storageId);
                 foreach(var child in childrenStorages)
                 {
                     temp.AddRange(stocks.Where(x => x.Storage.Id == child.Id && (x.Amount > 0 || x.Part.Amount > 0)).ToList());
+                }
+            }
+            if(searchedObjType != "All")
+            {
+                switch (searchedObjType)
+                {
+                    case "Equipment":
+                        temp = temp.Where(x => x.Equipment != null).ToList();
+                        break;
+                    case "Parts":
+                        temp = temp.Where(x => x.Part != null).ToList();
+                        break;
+                    case "Nomenclature":
+                        temp = temp.Where(x => x.Nomenclature != null).ToList();
+                        break;
+                    default:
+                        break;
                 }
             }
             if (string.IsNullOrEmpty(searchString) == false)
@@ -594,6 +595,85 @@ namespace OperationMonitoring.Hubs
                 }
             }
             return temp;
+        }
+
+        public async Task ImportStock(Stock stock, Storage importStorage, string stockType)
+        {
+            Stock importStock = null;
+            switch (stockType)
+            {
+                case "Nomenclature":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id);
+                    break;
+                case "Part":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id);
+                    break;
+                case "Equipment":
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id);
+                    break;
+            }
+            if (importStock != null)
+            {
+                importStock.Amount += stock.Amount;
+            }
+            else
+            {
+                importStock = new Stock(); 
+                switch (stockType)
+                {
+                    case "Nomenclature":
+                        importStock.Nomenclature = stock.Nomenclature;
+                        break;
+                    case "Part":
+                        importStock.Part = stock.Part;
+                        break;
+                    case "Equipment":
+                        importStock.Equipment = stock.Equipment;
+                        break;
+                }
+                importStock.Amount = stock.Amount;
+                importStock.Storage = importStorage;
+                db.Stocks.Add(importStock);
+            }
+            StorageHistory newEntry = new StorageHistory()
+            {
+                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
+                Amount = stock.Amount,
+                Message = "Stock transfered",
+                Stock = stock,
+                StorageTo = importStorage,
+                Date = DateTime.Now
+            };
+            await db.StorageHistory.AddAsync(newEntry);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task TranserStock(int exportStorageId, int importStorageId, string jsonStocks)
+        {
+            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
+            Storage exportStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == exportStorageId);
+            Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
+            if(exportStorage != null && importStorage != null)
+            {
+                foreach (var stock in stocks)
+                {
+                    Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
+                    dbStock.Amount -= stock.Amount;
+
+                    if (stock.Nomenclature != null)
+                    {
+                        await ImportStock(stock, importStorage, "Nomenclature");
+                    }
+                    else if(stock.Part != null)
+                    {
+                        await ImportStock(stock, importStorage, "Part");
+                    }
+                    else if (stock.Equipment != null)
+                    {
+                        await ImportStock(stock, importStorage, "Equipment");
+                    }
+                }
+            }
         }
 
     }

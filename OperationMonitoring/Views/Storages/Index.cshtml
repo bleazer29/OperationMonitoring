@@ -407,12 +407,18 @@
 <script>
     var search = "";
     var searchField = "Title"; // default - "Title"
+    var searchObjType = "All";
+
     var sortField = "Title"; // default - "Title"
     var sortAsc = true; // default
     var storageId = 0;
 
     var pagedList = "#paged-list";
     GenList(pagedList);
+
+    $('#type-search-select').change(function () {
+        searchObjType = $('#type-search-select').val();
+    });
 
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/data")
@@ -658,11 +664,11 @@
     });
 
     $(function () {
-    $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
-        search = $("#searchString").val();
-        storageId = Number(data.selected);
-        hubConnection.invoke("SendStocks", search, storageId, searchField);
-    });
+        $('#storagesTreeView').on("select_node.jstree", function (e, data) {
+            search = $("#searchString").val();
+            storageId = Number(data.selected);
+            hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
+        });
     });
 
     hubConnection.start();
