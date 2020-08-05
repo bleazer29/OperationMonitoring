@@ -165,14 +165,18 @@
         e.preventDefault();
         $(pagedList + " th").removeClass();
         if (sortField == $(this).attr("data-sort")) {
-            sortAsc = false;
-            $(this).parent().addClass("sort-desc");
+            sortAsc = !sortAsc;
         }
         else {
             sortAsc = true;
-            $(this).parent().addClass("sort-asc");
-            sortField = $(this).attr("data-sort");
         }
+        if (sortAsc == true) {
+            $(this).parent().addClass("sort-asc");
+        }
+        else {
+            $(this).parent().addClass("sort-desc");
+        }
+        sortField = $(this).attr("data-sort");
         hubConnection.invoke("SendCounterparties", search, sortField, sortAsc);
     });
 

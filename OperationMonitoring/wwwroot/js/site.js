@@ -3,6 +3,10 @@ $(document).ready(function () {
     $(".js-btn-edit").click(function () {
         $(this).parent().hide().next().fadeIn();
     });
+    $(".js-btn-edit-equipment").click(function () {
+        $(this).parents(".form-info").hide().next().fadeIn();
+    });
+    
     $(".js-btn-discard").click(function () {
         $(this).parents(".details-info__item-form, .content-heading__form").hide().prev().fadeIn();
     });
