@@ -88,7 +88,7 @@
         var sortAsc = true; // default
         var storageId = 0;
 
-        var selectedAmountList = new Map();
+        var selectedAmountList = [];
 
         var pagedList = "#paged-list";
         GenList(pagedList);
@@ -424,6 +424,7 @@
 
         $(".check").click(function () {
             if ($(this).is(":checked")) {
+                
                 var st = Number($(this).attr("value"));
                 var am = Number($(this).attr("amount"));
                 selectedAmountList.set(st, am);
