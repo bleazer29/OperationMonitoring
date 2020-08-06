@@ -50,7 +50,7 @@
                 </th>
                 <th>
                     <a href="#" data-sort="Title">
-                        @Html.DisplayNameFor(model => model.Title)
+                        @Html.DisplayNameFor(model => model.Title) (and info)
                     </a>
                 </th>
                 <th>
@@ -73,13 +73,21 @@
             @foreach (var item in Model)
             {
             <tr>
-                <td>
+                <td class="vendor">
                     @Html.DisplayFor(modelItem => item.VendorCode)
                 </td>
-                <td>
+                <td class="info">
                     @Html.DisplayFor(modelItem => item.Title)
+                    @if (item.Specification != null){
+                    <p>
+                        <span>@item.Specification.Material</span>
+                        <span>@item.Specification.Weight</span>
+                        <span>@item.Specification.Height</span>
+                        <span>@item.Specification.OperatingTime</span>
+                    </p>
+                    }
                 </td>
-                <td>
+                <td class="provider">
                     @if (item.Provider != null)
                     {
                         <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Provider.Id">
@@ -88,7 +96,7 @@
                     }
                 </td>
                 <td class="nomenclature-list-amount">
-                    <input type='text' name="input-@item.Id " />
+                    <input type='number' min='1' name="input-@item.Id" />
                 </td>
                 <td class='nomenclature-list-button'>
                     <span data-id="@item.Id" class="btn btn-primary js-get-nomenclature">Get</span>
@@ -128,11 +136,11 @@
         for (let i = 0; i < json.length; i++) {
             $(pagedList + " tbody").append(
                 "<tr>" +
-                    "<td>" + json[i].VendorCode + "</td>" +
-                    "<td>" + json[i].Title + "</td>" +
-                    "<td>" + getProviderInfo(json[i].Provider) + "</td>" +
+                    "<td class='vendor'>" + json[i].VendorCode + "</td>" +
+                    "<td class='info'>" + json[i].Title + "</td>" +
+                    "<td class='provider'>" + getProviderInfo(json[i].Provider) + "</td>" +
                     "<td class='nomenclature-list-amount'>" +
-                    "<input type='text' name='input-" + json[i].Id + "' />" +
+                    "<input type='number' min='1' name='input-" + json[i].Id + "' />" +
                     "</td>" +
                     "<td class='nomenclature-list-button'>" +
                     "<span data-id='" + json[i].Id + "' class='btn btn-primary js-get-nomenclature'>Get</span>" +

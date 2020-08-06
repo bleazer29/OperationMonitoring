@@ -91,11 +91,34 @@
     </div>
 
     <!-- ASSEMBLY INFO -->
-    <div class="form-info">
-
-    </div>
+    @if (Model.Status.Title == "RFU" || Model.Status.Title == "JF" || Model.Status.Title == "WS")
+    {
+        <div class="form-pos form-info">
+            <div class="form-info__heading">
+                <span>Assembly information</span>
+                <i class="icon-arrow"></i>
+            </div>
+            <div class="info-dropdown">
+                @*@foreach (var item in assembly)
+                    {
+                        <div class="form-info__item">
+                            <div class="form-info__label">
+                                Title, specification
+                            </div>
+                            <div class="form-info_data">
+                                x amount
+                            </div>
+                        </div>
+                    }*@
+            </div>
+        </div>
+    }
 </div>
-
+<!-- assemble -->
+@if (Model.Status.Title == "NA")
+{
+    <a asp-action="Preset" asp-route-id="@Model.Id" class="btn btn-primary btn-auto">Assemble Equipment</a>
+}
 
 <!-- DAILY NOTES -->
 @{

@@ -1278,7 +1278,7 @@ td.nomenclature-list-amount{
 .nomenclature-list-amount input{
     text-align: center;
 }
-h5 + .selected-parts__item{
+.hidden + .selected-parts__item{
     margin-top: 15px;
 }
 .selected-parts__empty{
@@ -1312,8 +1312,9 @@ h5 + .selected-parts__item{
     position: relative;
     background: tomato;
     padding: 0;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
+    min-height: 35px;
     margin: 0;
 }
 .btn-remove:before,
@@ -1339,3 +1340,9 @@ h5 + .selected-parts__item{
     font-size: 18px;
     font-weight: 600;
 }
+.info-panel{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+

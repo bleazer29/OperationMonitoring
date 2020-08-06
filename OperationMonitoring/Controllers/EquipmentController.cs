@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Manage.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OperationMonitoring.Data;
+using OperationMonitoring.Helpers;
 using OperationMonitoring.Models;
 
 namespace OperationMonitoring.Controllers
@@ -95,30 +99,112 @@ namespace OperationMonitoring.Controllers
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Include(x => x.Status)
+                .Include(x => x.Preset)
                 .FirstOrDefault(x => x.Id == id);
             ViewBag.Equipment = equipment;
-
-            var preset = db.Presets
+            if (equipment.Preset != null)
+            {
+                ViewBag.Preset = db.Presets
                .Include(x => x.PresetItems)
                    .ThenInclude(i => i.Nomenclature)
                        .ThenInclude(ii => ii.Provider)
                .Include(x => x.PresetItems)
                    .ThenInclude(i => i.Nomenclature)
                        .ThenInclude(ii => ii.Specification)
-               .FirstOrDefault(x => x.Equipment.Id == id);
-            if (preset == null)
-            {
-                preset = new Preset() { Equipment = equipment };
-                db.Presets.Add(preset);
-                await db.SaveChangesAsync();
+               .FirstOrDefault(x => x.Id == equipment.Preset.Id);
             }
-            ViewBag.Preset = preset;
+            else
+            {
+                equipment.Preset = new Preset();
+                equipment.Preset.PresetItems = new List<PresetItem>();
+                db.Presets.Add(equipment.Preset);
+                await db.SaveChangesAsync();
+                ViewBag.Preset = null;
+            }
             return View(nomenclature);
         }
-
-        public async Task<ActionResult> AssemblePreset(int equipmentId, int? presetId)
+        public async Task<ActionResult> SavePreset(int equipmentId, bool assemble, string presetParameters)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                var equipment = db.Equipment.Include(x => x.Preset)
+                       .FirstOrDefault(x => x.Id == equipmentId);
+                var preset = db.Presets
+                    .Include(x => x.PresetItems)
+                    .FirstOrDefault(x => x.Id == equipment.Preset.Id);
+                preset.PresetItems.Clear();
+                var removeItems = db.PresetItems.Where(x => x.Preset.Id == preset.Id);
+                db.PresetItems.RemoveRange(removeItems);
+
+                if (!presetParameters.IsNullOrEmpty())
+                {
+                    List<PresetHelper> presetItems = JsonConvert.DeserializeObject<List<PresetHelper>>(presetParameters);
+                    
+                    List<PresetItem> items = new List<PresetItem>();
+                    foreach (var temp in presetItems)
+                    {
+                        PresetItem item = new PresetItem() { 
+                            Nomenclature = db.Nomenclatures.FirstOrDefault(x => x.Id == temp.Nomenclature), 
+                            Amount = temp.Amount,
+                            Preset = preset
+                        };
+                        preset.PresetItems.Add(item);
+                        db.PresetItems.Add(item);
+                    }
+                    await db.SaveChangesAsync();
+                }
+
+                if (assemble == true)
+                {
+                    return RedirectToAction("Assemble", new { id = equipmentId });
+                }
+                else
+                {
+                    return RedirectToAction("Preset", new { id = equipmentId });
+                }                
+            }
+            catch
+            {
+                return RedirectToAction("Preset", new { equipmentId });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ClearPreset(int equipmentId)
+        {
+            try
+            {
+                var equipment = db.Equipment.Include(x => x.Preset)
+                    .FirstOrDefault(x => x.Id == equipmentId);
+                var preset = db.Presets
+                    .Include(x => x.PresetItems)
+                    .FirstOrDefault(x => x.Id == equipment.Preset.Id);
+                preset.PresetItems.Clear();
+                await db.SaveChangesAsync();
+                return RedirectToAction("Preset", new { equipmentId });
+            }
+            catch 
+            {
+                return RedirectToAction("Preset", new { equipmentId });
+            }
+        }
+            
+        //public async Task<ActionResult> Preset(int id)
+        //{
+
+        //    return RedirectToAction("Preset", new { id });
+        //}
+
+        public ActionResult Assemble(int id)
+        {
+            var equipment = db.Equipment
+                .Include(x => x.Department)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .FirstOrDefault(x => x.Id == id);
+            return View(equipment);
         }
         //[HttpPost]
         //[ValidateAntiForgeryToken]
