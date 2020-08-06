@@ -16,8 +16,9 @@ namespace OperationMonitoring.Hubs
     public class DataFilterHub : Hub
     {
         ApplicationContext db;
-            private List<Storage> childrenStorages = new List<Storage>();
-            private List<Stock> SelectedStocks = new List<Stock>();
+        private List<Storage> childrenStorages = new List<Storage>();
+        private List<Stock> SelectedStocks = new List<Stock>();
+
         public DataFilterHub(ApplicationContext context)
         {
             Console.WriteLine("Hub created");
@@ -534,8 +535,8 @@ namespace OperationMonitoring.Hubs
 
         public async Task SendSelectedStocks()
         {
-            var json = JsonConvert.SerializeObject(SelectedStocks);
-            await Clients.Caller.SendAsync("Recieve", json);
+            var json = JsonConvert.SerializeObject(Context.Items["SelectedStocks"]);
+            await Clients.Caller.SendAsync("RecieveSelectedStock", json);
         }
 
         public Stock GetStock(int id)
@@ -553,6 +554,7 @@ namespace OperationMonitoring.Hubs
         {
             var stock = GetStock(stockId);
             SelectedStocks.Add(stock);
+            Context.Items.Add("SelectedStocks", SelectedStocks);
             await SendSelectedStocks();
         }
 
@@ -560,6 +562,7 @@ namespace OperationMonitoring.Hubs
         {
             var stock = GetStock(stockId);
             SelectedStocks.Remove(stock);
+            Context.Items.Add("SelectedStocks", SelectedStocks);
             await SendSelectedStocks();
         }
 
@@ -701,7 +704,6 @@ namespace OperationMonitoring.Hubs
                 foreach (var stock in stocks)
                 {
                     await WriteOffStock(stock, "Stock was written off");
-
                     if (stock.Nomenclature != null)
                     {
                         await ImportStock(stock, importStorage, "Nomenclature");
