@@ -16,8 +16,11 @@ namespace OperationMonitoring.Hubs
     public class DataFilterHub : Hub
     {
         ApplicationContext db;
+            private List<Storage> childrenStorages = new List<Storage>();
+            private List<Stock> SelectedStocks = new List<Stock>();
         public DataFilterHub(ApplicationContext context)
         {
+            Console.WriteLine("Hub created");
             db = context;
         }
 
@@ -26,11 +29,11 @@ namespace OperationMonitoring.Hubs
             List<Counterparty> counterparties = db.Counterparties.ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                counterparties = SearchCounterparty(searchString, counterparties).Result;
+                counterparties = await SearchCounterparty(searchString, counterparties);
             }
             if (!sortField.IsNullOrEmpty())
             {
-                counterparties = SortCounterparties(sortField, isAscendingSort, counterparties).Result;
+                counterparties = await SortCounterparties(sortField, isAscendingSort, counterparties);
             }
             var json = JsonConvert.SerializeObject(counterparties);
             await Clients.Caller.SendAsync("Receive", json);
@@ -38,7 +41,7 @@ namespace OperationMonitoring.Hubs
 
         public async Task<List<Counterparty>> SearchCounterparty(string counterpartyName, List<Counterparty> counterparties)
         {
-            counterparties = counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName.ToLower())).ToList();
+            counterparties = await counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName.ToLower())).ToListAsync();
             return counterparties;
         }
 
@@ -82,9 +85,9 @@ namespace OperationMonitoring.Hubs
             List<Provider> providers = db.Providers.ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                providers = SearchProvider(searchString, searchField, providers).Result;
+                providers = await SearchProvider(searchString, searchField, providers);
             }
-                providers = SortProviders(isAscendingSort, providers).Result;
+                providers = await SortProviders(isAscendingSort, providers);
             var json = JsonConvert.SerializeObject(providers);
             await Clients.Caller.SendAsync("Receive", json);
         }
@@ -130,11 +133,11 @@ namespace OperationMonitoring.Hubs
                 .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                nomenclature = SearchNomenclature(searchString, searchField, nomenclature).Result;
+                nomenclature = await SearchNomenclature(searchString, searchField, nomenclature);
             }
             if (!sortField.IsNullOrEmpty())
             {
-                nomenclature = SortNomenclature(sortField, isAscendingSort, nomenclature).Result;
+                nomenclature = await SortNomenclature(sortField, isAscendingSort, nomenclature);
             }
             var json = JsonConvert.SerializeObject(nomenclature);
             await Clients.Caller.SendAsync("Receive", json);
@@ -145,13 +148,13 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "VendorCode":
-                    nomenclature = nomenclature.Where(x => x.VendorCode.ToLower().Contains(searchString.ToLower())).ToList();
+                    nomenclature = await nomenclature.Where(x => x.VendorCode.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 case "Title":
-                    nomenclature = nomenclature.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToList();
+                    nomenclature = await nomenclature.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToList();
+                    nomenclature = await nomenclature.Where(x => x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 default:
                     break;
@@ -208,11 +211,11 @@ namespace OperationMonitoring.Hubs
                 .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                orders = SearchOrders(searchString, searchField, searchOnlyActive, orders).Result;
+                orders = await SearchOrders(searchString, searchField, searchOnlyActive, orders);
             }
             if (!sortField.IsNullOrEmpty())
             {
-                orders = SortOrders(sortField, isAscendingSort, orders).Result;
+                orders = await SortOrders(sortField, isAscendingSort, orders);
             }
             var json = JsonConvert.SerializeObject(orders);
             await Clients.Caller.SendAsync("Receive", json);
@@ -304,7 +307,7 @@ namespace OperationMonitoring.Hubs
                 .ToList();
             if (!sortField.IsNullOrEmpty())
             {
-                maintenances = SortMaintenances(sortField, isAscendingSort, maintenances).Result;
+                maintenances = await SortMaintenances(sortField, isAscendingSort, maintenances);
             }
             var json = JsonConvert.SerializeObject(maintenances);
             await Clients.Caller.SendAsync("Receive", json);
@@ -425,7 +428,7 @@ namespace OperationMonitoring.Hubs
             }
             if (status != -1)
             {
-                equipment = equipment.Where(x => x.Status.Id == status).ToList();
+                equipment = await equipment.Where(x => x.Status.Id == status).ToListAsync();
             }
             return equipment;
         }
@@ -454,7 +457,7 @@ namespace OperationMonitoring.Hubs
                             break;
                         case "Title":
                             equipment = equipment.OrderBy(x => x.Title).ToList();
-                            break;
+                             break;
                         case "DiameterOuter":
                             equipment = equipment.OrderBy(x => x.DiameterOuter).ToList();
                             break;
@@ -515,9 +518,10 @@ namespace OperationMonitoring.Hubs
         /// <param name="searchField"></param>
         /// <param name="searchedObjType">Номенклатура, оборудование или же детали оборудования</param>
         /// <returns></returns>
-        public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType)
+        public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType, string jsonSelectedStocks)
         {
             List<Stock> stocks = new List<Stock>();
+            await SaveSelectedStocks(JsonConvert.DeserializeObject<List<Stock>>(jsonSelectedStocks));
             stocks = db.Stocks
                 .Include(x => x.Storage)
                 .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
@@ -529,7 +533,22 @@ namespace OperationMonitoring.Hubs
             await Clients.All.SendAsync("Receive", json);
         }
 
-        private List<Storage> childrenStorages = new List<Storage>();
+        public async Task SendSelectedStocks()
+        {
+            var json = JsonConvert.SerializeObject(SelectedStocks);
+            await Clients.Caller.SendAsync("Recieve", json);
+        }
+
+        public async Task SaveSelectedStocks(List<Stock> stocks)
+        {   
+            await Task.Factory.StartNew(() =>
+            {
+                foreach (var stock in stocks)
+                {
+                    SelectedStocks.Add(stock);
+                }
+            });
+        }
 
         public async Task<List<Storage>> FindStorageChildren(int storageId)
         {
@@ -597,6 +616,20 @@ namespace OperationMonitoring.Hubs
             return temp;
         }
 
+        public void WriteTransferHistory(Stock stock, Storage importStorage, string message)
+        {
+            StorageHistory newEntry = new StorageHistory()
+            {
+                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
+                Amount = stock.Amount,
+                Message = message,
+                Stock = stock,
+                StorageTo = importStorage,
+                Date = DateTime.Now
+            };
+            db.StorageHistory.AddAsync(newEntry);
+        }
+
         public async Task ImportStock(Stock stock, Storage importStorage, string stockType)
         {
             Stock importStock = null;
@@ -635,30 +668,26 @@ namespace OperationMonitoring.Hubs
                 importStock.Storage = importStorage;
                 db.Stocks.Add(importStock);
             }
-            StorageHistory newEntry = new StorageHistory()
-            {
-                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
-                Amount = stock.Amount,
-                Message = "Stock transfered",
-                Stock = stock,
-                StorageTo = importStorage,
-                Date = DateTime.Now
-            };
-            await db.StorageHistory.AddAsync(newEntry);
+            WriteTransferHistory(stock, importStorage, message: "Stock transfered");
             await db.SaveChangesAsync();
         }
 
-        public async Task TranserStock(int exportStorageId, int importStorageId, string jsonStocks)
+        public async Task WriteOffStock(Stock stock, string message)
+        {
+            Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
+            dbStock.Amount -= stock.Amount;
+            WriteTransferHistory(stock, null, message);
+        }
+
+        public async Task TranserStock(int importStorageId, string jsonStocks)
         {
             List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
-            Storage exportStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == exportStorageId);
             Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
-            if(exportStorage != null && importStorage != null)
+            if(importStorage != null)
             {
                 foreach (var stock in stocks)
                 {
-                    Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
-                    dbStock.Amount -= stock.Amount;
+                    await WriteOffStock(stock, "Stock was written off");
 
                     if (stock.Nomenclature != null)
                     {
@@ -673,6 +702,16 @@ namespace OperationMonitoring.Hubs
                         await ImportStock(stock, importStorage, "Equipment");
                     }
                 }
+            }
+        }
+
+        public async Task AssembleEquipment(string jsonStocks, int assemblyId)
+        {
+            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
+            foreach(var stock in stocks)
+            {
+                var message = "Stock was sended on assembly #" + assemblyId.ToString("D8");
+                await WriteOffStock(stock, message);
             }
         }
 

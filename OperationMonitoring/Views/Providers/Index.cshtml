@@ -41,7 +41,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
+                <th class="sort-asc">
                     <a href="#" data-sort="Title">
                         Title
                     </a>
@@ -131,17 +131,21 @@
 
     $(pagedList + " th a").click(function (e) {
         e.preventDefault();
-        $(pagedList + " th").removeClass();
+        $(pagedList + " th").removeClass("sort-asc sort-desc");
         if (sortField == $(this).attr("data-sort")) {
-            sortAsc = false;
-            $(this).parent().addClass("sort-desc");
+            sortAsc = !sortAsc;
         }
         else {
             sortAsc = true;
-            $(this).parent().addClass("sort-asc");
-            sortField = $(this).attr("data-sort");
         }
-        hubConnection.invoke("SendProviders", search, searchField, sortAsc);
+        if (sortAsc == true) {
+            $(this).parent().addClass("sort-asc");
+        }
+        else {
+            $(this).parent().addClass("sort-desc");
+        }
+        sortField = $(this).attr("data-sort");
+        hubConnection.invoke("SendProviders", search, sortField, sortAsc);
     });
 
     hubConnection.start();
