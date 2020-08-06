@@ -518,10 +518,9 @@ namespace OperationMonitoring.Hubs
         /// <param name="searchField"></param>
         /// <param name="searchedObjType">Номенклатура, оборудование или же детали оборудования</param>
         /// <returns></returns>
-        public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType, string jsonSelectedStocks)
+        public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType)
         {
             List<Stock> stocks = new List<Stock>();
-            await SaveSelectedStocks(JsonConvert.DeserializeObject<List<Stock>>(jsonSelectedStocks));
             stocks = db.Stocks
                 .Include(x => x.Storage)
                 .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
@@ -539,15 +538,29 @@ namespace OperationMonitoring.Hubs
             await Clients.Caller.SendAsync("Recieve", json);
         }
 
-        public async Task SaveSelectedStocks(List<Stock> stocks)
-        {   
-            await Task.Factory.StartNew(() =>
-            {
-                foreach (var stock in stocks)
-                {
-                    SelectedStocks.Add(stock);
-                }
-            });
+        public Stock GetStock(int id)
+        {
+            Stock stock = db.Stocks
+                .Include(x => x.Storage)
+                .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
+                .Include(x => x.Part).ThenInclude(x => x.Status)
+                .Include(x => x.Equipment).ThenInclude(x => x.Status)
+                .FirstOrDefault(x => x.Id == id);
+            return stock;
+        }
+
+        public async Task AddSelectedStock(int stockId)
+        {
+            var stock = GetStock(stockId);
+            SelectedStocks.Add(stock);
+            await SendSelectedStocks();
+        }
+
+        public async Task RemoveSelectedStock(int stockId)
+        {
+            var stock = GetStock(stockId);
+            SelectedStocks.Remove(stock);
+            await SendSelectedStocks();
         }
 
         public async Task<List<Storage>> FindStorageChildren(int storageId)
