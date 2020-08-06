@@ -6,266 +6,76 @@
 }
 
 <div>
-    @await Html.PartialAsync("_StoragesPartial");
+    @await Html.PartialAsync("_StoragesPartial")
 </div>
 
-<div class="nomenclature-table selected-nomenclature-table">
-    <div class="scrollable-table" style="overflow-x:scroll;">
-        <table class="table">
-            <thead>
-                <tr>
-                   
-                    <th>
-                        <a href="#" data-sort="Status">
-                            Status
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="VendorCode">
-                            Vendor code
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="SerialNumber">
-                            Serial number
-                        </a>
-                    </th>
-                    <th class="sort-asc">
-                        <a href="#" data-sort="Name">
-                            Name
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="Provider">
-                            Provider
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="Operationtime">
-                            Operation time
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="Amount">
-                            Amount
-                        </a>
-                    </th>
-                    <th>
-                        <a href="#" data-sort="Storage">
-                            Storage
-                        </a>
-                    </th>
-                    <th>
-                        @*actions*@
-                    </th>
-                </tr>
-            </thead>
 
-            <tbody>
-                @if (selectedStocks != null)
-                {
-                    @foreach (var item in selectedStocks)
-                    {
-                        var tableClass = "";
-                        if (item.Nomenclature != null)
-                        {
-                            <tr class="@tableClass">
-                                
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
-                                </td>
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Nomenclature.Title)
-                                </td>
-                                <td>
-                                    @if (item.Nomenclature.Provider != null)
-                                    {
-                                        <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">@item.Nomenclature.Provider.Title</a>
-                                    }
-
-                                </td>
-                                <td></td>
-                                <td>
-                                    <label class="checkBox-container" for="nom-@item.Nomenclature.Id">
-                                        <input class="transferCheck" type="range" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id" value="@item.Id">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    @if (item.Storage != null)
-                                    {
-                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                    }
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">Details</a>
-                                </td>
-                            </tr>
-
-                        }
-                        else if (item.Part != null)
-                        {
-                            tableClass = (item.Part.OperatingTime > 0) ? (item.Part.OperatingTime < item.Part.WarningTime ? ((item.Part.OperatingTime == item.Part.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
-                            <tr class="@tableClass">
-                                
-                                <td>
-                                    @{
-                                        if (item.Part.Status != null)
-                                        {
-                                            <span class="equip-current-status">
-                                                @Html.DisplayFor(model => item.Part.Status.Title)
-                                            </span>
-                                        }
-                                    }
-                                </td>
-                                <td> </td>
-                                <td> </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Part.Title)
-                                </td>
-                                <td> </td>
-                                <td>
-                                    @{
-                                        int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
-                                        if (timeLeft > 0)
-                                        {
-                                            @(timeLeft / 60)<span>:</span>{
-                                                string minutes;
-                                                if (timeLeft % 60 < 10)
-                                                {
-                                                    minutes = "0" + (timeLeft % 60);
-                                                }
-                                                else
-                                                {
-                                                    minutes = (timeLeft % 60).ToString();
-                                                }
-                                                @minutes
-                                            }
-                                        }
-                                        else
-                                        {
-                                            timeLeft *= -1;
-                                            <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                                string minutes;
-                                                if (timeLeft % 60 < 10)
-                                                {
-                                                    minutes = "0" + (timeLeft % 60);
-                                                }
-                                                else
-                                                {
-                                                    minutes = (timeLeft % 60).ToString();
-                                                }
-                                                @minutes
-                                            }
-                                            <p>No operating time left! Needs maintenance!</p>
-                                        }
-                                    }
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @if (item.Storage != null)
-                                    {
-                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                    }
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-controller="Parts" asp-action="Details" asp-route-id="@item.Part.Id">Details</a>
-                                </td>
-                            </tr>
-                        }
-                        else if (item.Equipment != null)
-                        {
-                            tableClass = (item.Equipment.OperatingTime > 0) ? (item.Equipment.OperatingTime < item.Equipment.WarningTime ? ((item.Equipment.OperatingTime == item.Equipment.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
-
-                            <tr class="@tableClass">
-                                
-                                <td>
-                                    @{
-                                        if (item.Equipment.Status != null)
-                                        {
-                                            <span class="equip-current-status">
-                                                @Html.DisplayFor(model => item.Equipment.Status.Title)
-                                            </span>
-                                        }
-                                    }
-                                </td>
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(model => item.Equipment.SerialNum)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Equipment.Title)
-                                </td>
-                                <td></td>
-                                <td>
-                                    @{
-                                        int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
-                                        if (timeLeft > 0)
-                                        {
-                                            @(timeLeft / 60)<span>:</span>{
-                                                string minutes;
-                                                if (timeLeft % 60 < 10)
-                                                {
-                                                    minutes = "0" + (timeLeft % 60);
-                                                }
-                                                else
-                                                {
-                                                    minutes = (timeLeft % 60).ToString();
-                                                }
-                                                @minutes
-                                            }
-                                        }
-                                        else
-                                        {
-                                            timeLeft *= -1;
-                                            <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                                string minutes;
-                                                if (timeLeft % 60 < 10)
-                                                {
-                                                    minutes = "0" + (timeLeft % 60);
-                                                }
-                                                else
-                                                {
-                                                    minutes = (timeLeft % 60).ToString();
-                                                }
-                                                @minutes
-                                            }
-                                            <p>No operating time left! Needs maintenance!</p>
-                                        }
-                                    }
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @if (item.Storage != null)
-                                    {
-                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                    }
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Equipment.Id">Details</a>
-
-                                </td>
-                            </tr>
-                        }
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <div class="container">
     @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
     {
+        <div class="nomenclature-table selected-nomenclature-table" id="selected-nomenclature-table">
+            <div class="scrollable-table" style="overflow-x:scroll;">
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                <a href="#" data-sort="Status">
+                                    Status
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="VendorCode">
+                                    Vendor code
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="SerialNumber">
+                                    Serial number
+                                </a>
+                            </th>
+                            <th class="sort-asc">
+                                <a href="#" data-sort="Name">
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Provider">
+                                    Provider
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Operationtime">
+                                    Operation time
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Amount">
+                                    Amount
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Storage">
+                                    Storage
+                                </a>
+                            </th>
+                            <th>
+                                @*actions*@
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody> </tbody>
+                </table>
+            </div>
+        </div>
+
         <input type="hidden" id="JSONId" name="JSONId" value="" />
-        <button class="btn btn-primary transfer-button" type="button" style="display:block;width:100%;">Transfer</button>
+        <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
+
     }
+
 </div>
 
 @section Scripts{
@@ -277,6 +87,8 @@
         var sortField = "Title"; // default - "Title"
         var sortAsc = true; // default
         var storageId = 0;
+
+        var selectedAmountList = new Map();
 
         var pagedList = "#paged-list";
         GenList(pagedList);
@@ -440,6 +252,12 @@
             return amountHTML;
         }
 
+        function parseSelectedAmount(jsonObj, currAmount) {
+            var amountHTML = "";
+            amountHTML = "<input onchange='saveAmount(this);' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
+            return amountHTML;
+        }
+
         function parseButton(jsonObj) {
             var res = "";
             if (jsonObj.Nomenclature != null) {
@@ -452,6 +270,7 @@
             }
             return res;
         }
+
         function parseCheckBox(jsonObj) {
             var res = "";
             if (jsonObj.Nomenclature != null) {
@@ -528,7 +347,7 @@
             GenList(pagedList);
         });
 
-        hubConnection.on("ReceiveSelectedStock", function (data) {
+        hubConnection.on("RecieveSelectedStocks", function (data) {
             $("#selected-nomenclature-table" + " tbody").empty();
             var json = JSON.parse(data);
             for (let i = 0; i < json.length; i++) {
@@ -541,15 +360,14 @@
 
                 var opertime = parseOperatingTime(json[i]);
                 var serialnum = parseSerialNumber(json[i]);
-                var amount = parseAmount(json[i]);
+                var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
                 var trclass = parseStyle(json[i]);
                 var btnDetails = parseButton(json[i]);
                 var checkBox = parseCheckBox(json[i]);
                 console.log(opertime);
 
-                $(pagedList + " tbody").append(
+                $("#selected-nomenclature-table" + " tbody").append(
                     "<tr class='" + trclass + "'>" +
-                    
                     "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
                     "<td>" + vendorcode + "</td>" +
                     "<td>" + serialnum + "</td>" +
@@ -562,7 +380,7 @@
                     "</tr>"
                 );
             }
-            
+
         });
 
         $(function () {
@@ -574,7 +392,6 @@
             });
         });
 
-        //||||||||||||||||||||||||||||||||||||||||||||
         var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
 
         $('#storagesTreeViewExport').jstree({
@@ -606,27 +423,29 @@
     });
 
         $(".check").click(function () {
-            if ($(this).checked) {
-                stockId = Number(this.value);
-                hubConnection.invoke("AddSelectedStock", stockId);
+            if ($(this).is(":checked")) {
+                var st = Number($(this).attr("value"));
+                var am = Number($(this).attr("amount"));
+                selectedAmountList.set(st, am);
+                hubConnection.invoke("AddSelectedStock", st);
             } else {
-                stockId = Number(this.value);
-                hubConnection.invoke("RemoveSelectedStock", stockId);
+                var st = Number($(this).attr("value"));
+                selectedAmountList.delete(st)
+                hubConnection.invoke("RemoveSelectedStock", st);
             }
         });
 
-        $(".transfer-button").click(function () {
-        //var checkboxes = $('input[type=checkbox]:checked');
-        //let stocksIds = [];
-        //for (var i = 0; i < checkboxes.length; i++) {
-        //    stocksIds.push(checkboxes[i].value)
-        //}
-        //var strJSON = JSON.stringify(stocksIds);
-        //$(this).prev().val(strJSON)
-        //$(this).parent().submit();
+        function saveAmount(inp) {
+            var i = "#" + inp.id;
+            var stId = Number($(i).attr("stockId"));
+            var amount = Number(inp.value);
+            selectedAmountList.set(stId, amount);
+        }
+
+        $("#submitBTN").click(function() {
+            console.log(JSON.stringify(selectedAmountList));
+            $("#JSONId").val(JSON.stringify(selectedAmountList));
         });
-
-
 
         hubConnection.start();
     </script>
