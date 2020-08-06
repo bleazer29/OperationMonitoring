@@ -111,7 +111,7 @@ namespace OperationMonitoring.Controllers
         {
             var providers = db.Providers.ToList();
             ViewBag.Providers = providers;
-            var nomenclature =db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == id);
+            var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).FirstOrDefault(x => x.Id == id);
             if (nomenclature.Provider != null) ViewBag.ProviderId = nomenclature.Provider.Id;
             else ViewBag.ProviderId = -1;
             

@@ -715,7 +715,7 @@ p {
     background: #F5F5F5;
 }
 
-.table-equipment tbody:hover {
+.table-equipment tr:hover {
     background: #fff2df;
 }
 
@@ -1096,6 +1096,8 @@ p {
         margin-left: 0;
         margin-right: 8px;
     }
+
+    
 }
 .two-rows{
     max-width: none;
@@ -1203,6 +1205,41 @@ td.nomenclature-list-amount{
 
 .flex-container {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content:space-between;   
+}
+
+.storagesTreeView-container{
+    margin-top:20px;
+}
+
+.storage-items-container {
+    margin-left: 10px;
+    
+}
+
+@media (max-width: 992px) {
+    .flex-container {
+        display: flex;
+        justify-content: stretch;
+        flex-wrap: wrap;
+    }
+
+    .storage-items-container {
+        margin-left: 0px;
+        margin-right: 0px;   
+    }
+
+    .storagesTreeView-container {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+}
+
+.svg-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 10;
+    stroke: black;
+    fill: black;
 }
