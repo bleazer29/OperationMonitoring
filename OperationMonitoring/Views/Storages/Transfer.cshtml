@@ -1,6 +1,6 @@
 ﻿
-@{List<OperationMonitoring.Models.Stock> stocks = TempData["Stocks"] as List<OperationMonitoring.Models.Stock>;}
-@{List<OperationMonitoring.Helpers.TreeViewStorage> treeViewStorages = TempData["TreeViewStorage"] as List<OperationMonitoring.Helpers.TreeViewStorage>;}
+@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks;}
+@{List<OperationMonitoring.Helpers.TreeViewStorage> treeViewStorages = ViewBag.TreeViewStorages;}
 @{
     ViewData["Title"] = "Transfer storages";
 }

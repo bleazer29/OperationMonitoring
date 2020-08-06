@@ -17,7 +17,6 @@ namespace OperationMonitoring.Controllers
     {
         private readonly ApplicationContext db;
         private int pageSize = 10;
-        private int pageSize = 10;
         public StoragesController(ApplicationContext context)
         {
             db = context;
@@ -39,7 +38,8 @@ namespace OperationMonitoring.Controllers
             {
                 treeViewStorages.Add(new TreeViewStorage(storage));
             }
-            return View(treeViewStorages);
+            ViewBag.TreeViewStorages = treeViewStorages;
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -47,29 +47,7 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                List<int> idsList = JsonConvert.DeserializeObject<List<int>>(JSONId);
-                List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
-               .Include(x => x.Equipment).ThenInclude(x => x.Status)
-               .Include(x => x.Part).ThenInclude(x => x.Status)
-               .ToList();
-                List<Stock> selected = new List<Stock>();
-                for (int i=0; i < idsList.Count; i++)
-                {
-                    Stock st = stocks.FirstOrDefault(x => x.Id == idsList[i]);
-                    if (st != null) selected.Add(st);
-                }
-                
-                TempData["Stocks"] = selected;
-
-                List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
-                List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
-                foreach (Storage storage in storages)
-                {
-                    treeViewStorages.Add(new TreeViewStorage(storage));
-                }
-                
-                TempData["TreeViewStorages"] = treeViewStorages;
-                return RedirectToAction("Transfer");
+                return RedirectToAction("Transfer", new { st = JSONId });
             }
             catch
             {
@@ -143,51 +121,29 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        // GET: StoragesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: StoragesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: StoragesController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Transfer(string st)
         {
-            return View();
-        }
-
-        // POST: StoragesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            List<int> idsList = JsonConvert.DeserializeObject<List<int>>(st);
+            List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
+           .Include(x => x.Equipment).ThenInclude(x => x.Status)
+           .Include(x => x.Part).ThenInclude(x => x.Status)
+           .ToList();
+            List<Stock> selected = new List<Stock>();
+            for (int i = 0; i < idsList.Count; i++)
             {
-                return RedirectToAction(nameof(Index));
+                Stock stock = stocks.FirstOrDefault(x => x.Id == idsList[i]);
+                if (stock != null) selected.Add(stock);
             }
-            catch
-            {
-                return View();
-            }
-        }
+            ViewBag.Stocks = selected;
 
-        // GET: StoragesController/Delete/5
-        public ActionResult Transfer()
-        {
+            List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+            List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
+            foreach (Storage storage in storages)
+            {
+                treeViewStorages.Add(new TreeViewStorage(storage));
+            }
+            ViewBag.TreeViewStorages = treeViewStorages;
             return View();
         }
 
@@ -198,12 +154,14 @@ namespace OperationMonitoring.Controllers
         //{
         //    try
         //    {
-                
+
         //    }
         //    catch
         //    {
-               
+
         //    }
         //}
+
+       
     }
 }
