@@ -378,11 +378,11 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -393,10 +393,9 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserGUID")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("IdentityUserId");
 
                     b.HasIndex("PositionId");
 
@@ -1325,8 +1324,8 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
+                    b.Property<double?>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<int?>("AuthorId")
                         .HasColumnType("int");
@@ -1417,7 +1416,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -1426,7 +1425,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -1435,7 +1434,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -1444,13 +1443,13 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -1459,7 +1458,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -1467,260 +1466,315 @@ namespace OperationMonitoring.Migrations
                 {
                     b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
                         .WithMany()
-                        .HasForeignKey("CounterpartyId");
+                        .HasForeignKey("CounterpartyId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Doc", "Doc")
                         .WithMany()
-                        .HasForeignKey("DocId");
+                        .HasForeignKey("DocId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Assemble", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
-                        .HasForeignKey("PartId");
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Doc", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.DocType", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Employee", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("OperationMonitoring.Models.Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Equipment", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.EquipmentCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentType", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.EquipmentHistory", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Employee", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Maintenance", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
                         .WithMany()
-                        .HasForeignKey("CounterpartyId");
+                        .HasForeignKey("CounterpartyId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.MaintenanceCategory", "MaintenanceCategory")
                         .WithMany()
-                        .HasForeignKey("MaintenanceCategoryId");
+                        .HasForeignKey("MaintenanceCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.MaintenanceType", "MaintenanceType")
                         .WithMany()
-                        .HasForeignKey("MaintenanceTypeId");
+                        .HasForeignKey("MaintenanceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
                         .WithMany()
-                        .HasForeignKey("ResponsibleId");
+                        .HasForeignKey("ResponsibleId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Storage", "ReturnStorage")
                         .WithMany()
-                        .HasForeignKey("ReturnStorageId");
+                        .HasForeignKey("ReturnStorageId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.MaintenanceHistory", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Employee", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Maintenance", "Maintenance")
                         .WithMany()
-                        .HasForeignKey("MaintenanceId");
+                        .HasForeignKey("MaintenanceId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Nomenclature", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Provider", "Provider")
                         .WithMany()
-                        .HasForeignKey("ProviderId");
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Specification", "Specification")
                         .WithMany()
-                        .HasForeignKey("SpecificationId");
+                        .HasForeignKey("SpecificationId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Order", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Agreement", "Agreement")
                         .WithMany()
-                        .HasForeignKey("AgreementId");
+                        .HasForeignKey("AgreementId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
                         .WithMany()
-                        .HasForeignKey("ResponsibleId");
+                        .HasForeignKey("ResponsibleId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Well", "Well")
                         .WithMany()
-                        .HasForeignKey("WellId");
+                        .HasForeignKey("WellId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.OrderHistory", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Employee", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Part", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Assemble", null)
                         .WithMany("PartsList")
-                        .HasForeignKey("AssembleId");
+                        .HasForeignKey("AssembleId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
-                        .HasForeignKey("NomenclatureId");
+                        .HasForeignKey("NomenclatureId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Part", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.PartHistory", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
-                        .HasForeignKey("PartId");
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Preset", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.PresetItem", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
-                        .HasForeignKey("NomenclatureId");
+                        .HasForeignKey("NomenclatureId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Preset", "Preset")
                         .WithMany("PresetItems")
-                        .HasForeignKey("PresetId");
+                        .HasForeignKey("PresetId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.UsageType", "UsageType")
                         .WithMany()
-                        .HasForeignKey("UsageTypeId");
+                        .HasForeignKey("UsageTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Stock", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
-                        .HasForeignKey("EquipmentId");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
-                        .HasForeignKey("NomenclatureId");
+                        .HasForeignKey("NomenclatureId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
-                        .HasForeignKey("PartId");
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Storage", "Storage")
                         .WithMany()
-                        .HasForeignKey("StorageId");
+                        .HasForeignKey("StorageId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Storage", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Storage", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.StorageHistory", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Employee", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.HistoryType", "HistoryType")
                         .WithMany()
-                        .HasForeignKey("HistoryTypeId");
+                        .HasForeignKey("HistoryTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Stock", "Stock")
                         .WithMany()
-                        .HasForeignKey("StockId");
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
-                        .HasForeignKey("StorageToId");
+                        .HasForeignKey("StorageToId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
                 {
                     b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
                         .WithMany()
-                        .HasForeignKey("CounterpartyId");
+                        .HasForeignKey("CounterpartyId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
