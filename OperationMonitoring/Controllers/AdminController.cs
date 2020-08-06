@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -7,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 using OperationMonitoring.ModelsIdentity;
@@ -21,22 +25,24 @@ namespace OperationMonitoring.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IDataProtector protector;
         private readonly ApplicationContext db;
-
+        private readonly IMemoryCache memoryCache;
 
         public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationContext db,
-            IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings)
+            IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings, IMemoryCache memoryCache)
         {
             this.db = db;
             this.roleManager = roleManager;
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
+            this.memoryCache = memoryCache;
         }  
         
         public IActionResult Index() {  return View();  }
-        public async Task<IActionResult> ListUsers()
-        {
-            return View(await userManager.Users.AsNoTracking().ToListAsync());
-        }
+       
+        //public async Task<IActionResult> ListUsers()
+        //{
+        //    return View(await userManager.Users.AsNoTracking().ToListAsync());
+        //}
 
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
@@ -145,11 +151,10 @@ namespace OperationMonitoring.Controllers
             
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ListRoles()
-        {
-            return View(await roleManager.Roles.AsNoTracking().ToListAsync());
-        }
+        //public async Task<IActionResult> ListRoles()
+        //{
+        //    return View(await roleManager.Roles.AsNoTracking().ToListAsync());
+        //}
 
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
@@ -294,20 +299,59 @@ namespace OperationMonitoring.Controllers
             catch  { return View("NotFound"); }
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> AdminPanel()
         {
-            ViewBag.IdentityUsers = await userManager.Users.AsNoTracking().ToListAsync() as IEnumerable<IdentityUser>;
-            ViewBag.IdentityRoles = await roleManager.Roles.AsNoTracking().ToListAsync() as IEnumerable<IdentityRole>;
-            ViewBag.Employee = db.Employees.AsNoTracking().ToList().Select(e =>
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            List<IdentityRole> rolesIdentity;
+
+            if (!memoryCache.TryGetValue("rolesIdentity", out rolesIdentity))
             {
-                e.EncryptedId = protector.Protect(e.Id.ToString());
-                return e;
-            }) as IEnumerable<Employee>;
+                memoryCache.Set("rolesIdentity", await roleManager.Roles.AsNoTracking().ToListAsync(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
+
+            }
+            rolesIdentity = memoryCache.Get("rolesIdentity") as List<IdentityRole>;
+             ViewBag.IdentityRoles = rolesIdentity as IEnumerable<IdentityRole>;
+
+            List<IdentityUser> usersIdentity;
+            if (!memoryCache.TryGetValue("usersIdentity", out usersIdentity))
+            {
+                memoryCache.Set("usersIdentity", await userManager.Users.AsNoTracking().ToListAsync(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
+            }
+            usersIdentity = memoryCache.Get("usersIdentity") as List<IdentityUser>;
+            ViewBag.IdentityUsers = usersIdentity as IEnumerable<IdentityUser>;
+
+
+            List<Employee> employees;
+            if (!memoryCache.TryGetValue("Employees", out employees))
+            {
+                var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+                listEmployees.Select(e =>
+                {
+                    e.EncryptedId = protector.Protect(e.Id.ToString());
+                    return e;
+                });
+                memoryCache.Set("Employees", listEmployees, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
+            }
+            employees = memoryCache.Get("Employees") as List<Employee>;
+            ViewBag.Employee = employees as IEnumerable<Employee>;
+            stopWatch.Stop();
+            ViewBag.TotalTime = stopWatch.Elapsed;
+
             return View();
         }
+        //  public async Task<IActionResult> AdminPanel()
+        //{
+        //    ViewBag.IdentityUsers = await userManager.Users.AsNoTracking().ToListAsync() as IEnumerable<IdentityUser>;
+        //    ViewBag.IdentityRoles = await roleManager.Roles.AsNoTracking().ToListAsync() as IEnumerable<IdentityRole>;
+        //    ViewBag.Employee = db.Employees.AsNoTracking().ToList().Select(e =>
+        //    {
+        //        e.EncryptedId = protector.Protect(e.Id.ToString());
+        //        return e;
+        //    }) as IEnumerable<Employee>;
+        //    return View();
+        //}
 
 
     }
