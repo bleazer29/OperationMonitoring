@@ -1,315 +1,398 @@
-﻿@model IList<OperationMonitoring.Helpers.TreeViewStorage>
+﻿@{List<OperationMonitoring.Helpers.TreeViewStorage> treeViewStorages = ViewBag.TreeViewStorages;}
 @{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks;}
+@{List<OperationMonitoring.Models.Stock> selectedStocks = new List<Stock>();}
 @{
     ViewData["Title"] = "Storages";
 }
-<div class="flex-container">
-    <div class="storage-items-container">
-        <!-- SEARCH PANEL -->
-        <div class="search-panel">
-            @using (Html.BeginForm())
-            {
-                <div class="search-form">
-                    <div class="search-field">
-                        <div class="search-select">
-                            <select id="type-search-select" name="type-search-select" class="form-select">
-                                <option value="All" selected>All</option>
-                                <option value="Nomenclature" selected>Nomenclature</option>
-                                <option value="Parts" selected>Parts</option>
-                                <option value="Equipment" selected>Equipment</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="search-field search-field-input">
-                        <div class="search-label">
-                            <label class="control-label">Search:</label>
-                        </div>
-                        <div class="search-textbox">
-                            @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
-                        </div>
-                    </div>
-                    <button class="btn btn-primary search-btn">Search</button>
-                    <a asp-action="Index" class="btn btn-alter btn-refresh">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="m120.6 38.723c-3.312-7.713-7.766-14.367-13.36-19.961-5.595-5.594-12.248-10.05-19.962-13.361-7.713-3.314-15.805-4.97-24.278-4.97-7.984 0-15.71 1.506-23.18 4.521-7.468 3.01-14.11 7.265-19.92 12.751l-10.593-10.511c-1.63-1.684-3.503-2.064-5.622-1.141-2.173.924-3.259 2.527-3.259 4.808v36.5c0 1.412.516 2.634 1.548 3.666 1.033 1.032 2.255 1.548 3.667 1.548h36.5c2.282 0 3.884-1.086 4.807-3.259.923-2.118.543-3.992-1.141-5.622l-11.162-11.243c3.803-3.585 8.148-6.341 13.04-8.27 4.889-1.928 9.994-2.893 15.317-2.893 5.649 0 11.04 1.101 16.17 3.3 5.133 2.2 9.572 5.174 13.32 8.922 3.748 3.747 6.722 8.187 8.922 13.32 2.199 5.133 3.299 10.523 3.299 16.17 0 5.65-1.1 11.04-3.299 16.17-2.2 5.133-5.174 9.573-8.922 13.321-3.748 3.748-8.188 6.722-13.32 8.921-5.133 2.2-10.525 3.3-16.17 3.3-6.464 0-12.574-1.412-18.332-4.236-5.757-2.824-10.618-6.816-14.583-11.977-.38-.543-1-.87-1.874-.979-.815 0-1.494.244-2.037.733l-11.162 11.244c-.434.436-.665.991-.692 1.67-.027.68.15 1.29.53 1.833 5.921 7.17 13.09 12.724 21.509 16.661 8.419 3.937 17.3 5.907 26.642 5.907 8.473 0 16.566-1.657 24.279-4.97 7.713-3.313 14.365-7.768 19.961-13.361 5.594-5.596 10.05-12.248 13.361-19.961 3.313-7.713 4.969-15.807 4.969-24.279 0-8.474-1.657-16.564-4.97-24.277" transform="matrix(.12785 0 0 .12786 2.95 2.948)" fill="#ffffff" /></svg>
-                    </a>
-                </div>
-            }
-        </div>
-        <div id="paged-list" class="nomenclature-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <a href="#" data-sort="Status">
-                                Status
-                            </a>
-                        </th>
-                        <th>
-                            <a href="#" data-sort="VendorCode">
-                                Vendor code
-                            </a>
-                        </th>
-                        <th>
-                            <a href="#" data-sort="SerialNumber">
-                                Serial number
-                            </a>
-                        </th>
-                        <th class="sort-asc">
-                            <a href="#" data-sort="Name">
-                                Name
-                            </a>
-                        </th>
-                        <th>
-                            <a href="#" data-sort="Provider">
-                                Provider
-                            </a>
-                        </th>
-                        <th>
-                            <a href="#" data-sort="Operationtime">
-                                Operation time
-                            </a>
-                        </th>
-                        <th>
-                            <a href="#" data-sort="Amount">
-                                Amount
-                            </a>
-                        </th>
-                        <th>
-                            @*actions*@
-                        </th>
-                    </tr>
-                </thead>
 
-                        <tbody>
-                            @if (stocks != null)
-                             {
-                                @foreach (var item in stocks)
-                                 {
-                                    var tableClass = "";
-                                    if (item.Nomenclature != null)
-                                    {
-                            <tr class="@tableClass">
-                                <td>
-                                    <input type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id">
-                                    <label for="nom-@item.Nomenclature.Id"></label><br>
-                                </td>
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
-                                </td>
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Nomenclature.Title)
-                                </td>
-                                <td>
-                                    @if (item.Nomenclature.Provider != null)
-                                    {
-                                        <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">@item.Nomenclature.Provider.Title</a>
-                                    }
-
-                                </td>
-                                <td></td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @if (item.Storage != null)
-                                    {
-                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                    }
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">Details</a>
-                                </td>
-                            </tr>
-                                    
-                                    }
-                                    else if (item.Part != null)
-                                    {
-                                        tableClass = (item.Part.OperatingTime > 0) ? (item.Part.OperatingTime < item.Part.WarningTime ? ((item.Part.OperatingTime == item.Part.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
-                        <tr class="@tableClass">
-                            <td>
-                                <input type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id">
-                                <label for="part-@item.Part.Id"></label><br>
-                            </td>
-                            <td>
-                                @{
-                                    if (item.Part.Status != null)
-                                    {
-                                        <span class="equip-current-status">
-                                            @Html.DisplayFor(model => item.Part.Status.Title)
-                                        </span>
-                                    }
-                                }
-                            </td>
-                            <td> </td>
-                            <td> </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Part.Title)
-                            </td>
-                            <td> </td>
-                            <td>
-                                @{
-                                    int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
-                                    if (timeLeft > 0)
-                                    {
-                                        @(timeLeft / 60)<span>:</span>{
-                                            string minutes;
-                                            if (timeLeft % 60 < 10)
-                                            {
-                                                minutes = "0" + (timeLeft % 60);
-                                            }
-                                            else
-                                            {
-                                                minutes = (timeLeft % 60).ToString();
-                                            }
-                                            @minutes
-                                        }
-                                    }
-                                    else
-                                    {
-                                        timeLeft *= -1;
-                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                            string minutes;
-                                            if (timeLeft % 60 < 10)
-                                            {
-                                                minutes = "0" + (timeLeft % 60);
-                                            }
-                                            else
-                                            {
-                                                minutes = (timeLeft % 60).ToString();
-                                            }
-                                            @minutes
-                                        }
-                                        <p>No operating time left! Needs maintenance!</p>
-                                    }
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Amount)
-                            </td>
-                            <td>
-                                @if (item.Storage != null)
-                                {
-                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                }
-                            </td>
-                            <td>
-                                <a class="btn btn-primary" asp-controller="Parts" asp-action="Details" asp-route-id="@item.Part.Id">Details</a>
-                            </td>
-                        </tr>
-                                    }
-                                    else if (item.Equipment != null)
-                                    {
-                                        tableClass = (item.Equipment.OperatingTime > 0) ? (item.Equipment.OperatingTime < item.Equipment.WarningTime ? ((item.Equipment.OperatingTime == item.Equipment.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
-
-                        <tr class="@tableClass">
-                            <td>
-                                <input type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id">
-                                <label for="eq-@item.Equipment.Id"></label><br>
-                            </td>
-                            <td>
-                                @{
-                                    if (item.Equipment.Status != null)
-                                    {
-                                        <span class="equip-current-status">
-                                            @Html.DisplayFor(model => item.Equipment.Status.Title)
-                                        </span>
-                                    }
-                                }
-                            </td>
-                            <td></td>
-                            <td>
-                                @Html.DisplayFor(model => item.Equipment.SerialNum)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Equipment.Title)
-                            </td>
-                            <td></td>
-                            <td>
-                                @{
-                                    int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
-                                    if (timeLeft > 0)
-                                    {
-                                        @(timeLeft / 60)<span>:</span>{
-                                            string minutes;
-                                            if (timeLeft % 60 < 10)
-                                            {
-                                                minutes = "0" + (timeLeft % 60);
-                                            }
-                                            else
-                                            {
-                                                minutes = (timeLeft % 60).ToString();
-                                            }
-                                            @minutes
-                                        }
-                                    }
-                                    else
-                                    {
-                                        timeLeft *= -1;
-                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                            string minutes;
-                                            if (timeLeft % 60 < 10)
-                                            {
-                                                minutes = "0" + (timeLeft % 60);
-                                            }
-                                            else
-                                            {
-                                                minutes = (timeLeft % 60).ToString();
-                                            }
-                                            @minutes
-                                        }
-                                        <p>No operating time left! Needs maintenance!</p>
-                                    }
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Amount)
-                            </td>
-                            <td>
-                                @if (item.Storage != null)
-                                {
-                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                }
-                            </td>
-                            <td>
-                                <a class="btn btn-primary" asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Equipment.Id">Details</a>
-
-                            </td>
-                        </tr>
-                                    }
-                                 }
-                             }
-                        </tbody>
-                        </table>
-                </div>
-
-                <!-- PAGES -->
-                <div class="simple-pagination">
-                    <div class="simple-pagination-first"></div>
-                    <div class="simple-pagination-previous"></div>
-                    <div class="simple-pagination-page-numbers"></div>
-                    <div class="simple-pagination-next"></div>
-                    <div class="simple-pagination-last"></div>
-                </div>
-            </div>
-            <button class="btn btn-primary transfer-button" style="display:block;width:100%;">Transfer</button>
-            <button class="btn btn-primary save-button" style="display:none;width:100%;">Save</button>
-        </div>
-        <div class="storagesTreeView-container hidden" style="margin-left:20px;">
-            <div class="content-heading">
-                <h4>Storages</h4>
-                <a class="btn btn-primary" asp-action="Create">+</a>
-            </div>
-            <div id="storagesTreeViewImport">
-
-            </div>
-        </div>
+<div>
+    @await Html.PartialAsync("_StoragesPartial")
 </div>
 
-<script>
-    var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(Model))');
-    $('#storagesTreeViewExport').jstree({
+
+
+<div class="container">
+    @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
+    {
+        <div class="nomenclature-table selected-nomenclature-table" id="selected-nomenclature-table">
+            <div class="scrollable-table" style="overflow-x:scroll;">
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                <a href="#" data-sort="Status">
+                                    Status
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="VendorCode">
+                                    Vendor code
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="SerialNumber">
+                                    Serial number
+                                </a>
+                            </th>
+                            <th class="sort-asc">
+                                <a href="#" data-sort="Name">
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Provider">
+                                    Provider
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Operationtime">
+                                    Operation time
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Amount">
+                                    Amount
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Storage">
+                                    Storage
+                                </a>
+                            </th>
+                            <th>
+                                @*actions*@
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody> </tbody>
+                </table>
+            </div>
+        </div>
+
+        <input type="hidden" id="JSONId" name="JSONId" value="" />
+        <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
+    }
+</div>
+
+@section Scripts{
+    <script>
+        var search = "";
+        var searchField = "Title"; // default - "Title"
+        var searchObjType = "All";
+
+        var sortField = "Title"; // default - "Title"
+        var sortAsc = true; // default
+        var storageId = 0;
+
+        var selectedAmountList = new Map();
+
+        var pagedList = "#paged-list";
+        GenList(pagedList);
+
+        $('#type-search-select').change(function () {
+            searchObjType = $('#type-search-select').val();
+        });
+
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/data")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+
+        function parseTitle(jsonObj) {
+            var titleHTML;
+            if (jsonObj.Nomenclature == null) {
+                if (jsonObj.Part == null) {
+                    if (jsonObj.Equipment == null) {
+                        titleHTML = "";
+                    }
+                    else titleHTML = jsonObj.Equipment.Title;
+                }
+                else titleHTML = jsonObj.Part.Title;
+            }
+            else {
+                titleHTML = jsonObj.Nomenclature.Title;
+            }
+            return titleHTML;
+        }
+
+        function parseStatus(jsonObj) {
+            var statusHTML;
+            if (jsonObj.Part == null) {
+                if (jsonObj.Equipment == null) {
+                    statusHTML = "";
+                }
+                else {
+                    statusHTML = jsonObj.Equipment.Status.Title;
+                }
+            }
+            else statusHTML = jsonObj.Part.Status.Title;
+            return statusHTML;
+        }
+
+        function parseVendorCode(jsonObj) {
+            var vendorCodeHTML;
+            if (jsonObj.Nomenclature == null) {
+                vendorCodeHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.VendorCode == null) {
+                    vendorCodeHTML = "";
+                }
+                else
+                    vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
+            }
+            return vendorCodeHTML;
+        }
+
+        function parseProvider(jsonObj) {
+            var providerHTML;
+            if (jsonObj.Nomenclature == null) {
+                providerHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.Provider == null) {
+                    providerHTML = "";
+                }
+                else
+                    providerHTML = jsonObj.Nomenclature.Provider.Title;
+            }
+            return providerHTML;
+        }
+
+        function parseProviderId(jsonObj) {
+            var providerHTML;
+            if (jsonObj.Nomenclature == null) {
+                providerHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.Provider == null) {
+                    providerHTML = "";
+                }
+                else
+                    providerHTML = jsonObj.Nomenclature.Provider.Id;
+            }
+            return providerHTML;
+        }
+
+        function parseOperatingTime(jsonObj) {
+            var operatingTimeHTML;
+            var warningTimeHTML;
+            var result = "";
+            if (jsonObj.Part == null) {
+                if (jsonObj.Equipment == null) {
+                    operatingTimeHTML = "";
+                    warningTimeHTML = "";
+                }
+                else {
+                    operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+                    warningTimeHTML = jsonObj.Equipment.WarningTime;
+                }
+            }
+            else {
+                operatingTimeHTML = jsonObj.Part.OperatingTime;
+                warningTimeHTML = jsonObj.Part.WarningTime;
+            }
+
+            if (operatingTimeHTML != "" && warningTimeHTML != "") {
+                var timeLeft = warningTimeHTML - operatingTimeHTML;
+                if (timeLeft > 0) {
+                    var minutes;
+                    if (timeLeft % 60 < 10) {
+                        minutes = "0" + (timeLeft % 60);
+                    }
+                    else {
+                        minutes = (timeLeft % 60);
+                    }
+                    result = "<span>" + Math.round(timeLeft / 60) + ":" + minutes + "</span>";
+                }
+                else {
+                    timeLeft *= -1;
+
+                    var minutes;
+                    if (timeLeft % 60 < 10) {
+                        minutes = "0" + (timeLeft % 60);
+                    }
+                    else {
+                        minutes = (timeLeft % 60);
+                    }
+                    result = "<span>Overwork by " + Math.round(timeLeft / 60) + ":" + minutes + "</span>" + "<p>No operating time left! Needs maintenance!</p>"
+                }
+            }
+
+
+            return result;
+        }
+
+        function parseSerialNumber(jsonObj) {
+            var serialNumberHTML;
+            if (jsonObj.Equipment == null) {
+                serialNumberHTML = " ";
+            }
+            else {
+                serialNumberHTML = jsonObj.Equipment.SerialNum;
+            }
+            return serialNumberHTML;
+        }
+
+        function parseAmount(jsonObj) {
+            var amountHTML;
+            if (jsonObj.Amount == null) {
+                if (jsonObj.Part == null) {
+                    amountHTML = Number(1);
+                }
+                else amountHTML = Number(jsonObj.Part.Amount);
+            }
+            else amountHTML = Number(jsonObj.Amount);
+
+            return amountHTML;
+        }
+
+        function parseSelectedAmount(jsonObj, currAmount) {
+            var amountHTML = "";
+            amountHTML = "<input onchange='saveAmount(this);' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
+            return amountHTML;
+        }
+
+        function parseButton(jsonObj) {
+            var res = "";
+            if (jsonObj.Nomenclature != null) {
+                res = "<a class='btn btn-primary' href='/Nomenclature/Details/" + jsonObj.Nomenclature.Id + "'>Details</a>";
+            }
+            else if (jsonObj.Part != null) {
+                res = "<a class='btn btn-primary' href='/Parts/Details/" + jsonObj.Part.Id + "'>Details</a>";
+            } if (jsonObj.Equipment != null) {
+                res = "<a class='btn btn-primary' href='/Equipment/Details/" + jsonObj.Equipment.Id + "'>Details</a>";
+            }
+            return res;
+        }
+
+        function parseCheckBox(jsonObj) {
+            var res = "";
+            if (jsonObj.Nomenclature != null) {
+                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck' type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+            }
+            else if (jsonObj.Part != null) {
+                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck' type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+            } if (jsonObj.Equipment != null) {
+                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck' type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+            }
+
+            return res;
+        }
+
+        function parseStyle(jsonObj) {
+            var rowStyle = "";
+            if (jsonObj.Part != null) {
+                if (jsonObj.Part.OperatingTime > 0) {
+                    if (jsonObj.Part.OperatingTime < jsonObj.Part.WarningTime) {
+                        if (jsonObj.Part.OperatingTime === jsonObj.Part.WarningTime) {
+                            rowStyle = "table-time-warning"
+                        }
+                    }
+                    else rowStyle = "table-time-danger"
+                }
+            }
+            else if (jsonObj.Equipment != null) {
+                if (jsonObj.Equipment.OperatingTime > 0) {
+                    if (jsonObj.Equipment.OperatingTime < jsonObj.Equipment.WarningTime) {
+                        if (jsonObj.Equipment.OperatingTime === jsonObj.Equipment.WarningTime) {
+                            rowStyle = "table-time-warning"
+                        }
+                    }
+                    else rowStyle = "table-time-danger"
+                }
+            }
+            return rowStyle;
+        }
+        
+        hubConnection.on("Receive", function (data) {
+            $(pagedList + " tbody").empty();
+            var json = JSON.parse(data);
+            for (let i = 0; i < json.length; i++) {
+                console.log(json[i]);
+                var title = parseTitle(json[i]);
+                var status = parseStatus(json[i]);
+                var vendorcode = parseVendorCode(json[i]);
+                var provider = parseProvider(json[i]);
+                var providerId = parseProviderId(json[i]);
+
+                var opertime = parseOperatingTime(json[i]);
+                var serialnum = parseSerialNumber(json[i]);
+                var amount = parseAmount(json[i]);
+                var trclass = parseStyle(json[i]);
+                var btnDetails = parseButton(json[i]);
+                var checkBox = parseCheckBox(json[i]);
+                console.log(opertime);
+
+                $(pagedList + " tbody").append(
+                    "<tr class='" + trclass + "'>" +
+                    "<td>" + checkBox + "</td>" +
+                    "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
+                    "<td>" + vendorcode + "</td>" +
+                    "<td>" + serialnum + "</td>" +
+                    "<td>" + title + "</td>" +
+                    "<td>" + "<a href='/Providers/Details/" + providerId + "'>" + provider + "</a></td>" +
+                    "<td>" + opertime + "</td>" +
+                    "<td>" + amount + "</td>" +
+                    "<td>" + "<a href='/Storages/Details/" + json[i].Storage.Id + "'>" + json[i].Storage.Title + "</a></td>" +
+                    "<td>" + btnDetails + "</td>" +
+                    "</tr>"
+                );
+            }
+            GenList(pagedList);
+        });
+
+        hubConnection.on("RecieveSelectedStocks", function (data) {
+            $("#selected-nomenclature-table" + " tbody").empty();
+            var json = JSON.parse(data);
+            for (let i = 0; i < json.length; i++) {
+                console.log(json[i]);
+                var title = parseTitle(json[i]);
+                var status = parseStatus(json[i]);
+                var vendorcode = parseVendorCode(json[i]);
+                var provider = parseProvider(json[i]);
+                var providerId = parseProviderId(json[i]);
+
+                var opertime = parseOperatingTime(json[i]);
+                var serialnum = parseSerialNumber(json[i]);
+                var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
+                var trclass = parseStyle(json[i]);
+                var btnDetails = parseButton(json[i]);
+                var checkBox = parseCheckBox(json[i]);
+                console.log(opertime);
+
+                $("#selected-nomenclature-table" + " tbody").append(
+                    "<tr class='" + trclass + "'>" +
+                    "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
+                    "<td>" + vendorcode + "</td>" +
+                    "<td>" + serialnum + "</td>" +
+                    "<td>" + title + "</td>" +
+                    "<td>" + "<a href='/Providers/Details/" + providerId + "'>" + provider + "</a></td>" +
+                    "<td>" + opertime + "</td>" +
+                    "<td>" + amount + "</td>" +
+                    "<td>" + "<a href='/Storages/Details/" + json[i].Storage.Id + "'>" + json[i].Storage.Title + "</a></td>" +
+                    "<td>" + btnDetails + "</td>" +
+                    "</tr>"
+                );
+            }
+
+        });
+
+        $(function () {
+            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+                console.log("select");
+                search = $("#searchString").val();
+                storageId = Number(data.selected);
+                hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
+            });
+        });
+
+        var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
+
+        $('#storagesTreeViewExport').jstree({
         "plugins": ["wholerow", "contextmenu", "search"],
         "core": {
             "multiple": false,
@@ -337,195 +420,39 @@
         }
     });
 
-    $('#storagesTreeViewImport').jstree({
-        "plugins": ["wholerow", "contextmenu", "search"],
-        "core": {
-            "multiple": false,
-            "themes": {
-                "dots": false,
-                "icons": false,
-                "responsive": false
-            },
-            "data": storagesJSON
-        },
-        "contextmenu": {
-            "items": function ($node) {
-                var tree = $("#storagesTreeViewImport").jstree(true);
-                return {
-                    "Details": {
-                        "separator_before": false,
-                        "separator_after": false,
-                        "label": "Details",
-                        "action": function (obj) {
-                            window.location.href = $node.a_attr.href;
-                        }
-                    }
-                };
+        $(".check").click(function () {
+            if ($(this).is(":checked")) {
+                var stockId = Number($(this).attr("value"));
+                var amount = Number($(this).attr("amount"));            
+                selectedAmountList.set(stockId, amount);
+                hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
+            } else {
+                var st = Number($(this).attr("value"));
+                selectedAmountList.delete(st);
+                hubConnection.invoke("RemoveSelectedStock", st);
             }
-        }
-    });
-
-    $(".transfer-button").click(function () {
-        $(this).parent().next().fadeIn();        
-        $(".storage-items-container")[0].style.maxWidth = "800px";
-        $(this).next()[0].style.display = "block";
-        $(this).hide();
-    });
-
-    $(".save-button").click(function () {
-        $(this).parent().next().hide();
-        $(".storage-items-container")[0].style.maxWidth = "initial"; 
-        $(this).hide();
-        $(this).prev().fadeIn();
-    });
-</script>
-
-<script>
-    var search = "";
-    var searchField = "Title"; // default - "Title"
-    var searchObjType = "All";
-
-    var sortField = "Title"; // default - "Title"
-    var sortAsc = true; // default
-    var storageId = 0;
-
-    var pagedList = "#paged-list";
-    GenList(pagedList);
-
-    $('#type-search-select').change(function () {
-        searchObjType = $('#type-search-select').val();
-    });
-
-    const hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl("/data")
-        .build();
-
-
-    function parseTitle(jsonObj) {
-        var titleHTML;
-        if (jsonObj.Nomenclature == null) {
-            if (jsonObj.Part == null) {
-                if (jsonObj.Equipment == null) {
-                    titleHTML = "-";
-                }
-                else titleHTML = jsonObj.Equipment.Title;
-            }
-            else titleHTML = jsonObj.Part.Title;
-        }
-        else {
-            titleHTML = jsonObj.Nomenclature.Title;
-        }
-        return titleHTML;
-    }
-
-    function parseStatus(jsonObj) {
-        var statusHTML;
-        if (jsonObj.Part == null) {
-            if (jsonObj.Equipment == null) {
-                statusHTML = "-";
-            }
-            else {
-                statusHTML = jsonObj.Equipment.Status.Title;
-            }
-        }
-        else statusHTML = jsonObj.Part.Status.Title;
-        return statusHTML;
-    }
-
-    function parseVendorCode(jsonObj) {
-        var vendorCodeHTML;
-        if (jsonObj.Nomenclature == null) {
-            vendorCodeHTML = "-";
-        }
-        else {
-            vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
-        }
-        return vendorCodeHTML;
-    }
-
-    function parseProvider(jsonObj) {
-        var providerHTML;
-        if (jsonObj.Nomenclature == null) {
-            providerHTML = "-";
-        }
-        else {
-            providerHTML = jsonObj.Nomenclature.Provider.Title;
-        }
-        return providerHTML;
-    }
-
-    function parseOperatingTime(jsonObj) {
-        var operatingTimeHTML;
-        if (jsonObj.Part == null) {
-            if (jsonObj.Equipment == null) {
-                operatingTimeHTML = "-";
-            }
-            else operatingTimeHTML = jsonObj.Equipment.OperatingTime;
-        }
-        else operatingTimeHTML = jsonObj.Part.OperatingTime;
-        return operatingTimeHTML;
-    }
-
-    function parseSerialNumber(jsonObj) {
-        var serialNumberHTML;
-        if (jsonObj.Equipment == null) {
-            serialNumberHTML = "-";
-        }
-        else {
-            serialNumberHTML = jsonObj.Equipment.SerialNum;
-        }
-        return serialNumberHTML;
-    }
-
-    function parseAmount(jsonObj) {
-        var amountHTML;
-        if (jsonObj.Amount == null) {
-            if (jsonObj.Part == null) {
-                amountHTML = Number(1);
-            }
-            else amountHTML = Number(jsonObj.Part.Amount);
-        }
-        else amountHTML = Number(jsonObj.Amount);
-
-        return amountHTML;
-    }
-
-    hubConnection.on("Receive", function (data) {
-        $(pagedList + " tbody").empty();
-        var json = JSON.parse(data);
-        for (let i = 0; i < json.length; i++) {
-            var title = parseTitle(json[i]);
-            var status = parseStatus(json[i]);
-            var vendorcode = parseVendorCode(json[i]);
-            var provider = parseProvider(json[i]);
-            var opertime = parseOperatingTime(json[i]);
-            var serialnum = parseSerialNumber(json[i]);
-            var amount = parseAmount(json[i]);
-
-            $(pagedList + " tbody").append( 
-                "<tr>" +
-                "<td> </td>" +
-                "<td>" + status + "</td>" +
-                "<td>" + vendorcode + "</td>" +
-                "<td>" + serialnum + "</td>" +
-                "<td>" + title + "</td>" +
-                "<td>" + provider + "</td>" +
-                "<td>" + opertime + "</td>" +
-                "<td>" + amount + "</td>" +
-                "<td> </td>" +
-                "</tr>"
-            );
-        }
-        GenList(pagedList);
-    });
-
-    $(function () {
-        $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
-            search = $("#searchString").val();
-            storageId = Number(data.selected);
-            hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
         });
-    });
 
-    hubConnection.start();
-</script>
+        function saveAmount(inp) {
+            var i = "#" + inp.id;
+            var stId = Number($(i).attr("stockId"));
+            var amount = Number(inp.value);
+            selectedAmountList.set(stId, amount);
+        }
+
+        $("#submitBTN").click(function () {
+            var temp = [];
+            for (const [key, value] of selectedAmountList.entries()) {
+                let elem = {
+                    StockId: key,
+                    Amount: value
+                }
+                temp.push(elem);
+            }
+            console.log(JSON.stringify(temp));
+            $("#JSONId").val(JSON.stringify(temp));
+        });
+
+        hubConnection.start();
+    </script>
+}

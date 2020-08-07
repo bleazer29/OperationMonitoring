@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OperationMonitoring.Data;
 using OperationMonitoring.Helpers;
 using OperationMonitoring.Hubs;
@@ -40,9 +41,22 @@ namespace OperationMonitoring.Controllers
             {
                 treeViewStorages.Add(new TreeViewStorage(storage));
             }
-            return View(treeViewStorages);
+            ViewBag.TreeViewStorages = treeViewStorages;
+            return View();
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(string JSONId)
+        {
+            try
+            {
+                return RedirectToAction("Transfer", new { st = JSONId });
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
         // GET: StoragesController/Details/5
         public ActionResult Details(int id)
         {
@@ -110,46 +124,43 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        // GET: StoragesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: StoragesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: StoragesController/Delete/5
-        public ActionResult Delete(int id)
-        {
+        public ActionResult Transfer(string st)
+        //{
+        //    List <SelectedStock> selectedStocks = JsonConvert.DeserializeObject<List<SelectedStock>>(st);           
+        //    List<Stock> selected = new List<Stock>();
+        //    for (int i = 0; i < selectedStocks.Count; i++)
+        //    {
+        //        Stock stock = stocks.FirstOrDefault(x => x.Id == selectedStocks[i].StockId);
+        //        if (stock != null) selected.Add(stock);
+        //    }
+        //    ViewBag.Stocks = selected;
+
+        //    List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+        //    List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
+        //    foreach (Storage storage in storages)
+        //    {
+        //        treeViewStorages.Add(new TreeViewStorage(storage));
+        //    }
+        //    ViewBag.TreeViewStorages = treeViewStorages;
             return View();
         }
 
-        // POST: StoragesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //// POST: StoragesController/Delete/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Transfer()
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //}
+
+       
     }
 }
