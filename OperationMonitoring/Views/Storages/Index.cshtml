@@ -9,7 +9,28 @@
     @await Html.PartialAsync("_StoragesPartial")
 </div>
 
+<div class="storage-select-to flex-container search-panel">
+    <label class="control-label">To: </label> <input id="select-storage-to-tb" disabled="disabled" type="text" class="search-textbox" />
+    <button id="select-storage-to-btn" class="btn btn-primary">Select...</button>
+</div>
 
+<div id="storage-select-modal-to" class="modal" hidden="hidden">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+
+        </div>
+        <div class="storagesTreeView-to-container">
+            <div class="content-heading">
+                <h4><a class="all-storages-link" href="" storage-id="0">Storages</a></h4>
+                <a class="btn btn-primary" asp-action="Create">+</a>
+            </div>
+            <div id="storagesTreeViewTo">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
@@ -95,20 +116,23 @@
             searchObjType = $('#type-search-select').val();
         });
 
-
-        $('#storage-select-modal').hide();
+        $('#storage-select-modal-to').hide();
+        $('#storage-select-modal-from').hide();
 
         $('#select-storage-from-btn').click(function () {
-            $('#storage-select-modal').fadeIn();
+            $('#storage-select-modal-from').fadeIn();
         })
         $('#select-storage-to-btn').click(function () {
-            $('#storage-select-modal').fadeIn();
+            $('#storage-select-modal-to').fadeIn();
         })
 
         $(window).click(function (event) {
             console.log(event.target);
-            if (event.target.id == 'storage-select-modal' || event.target.id == 'storage-select-modal-close') {
-                $('#storage-select-modal').hide();
+            if (event.target.id == 'storage-select-modal-to' || event.target.id == 'storage-select-modal-to-close') {
+                $('#storage-select-modal-to').hide();
+            }
+            else if (event.target.id == 'storage-select-modal-from' || event.target.id == 'storage-select-modal-from-close') {
+                $('#storage-select-modal-from').hide();
             }
         });
 
@@ -329,7 +353,7 @@
             }
             return rowStyle;
         }
-        
+
         hubConnection.on("Receive", function (data) {
             $(pagedList + " tbody").empty();
             var json = JSON.parse(data);
@@ -372,7 +396,7 @@
             var json = JSON.parse(data);
             for (let i = 0; i < json.length; i++) {
                 console.log(json[i]);
-                
+
                 var title = parseTitle(json[i]);
                 var status = parseStatus(json[i]);
                 var vendorcode = parseVendorCode(json[i]);
@@ -384,7 +408,7 @@
                 var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
                 var trclass = parseStyle(json[i]);
                 var btnDetails = parseButton(json[i]);
-                
+
                 console.log(opertime);
 
                 $("#selected-nomenclature-table" + " tbody").append(
@@ -405,7 +429,7 @@
         });
 
         $(function () {
-            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+            $('#storagesTreeViewFrom').on("select_node.jstree", function (e, data) {
                 console.log("select");
                 search = $("#searchString").val();
                 storageId = Number(data.selected);
@@ -415,7 +439,7 @@
 
         var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
 
-        $('#storagesTreeViewExport').jstree({
+        $('#storagesTreeViewTo').jstree({
         "plugins": ["wholerow", "contextmenu", "search"],
         "core": {
             "multiple": false,
@@ -441,12 +465,40 @@
                 };
             }
         }
-    });
+        });
+
+        $('#storagesTreeViewFrom').jstree({
+            "plugins": ["wholerow", "contextmenu", "search"],
+            "core": {
+                "multiple": false,
+                "themes": {
+                    "dots": false,
+                    "icons": false,
+                    "responsive": false
+                },
+                "data": storagesJSON
+            },
+            "contextmenu": {
+                "items": function ($node) {
+                    var tree = $("#storagesTreeViewExport").jstree(true);
+                    return {
+                        "Details": {
+                            "separator_before": false,
+                            "separator_after": false,
+                            "label": "Details",
+                            "action": function (obj) {
+                                window.location.href = $node.a_attr.href;
+                            }
+                        }
+                    };
+                }
+            }
+        });
 
         $(".check").click(function () {
             if ($(this).is(":checked")) {
                 var stockId = Number($(this).attr("value"));
-                var amount = Number($(this).attr("amount"));            
+                var amount = Number($(this).attr("amount"));
                 selectedAmountList.set(stockId, amount);
                 hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
             } else {
