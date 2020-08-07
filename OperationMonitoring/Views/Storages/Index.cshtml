@@ -355,6 +355,7 @@
         }
 
         hubConnection.on("Receive", function (data) {
+            console.log("recieve");
             $(pagedList + " tbody").empty();
             var json = JSON.parse(data);
             for (let i = 0; i < json.length; i++) {
@@ -429,13 +430,18 @@
         });
 
         $(function () {
-            $('#storagesTreeViewFrom').on("select_node.jstree", function (e, data) {
-                console.log("select");
+            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
                 search = $("#searchString").val();
                 storageId = Number(data.selected);
                 hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
             });
         });
+
+        $('.js-btn-search').click(function () {
+            console.log("send");
+            search = $("#searchString").val();
+            hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
+        })
 
         var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
 

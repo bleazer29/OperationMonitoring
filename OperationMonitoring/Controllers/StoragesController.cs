@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OperationMonitoring.Data;
 using OperationMonitoring.Helpers;
-using OperationMonitoring.Hubs;
 using OperationMonitoring.Models;
 using X.PagedList;
 
@@ -18,7 +16,6 @@ namespace OperationMonitoring.Controllers
     public class StoragesController : Controller
     {
         private readonly ApplicationContext db;
-        public List<Stock> SelectedStocks = new List<Stock>();
         private int pageSize = 10;
         public StoragesController(ApplicationContext context)
         {

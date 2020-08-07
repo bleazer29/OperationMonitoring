@@ -527,6 +527,7 @@ namespace OperationMonitoring.Hubs
                 .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
                 .Include(x => x.Part).ThenInclude(x => x.Status)
                 .Include(x => x.Equipment).ThenInclude(x => x.Status)
+                .Where(x => x.Amount > 0)
                 .ToList();
             stocks = SearchStocks(searchString, storageId, searchField, searchedObjType, stocks).Result;
             var json = JsonConvert.SerializeObject(stocks);
@@ -610,6 +611,10 @@ namespace OperationMonitoring.Hubs
                 {
                     temp.AddRange(stocks.Where(x => x.Storage.Id == child.Id && (x.Amount > 0 || x.Part.Amount > 0)).ToList());
                 }
+            }
+            else
+            {
+                temp = stocks;
             }
             if(searchedObjType != "All")
             {
