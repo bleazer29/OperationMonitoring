@@ -288,14 +288,18 @@
         }
 
         function parseCheckBox(jsonObj) {
+            var isChecked = "";
+            if (selectedAmountList.has(jsonObj.Id))
+                isChecked = "checked='true'";
+
             var res = "";
             if (jsonObj.Nomenclature != null) {
-                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck' type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
             }
             else if (jsonObj.Part != null) {
-                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck' type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
             } if (jsonObj.Equipment != null) {
-                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck' type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
             }
 
             return res;
@@ -368,6 +372,7 @@
             var json = JSON.parse(data);
             for (let i = 0; i < json.length; i++) {
                 console.log(json[i]);
+                
                 var title = parseTitle(json[i]);
                 var status = parseStatus(json[i]);
                 var vendorcode = parseVendorCode(json[i]);
@@ -379,7 +384,7 @@
                 var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
                 var trclass = parseStyle(json[i]);
                 var btnDetails = parseButton(json[i]);
-                var checkBox = parseCheckBox(json[i]);
+                
                 console.log(opertime);
 
                 $("#selected-nomenclature-table" + " tbody").append(
