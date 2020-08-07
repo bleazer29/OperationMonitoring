@@ -126,7 +126,7 @@ namespace OperationMonitoring.Controllers
 
         // GET: StoragesController/Delete/5
         public ActionResult Transfer(string st)
-        //{
+        {
         //    List <SelectedStock> selectedStocks = JsonConvert.DeserializeObject<List<SelectedStock>>(st);           
         //    List<Stock> selected = new List<Stock>();
         //    for (int i = 0; i < selectedStocks.Count; i++)
