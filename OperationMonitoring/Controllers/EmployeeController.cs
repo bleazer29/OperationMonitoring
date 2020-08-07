@@ -9,6 +9,9 @@ using OperationMonitoring.ModelsIdentity.Security;
 using Microsoft.AspNetCore.DataProtection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OperationMonitoring.Controllers
 {
@@ -19,26 +22,33 @@ namespace OperationMonitoring.Controllers
         private readonly ApplicationContext db;
         private readonly IDataProtector protector;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IMemoryCache memoryCache;
+
+
         public EmployeeController(ApplicationContext db, IDataProtectionProvider dataProtectionProvider,
-            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager)
+            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager,
+            IMemoryCache memoryCache)
         {
             this.db = db;
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
+            this.memoryCache = memoryCache;
         }
 
-        public ActionResult Index()
-        {
-            return View(db.Employees.AsNoTracking().ToList().Select(e =>
-            {
-                e.EncryptedId = protector.Protect(e.Id.ToString());
-                return e;
-            }));
-        }
+        //public async Task<ActionResult> Index()
+        //{
+        //    var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+
+        //    return View(listEmployees.Select(e =>
+        //    {
+        //        e.EncryptedId = protector.Protect(e.Id.ToString());
+        //        return e;
+        //    }));
+        //}
 
 
         // GET: Employee/Details/5
-        public ActionResult Details(string id)
+        public  ActionResult Details(string id)
         {
             return View(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
         }
@@ -49,7 +59,7 @@ namespace OperationMonitoring.Controllers
         // POST: Employee/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Employee employees)
+        public async Task<ActionResult> Create(Employee employees)
         {
             try
             {
@@ -60,11 +70,11 @@ namespace OperationMonitoring.Controllers
                     LastName = employees.LastName,
                     Patronymic = employees.Patronymic
                 };
-                db.Add(employee);
-                db.SaveChanges();
+                await db.AddAsync(employee);
+                await db.SaveChangesAsync();
                 return RedirectToAction("AdminPanel","Admin");
             }
-            catch {   return View();   }
+            catch {  return View(); }
         }
 
         // GET: Employee/Edit/5
@@ -76,14 +86,14 @@ namespace OperationMonitoring.Controllers
         // POST: Employee/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, Employee employees)
+        public async Task<ActionResult> Edit(string id, Employee employees)
         {
             try
             {
                 employees.EncryptedId = id;
                 employees.Id = Convert.ToInt32(protector.Unprotect(id));
                 db.Entry(employees).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("AdminPanel", "Admin");
             }
             catch
@@ -98,27 +108,31 @@ namespace OperationMonitoring.Controllers
             return View(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
         }
 
+        [HttpGet]
+        public IActionResult ErrorEmployee()
+        {
+            return View();
+        }
+
         // POST: Employee/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(string id, IFormCollection collection)
+        public async Task<ActionResult> Delete(string id, IFormCollection collection)
         {
             try
             {
                 var userId = userManager.GetUserId(HttpContext.User);
-                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))) ;
-               
-                if (employee.IdentityUser ==null || employee.IdentityUser.Id != userId)
+                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
+                if (employee.IdentityUser == null || employee.IdentityUser.Id != userId)
                 {
-                    db.Employees.Remove(db.Employees.FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
-                    db.SaveChanges();
-                    return RedirectToAction("AdminPanel", "Admin");
+                    db.Employees.Remove(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("AdminPanel", "Admin") ;
                 }
                 else
                 {
-                    return Content("Извините, но вы не можете удалить свои данные! Для редактирование перейдите во вкладу List Employee!");
+                    return RedirectToAction(nameof(ErrorEmployee));
                 }
-                
             }
             catch { return View(); }
         }

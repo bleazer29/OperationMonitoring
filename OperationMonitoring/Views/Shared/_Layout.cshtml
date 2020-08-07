@@ -14,7 +14,6 @@
     <script src="~/lib/vakata-jstree-6dce227/dist/jstree.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
-
 <body>
     <div class="main">
         <!-- HEADER -->
@@ -28,13 +27,14 @@
                         @if (signInManager.IsSignedIn(User))
                         {
                             <a asp-controller="Equipment" asp-action="Index" class="header-nav__item">Equipment</a>
-            <a asp-controller="Counterparties" asp-action="Index" class="header-nav__item">Counterparties</a>
-            <a asp-controller="Providers" asp-action="Index" class="header-nav__item">Providers</a>
-            <a asp-controller="Nomenclature" asp-action="Index" class="header-nav__item">Nomenclature</a>
-            <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
-            <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
-            <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
-            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
+                            <a asp-controller="Assemblies" asp-action="Index" class="header-nav__item">Assemblies</a>
+                            <a asp-controller="Counterparties" asp-action="Index" class="header-nav__item">Counterparties</a>
+                            <a asp-controller="Providers" asp-action="Index" class="header-nav__item">Providers</a>
+                            <a asp-controller="Nomenclature" asp-action="Index" class="header-nav__item">Nomenclature</a>
+                            <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
+                            <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
+                            <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
+                            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
 
                             @if (User.IsInRole("Admin"))
                             {
@@ -88,11 +88,3 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-
-
-@section Scripts{
-    <script type="text/javascript">
-
-    </script>
-
-}

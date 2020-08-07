@@ -16,8 +16,9 @@ namespace OperationMonitoring.Hubs
     public class DataFilterHub : Hub
     {
         ApplicationContext db;
-            private List<Storage> childrenStorages = new List<Storage>();
-            private List<Stock> SelectedStocks = new List<Stock>();
+        private List<Storage> childrenStorages = new List<Storage>();
+        private List<Stock> SelectedStocks = new List<Stock>();
+
         public DataFilterHub(ApplicationContext context)
         {
             Console.WriteLine("Hub created");
@@ -716,7 +717,6 @@ namespace OperationMonitoring.Hubs
                 foreach (var stock in stocks)
                 {
                     await WriteOffStock(stock, "Stock was written off");
-
                     if (stock.Nomenclature != null)
                     {
                         await ImportStock(stock, importStorage, "Nomenclature");

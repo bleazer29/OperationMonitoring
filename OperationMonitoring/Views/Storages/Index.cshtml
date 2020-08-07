@@ -95,6 +95,24 @@
             searchObjType = $('#type-search-select').val();
         });
 
+
+        $('#storage-select-modal').hide();
+
+        $('#select-storage-from-btn').click(function () {
+            $('#storage-select-modal').fadeIn();
+        })
+        $('#select-storage-to-btn').click(function () {
+            $('#storage-select-modal').fadeIn();
+        })
+
+        $(window).click(function (event) {
+            console.log(event.target);
+            if (event.target.id == 'storage-select-modal' || event.target.id == 'storage-select-modal-close') {
+                $('#storage-select-modal').hide();
+            }
+        });
+
+
         const hubConnection = new signalR.HubConnectionBuilder()
             .withUrl("/data")
             .configureLogging(signalR.LogLevel.Information)

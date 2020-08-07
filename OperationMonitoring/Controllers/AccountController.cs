@@ -54,29 +54,6 @@ namespace OperationMonitoring.Controllers
 
                     // добавляем пользователя
                     var result = await userManager.CreateAsync(user, model.Password);
-                   
-                    /////////////////////////////////////////////////////////////
-
-                    //Добавление первой роли для администратора
-                    //IdentityRole identityRole = new IdentityRole 
-                    //{
-                    //    Name = "Admin"
-                    //};
-
-
-                    //IdentityResult rolesResult = await this.roleManager.CreateAsync(identityRole);
-
-                    //var firstRoles = new IdentityUserRole<string>
-                    //{
-                    //    RoleId = identityRole.Id,
-                    //    UserId = user.Id
-                    //};
-
-                    //db.UserRoles.Add(firstRoles);
-                    //db.SaveChanges();
-
-
-                    /////////////////////////////////////////////////////////////////
                     if (result.Succeeded)
                     {
                         Employee employee = new Employee
@@ -98,13 +75,8 @@ namespace OperationMonitoring.Controllers
                         return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
                        
                     }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                    }
+                    else  foreach (var error in result.Errors)  {   ModelState.AddModelError(string.Empty, error.Description); }
+                    
                 }
                 return View(model);
             } 
@@ -138,10 +110,7 @@ namespace OperationMonitoring.Controllers
 
 
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() { return View(); }
 
         [HttpPost]
         [AllowAnonymous]

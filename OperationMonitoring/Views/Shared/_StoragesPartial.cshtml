@@ -4,16 +4,31 @@
     ViewData["Title"] = "Storages";
 }
 
-<div class="flex-container">
-    <div class="storagesTreeView-container">
-        <div class="content-heading">
-            <h4><a class="all-storages-link" href="" storage-id="0">Storages</a></h4>
-            <a class="btn btn-primary" asp-action="Create">+</a>
-        </div>
-        <div id="storagesTreeViewExport">
+<div class="storages-select">
+    <div class="storage-select-from flex-container search-panel">
+        <label class="control-label">From: </label> <input id="select-storage-from-tb" disabled="disabled" type="text" class="search-textbox"/>
+        <button id="select-storage-from-btn" class="btn btn-primary">Select...</button>
+    </div>
+    <div class="storage-select-to flex-container search-panel">
+        <label class="control-label">To: </label> <input id="select-storage-to-tb" disabled="disabled"  type="text" class="search-textbox"/>
+        <button id="select-storage-to-btn" class="btn btn-primary">Select...</button>
+    </div>
+</div>
+<div id="storage-select-modal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="storagesTreeView-container">
+            <div class="content-heading">
+                <h4><a class="all-storages-link" href="" storage-id="0">Storages</a></h4>
+                <a class="btn btn-primary" asp-action="Create">+</a>
+            </div>
+            <div id="storagesTreeViewExport">
 
+            </div>
         </div>
     </div>
+</div>
+<div class="flex-container">
     <div class="storage-items-container" style="max-width:initial">
         <!-- SEARCH PANEL -->
         <div class="search-panel">
