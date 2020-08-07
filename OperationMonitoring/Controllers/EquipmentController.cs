@@ -150,10 +150,22 @@ namespace OperationMonitoring.Controllers
                         };
                         preset.PresetItems.Add(item);
                         db.PresetItems.Add(item);
-                    }
-                    await db.SaveChangesAsync();
+                    }                    
                 }
-
+                var assembleItem = db.Assemblies
+                    .FirstOrDefault(x => x.Equipment.Id == equipmentId && x.IsUsed == true);
+                if (assemble == true && assembleItem == null)
+                {
+                    assembleItem = new Assemble()
+                    {
+                        Equipment = equipment,
+                        Date = DateTime.Now,
+                        IsUsed = true
+                    };
+                    db.Assemblies.Add(assembleItem);
+                }
+                
+                await db.SaveChangesAsync();
                 if (assemble == true)
                 {
                     return RedirectToAction("Assemble", new { id = equipmentId });
