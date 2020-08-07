@@ -125,7 +125,7 @@
                                         <tr class="@tableClass">
                                             <td style="vertical-align:middle;align-content:center">
                                                 <label class="checkBox-container" for="nom-@item.Nomenclature.Id">
-                                                    <input class="transferCheck check" type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id" value="@item.Id" amount="@item.Amount">
+                                                    <input class="transferCheck check" onclick="addChecked(this);" type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id" value="@item.Id" amount="@item.Amount">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </td>
@@ -166,7 +166,7 @@
                                         <tr class="@tableClass">
                                             <td style="vertical-align: middle; align-content: center">
                                                 <label class="checkBox-container" for="part-@item.Part.Id">
-                                                    <input class="transferCheck check" type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id" value="@item.Id" amount="@item.Amount">
+                                                    <input class="transferCheck check" onclick="addChecked(this);" type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id" value="@item.Id" amount="@item.Amount">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </td>
@@ -244,7 +244,7 @@
                                         <tr class="@tableClass">
                                             <td style="vertical-align: middle; align-content: center">
                                                 <label class="checkBox-container" for="eq-@item.Equipment.Id">
-                                                    <input class="transferCheck check" type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id" value="@item.Id" amount="@item.Amount">
+                                                    <input class="transferCheck check" onclick="addChecked(this);" type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id" value="@item.Id" amount="@item.Amount">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </td>

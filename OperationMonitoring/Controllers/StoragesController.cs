@@ -247,11 +247,11 @@ namespace OperationMonitoring.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Transfer(int storageId, string stocksJSON)
+        public async Task<ActionResult> Transfer(int storageId, string stocksJSON)
         {
             try
             {
-                TransferStock(storageId, stocksJSON);
+                await TransferStock(storageId, stocksJSON);
                 return RedirectToAction("Index");
             }
             catch
@@ -262,11 +262,11 @@ namespace OperationMonitoring.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult WriteOff(int stockId, double amount)
+        public async Task<ActionResult> WriteOff(int stockId, double amount)
         {
             try
             {
-                SubtractStock(stockId, amount, "Stock was written off");
+                await SubtractStock(stockId, amount, "Stock was written off");
                 return RedirectToAction("Index");
             }
             catch
