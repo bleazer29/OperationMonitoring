@@ -34,7 +34,7 @@
 
 <div class="container">
     @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
-    {
+     {
         <div class="nomenclature-table selected-nomenclature-table" id="selected-nomenclature-table">
             <div class="scrollable-table" style="overflow-x:scroll;">
                 <table class="table">
@@ -93,8 +93,9 @@
         </div>
 
         <input type="hidden" id="JSONId" name="JSONId" value="" />
+        <button id="writeOffBTN" class="btn btn-primary" type="button" style="display:block;width:100%;">Write off</button>
         <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
-    }
+     }
 </div>
 
 @section Scripts{
