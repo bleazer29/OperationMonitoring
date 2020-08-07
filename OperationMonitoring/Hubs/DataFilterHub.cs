@@ -548,7 +548,7 @@ namespace OperationMonitoring.Hubs
         public async Task SendSelectedStocks()
         {
             var json = JsonConvert.SerializeObject(Context.Items["SelectedStocks"]);
-            await Clients.Caller.SendAsync("RecieveSelectedStock", json);
+            await Clients.Caller.SendAsync("RecieveSelectedStocks", json);
         }
 
         public Stock GetStock(int id)
@@ -565,6 +565,12 @@ namespace OperationMonitoring.Hubs
         public async Task AddSelectedStock(int stockId)
         {
             var stock = GetStock(stockId);
+            if (Context.Items["SelectedStocks"] != null)
+            {
+                var temp = Context.Items["SelectedStocks"] as List<Stock>;
+                SelectedStocks = temp;
+                Context.Items.Remove("SelectedStocks");
+            }
             SelectedStocks.Add(stock);
             Context.Items.Add("SelectedStocks", SelectedStocks);
             await SendSelectedStocks();
@@ -572,8 +578,15 @@ namespace OperationMonitoring.Hubs
 
         public async Task RemoveSelectedStock(int stockId)
         {
-            var stock = GetStock(stockId);
-            SelectedStocks.Remove(stock);
+           
+            if (Context.Items["SelectedStocks"] != null)
+            {
+                var temp = Context.Items["SelectedStocks"] as List<Stock>;
+                SelectedStocks = temp;
+                Context.Items.Remove("SelectedStocks");
+            }
+            Stock removeStock = SelectedStocks.FirstOrDefault(x => x.Id == stockId);
+            if(removeStock!=null) SelectedStocks.Remove(removeStock);
             Context.Items.Add("SelectedStocks", SelectedStocks);
             await SendSelectedStocks();
         }
