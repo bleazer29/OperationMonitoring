@@ -123,27 +123,23 @@ namespace OperationMonitoring.Controllers
 
         // GET: StoragesController/Delete/5
         public ActionResult Transfer(string st)
-        {
-            List<int> idsList = JsonConvert.DeserializeObject<List<int>>(st);
-            List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
-           .Include(x => x.Equipment).ThenInclude(x => x.Status)
-           .Include(x => x.Part).ThenInclude(x => x.Status)
-           .ToList();
-            List<Stock> selected = new List<Stock>();
-            for (int i = 0; i < idsList.Count; i++)
-            {
-                Stock stock = stocks.FirstOrDefault(x => x.Id == idsList[i]);
-                if (stock != null) selected.Add(stock);
-            }
-            ViewBag.Stocks = selected;
+        //{
+        //    List <SelectedStock> selectedStocks = JsonConvert.DeserializeObject<List<SelectedStock>>(st);           
+        //    List<Stock> selected = new List<Stock>();
+        //    for (int i = 0; i < selectedStocks.Count; i++)
+        //    {
+        //        Stock stock = stocks.FirstOrDefault(x => x.Id == selectedStocks[i].StockId);
+        //        if (stock != null) selected.Add(stock);
+        //    }
+        //    ViewBag.Stocks = selected;
 
-            List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
-            List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
-            foreach (Storage storage in storages)
-            {
-                treeViewStorages.Add(new TreeViewStorage(storage));
-            }
-            ViewBag.TreeViewStorages = treeViewStorages;
+        //    List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
+        //    List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
+        //    foreach (Storage storage in storages)
+        //    {
+        //        treeViewStorages.Add(new TreeViewStorage(storage));
+        //    }
+        //    ViewBag.TreeViewStorages = treeViewStorages;
             return View();
         }
 

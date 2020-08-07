@@ -73,9 +73,7 @@
 
         <input type="hidden" id="JSONId" name="JSONId" value="" />
         <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
-
     }
-
 </div>
 
 @section Scripts{
@@ -88,7 +86,7 @@
         var sortAsc = true; // default
         var storageId = 0;
 
-        var selectedAmountList = [];
+        var selectedAmountList = new Map();
 
         var pagedList = "#paged-list";
         GenList(pagedList);
@@ -309,7 +307,7 @@
             }
             return rowStyle;
         }
-
+        
         hubConnection.on("Receive", function (data) {
             $(pagedList + " tbody").empty();
             var json = JSON.parse(data);
@@ -424,14 +422,13 @@
 
         $(".check").click(function () {
             if ($(this).is(":checked")) {
-                
-                var st = Number($(this).attr("value"));
-                var am = Number($(this).attr("amount"));
-                selectedAmountList.set(st, am);
-                hubConnection.invoke("AddSelectedStock", st);
+                var stockId = Number($(this).attr("value"));
+                var amount = Number($(this).attr("amount"));            
+                selectedAmountList.set(stockId, amount);
+                hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
             } else {
                 var st = Number($(this).attr("value"));
-                selectedAmountList.delete(st)
+                selectedAmountList.delete(st);
                 hubConnection.invoke("RemoveSelectedStock", st);
             }
         });
@@ -443,9 +440,17 @@
             selectedAmountList.set(stId, amount);
         }
 
-        $("#submitBTN").click(function() {
-            console.log(JSON.stringify(selectedAmountList));
-            $("#JSONId").val(JSON.stringify(selectedAmountList));
+        $("#submitBTN").click(function () {
+            var temp = [];
+            for (const [key, value] of selectedAmountList.entries()) {
+                let elem = {
+                    StockId: key,
+                    Amount: value
+                }
+                temp.push(elem);
+            }
+            console.log(JSON.stringify(temp));
+            $("#JSONId").val(JSON.stringify(temp));
         });
 
         hubConnection.start();
