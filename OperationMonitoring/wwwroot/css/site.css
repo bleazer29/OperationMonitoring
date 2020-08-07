@@ -95,12 +95,12 @@ a {
     text-decoration: none;
     outline: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    color: #FF8A65;
+    color: #d32954;
     transition: .2s;
 }
 
     a:hover, a:active, a:focus {
-        color: #F4511E;
+        color: #ce1141;
         text-decoration: underline;
     }
 
@@ -153,16 +153,14 @@ html, body {
 .main {
     min-height: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
+    align-items: stretch;
     width: 100%;
-    padding-top: 100px;
 }
 
 .container {
     width: 100%;
-    max-width: 1400px;
-    padding: 0 25px;
+    padding: 0 30px 0 35px;
     text-align: left;
     margin: 0 auto;
 }
@@ -171,67 +169,91 @@ html, body {
     display: block;
     position: relative;
     width: 100%;
-    padding: 40px 0 50px;
+    padding: 30px 0 45px;
 }
 
 .footer {
     margin-bottom: 0;
     margin-top: auto;
-    background: #37474F;
-    padding: 20px;
+    background: #c9d3d8;
+    padding: 13px 20px;
     text-align: center;
     width: 100%;
 }
 
 .footer-copyright {
-    color: #fff;
+    color: #37474F;
     font-size: 12px;
+    padding-top: 0;
 }
 
 .header {
-    background: #37474F;
-    color: #fff;
-    padding: 20px 0;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 10;
-}
-.header a,
-.header a:hover,
-.header a:focus,
-.header a:active{
     color: #fff;
 }
-.header .container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
+.nav a,
+.nav a:hover,
+.nav a:focus,
+.nav a:active{
+    color: #fff;
 }
 .header-heading{
-    font-size: 32px;
+    font-size: 27px;
     font-weight: 300;
     margin: 0;
+    opacity: 1;
+    display: block;
+    transition: .2s;
 }
-
+.header-letter{
+    font-size: 27px;
+    margin: 0;
+    font-weight: 300;
+    display: none;
+    opacity: 0;
+    transition: .2s;
+}
 @media only screen and (max-width: 1024px) {
-    .main {
-        padding-top: 70px;
-    }
-
     .header-heading {
         font-size: 24px;
     }
 }
-
-.header-nav {
+.main-column__center{
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(100% - 220px);
+    margin-left: 220px;
 }
-
-.header-nav__icon {
+.main-column__left{
+    background: #37474F;
+    position: fixed;
+    color: #fff;
+    z-index: 25;
+    width: 220px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 15px 10px 15px 10px;
+}
+.main-column__left-inner{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.nav hr{
+    display: block;
+    height: 2px;
+    background: rgba(255,255,255,.3);
+    border: none;
+    width: auto;
+    margin: 10px 5px 10px 0;
+}
+.nav__container {
+    display: flex;
+    flex-direction: column;
+}
+.nav__icon {
     padding: 5px;
     width: 50px;
     height: 50px;
@@ -239,7 +261,7 @@ html, body {
     align-items: center;
 }
 
-.header-nav__icon i {
+.nav__icon i {
     display: block;
     position: relative;
     height: 2px;
@@ -247,8 +269,8 @@ html, body {
     background: #fff;
 }
 
-.header-nav__icon i:before,
-.header-nav__icon i:after {
+.nav__icon i:before,
+.nav__icon i:after {
     content: "";
     position: absolute;
     display: block;
@@ -258,49 +280,49 @@ html, body {
     background: #fff;
 }
 
-.header-nav__icon i:before {
+.nav__icon i:before {
     top: -10px;
     transition: .2s;
 }
 
-.header-nav__icon i:after {
+.nav__icon i:after {
     bottom: -10px;
     transition: .2s;
 }
 
-.header-nav__icon.menu-open i {
+.nav__icon.menu-open i {
     background: none;
 }
 
-.header-nav__icon.menu-open i:before {
+.nav__icon.menu-open i:before {
     transform: rotate(45deg);
     top: 1px;
 }
 
-.header-nav__icon.menu-open i:after {
+.nav__icon.menu-open i:after {
     transform: rotate(-45deg);
     bottom: 1px;
 }
 
-.header-nav__container {
+.nav__container {
     display: flex;
     padding-top: 10px;
 }
 
-.header-nav__item {
+.nav__item {
     font-size: 18px;
     text-transform: uppercase;
-    margin: 0 10px;
+    margin: 5px 0;
 }
 
 @media only screen and (max-width: 800px) {
-    .header-nav__icon {
+    .nav__icon {
         display: flex;
         cursor: pointer;
         z-index: 15;
     }
 
-    .header-nav__container {
+    .nav__container {
         z-index: 14;
         background: #37474F;
         position: fixed;
@@ -314,7 +336,7 @@ html, body {
         display: none;
     }
 
-    .header-nav__item {
+    .nav__item {
         margin: 7px;
         font-size: 22px;
     }
@@ -375,14 +397,14 @@ p {
 }
 
 .btn-primary {
-    background: #FFB74D;
+    background: #ce1141;
     color: #fff;
 }
 
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background: #FFA726;
+    background: #b90f3b;
     color: #fff;
     text-decoration: none;
 }
@@ -722,14 +744,14 @@ p {
 .table-equipment .btn {
     padding: 10px 15px;
     margin: 0;
-    background: #FFB74D;
+    background: #ce1141;
     color: #fff;
     width: max-content;
 }
 .table-equipment .btn:hover,
 .table-equipment .btn:focus,
 .table-equipment .btn:active {
-    background: #FFA726;
+    background: #b90f3b;
     color: #fff;
     text-decoration: none;
 }
@@ -1024,13 +1046,18 @@ p {
 }
 
 .table-time-danger .time-text {
-    color: #DD2C00;
+    color: #ce1141;
     font-weight: 600;
 }
 
 .table-time-danger .btn {
-    background: #DD2C00;
+    background: #ce1141;
+    color: #fff;
 }
+.table-time-danger a {
+    color: #ce1141;
+}
+
 
 .simple-pagination {
     margin-top: 15px;
@@ -1070,16 +1097,16 @@ p {
 .simple-pagination-navigation-page:hover {
     text-decoration: none !important;
     color: #fff;
-    background: #FFB74D;
-    border-color: #FFB74D;
+    background: #ce1141;
+    border-color: #ce1141;
 }
 
 .simple-pagination-navigation-page.simple-pagination-navigation-disabled {
     cursor: default;
     text-decoration: none !important;
     color: #fff;
-    background: #FFB74D;
-    border-color: #FFB74D;
+    background: #ce1141;
+    border-color: #ce1141;
 }
 
 .simple-pagination-navigation-page:first-child:last-child {
@@ -1310,7 +1337,7 @@ td.nomenclature-list-amount{
 }
 .btn-remove{
     position: relative;
-    background: tomato;
+    background: #ce1141;
     padding: 0;
     width: 35px;
     height: 35px;
@@ -1345,4 +1372,88 @@ td.nomenclature-list-amount{
     align-items: flex-start;
     justify-content: flex-start;
 }
+.mCSB_inside > .mCSB_container{
+    margin-right: 20px;
+}
+.mCSB_horizontal.mCSB_inside > .mCSB_container{
+    margin-bottom: 25px;
+}
+.mCS-dark.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+    background: #90A4AE !important;
+}
+.mCS-dark.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar{
+    background: #73838b !important;
+}
+.navigation-open .nav-fold{
+    position: absolute;
+}
 
+
+.transferCheck {
+    width: 20px;
+    height: 20px;
+    background-color: floralwhite;
+}
+/*CheckBox*/
+/* Customize the label (the container) */
+.checkBox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+/* Hide the browser's default checkbox */
+.checkBox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #fff;
+    border:1px solid #90A4AE;
+    border-radius: 3px;
+}
+/* On mouse-over, add a grey background color */
+.checkBox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+/* When the checkbox is checked, add a blue background */
+.checkBox-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+/* Show the checkmark when checked */
+.checkBox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+/* Style the checkmark/indicator */
+.checkBox-container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

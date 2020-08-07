@@ -5,84 +5,78 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - OperationMonitoring</title>
-    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/vakata-jstree-6dce227/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="~/css/jquery.mCustomScrollbar.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/jquery-simple-pagination-plugin.js"></script>
     <script src="~/lib/vakata-jstree-6dce227/dist/jstree.min.js"></script>
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <div class="main">
-        <!-- HEADER -->
-        <header class="header">
-            <div class="container">
-                <h1 class="header-heading">Weatherford</h1>
-                <div class="header-nav">
-                    <span class="header-nav__icon"><i></i></span>
-                    <div class="header-nav__container">
+        <div class="main-column__left">
+            <div class="main-column__left-inner navigation-open"> <!-- later - remember user settings for navigation? -->
+                <!-- HEADER -->
+                <header class="header">
+                    <h1 class="header-letter">W</h1>
+                    <h1 class="header-heading">Weatherford</h1>
+                </header>
+                <div class="nav-fold">
+                    <span class="nav__icon"><i></i></span>
+                </div>
+                <div class="nav">
+                    <div class="nav__container">
+                        @*<div class="nav-item">
+            <form method="post" asp-action="logout" asp-controller="account">
+                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                    Logout @User.Identity.Name
+                </button>
+            </form>
+        </div>*@
+                        <a asp-controller="Equipment" asp-action="Index" class="nav__item">Equipment</a>
+                        <a asp-controller="Assemblies" asp-action="Index" class="nav__item">Assemblies</a>
+                        <a asp-controller="Counterparties" asp-action="Index" class="nav__item">Counterparties</a>
+                        <a asp-controller="Providers" asp-action="Index" class="nav__item">Providers</a>
+                        <a asp-controller="Nomenclature" asp-action="Index" class="nav__item">Nomenclature</a>
+                        <a asp-controller="Storages" asp-action="Index" class="nav__item">Storages</a>
+                        <a asp-controller="Orders" asp-action="Index" class="nav__item">Orders</a>
+                        <a asp-controller="Maintenance" asp-action="Index" class="nav__item">Maintenance</a>
+                        <hr />
+                        <a asp-action="" class="nav__item">Users</a>
+                        <a asp-controller="Admin" asp-action="AdminPanel" class="nav__item">Admin Panel</a>
+                        <hr />
+                        <a asp-controller="Settings" asp-action="Index" class="nav__item">Settings</a>
+                        @*<a asp-controller="Account" asp-action="ChangePassword" class="nav__item">Password</a>
+        <a asp-controller="Account" asp-action="EditProfile" class="nav__item">Profile</a>*@
+                        <a asp-action="logout" asp-controller="account" class="nav__item">Logout @User.Identity.Name</a>
 
-                        @if (signInManager.IsSignedIn(User))
-                        {
-                            <a asp-controller="Equipment" asp-action="Index" class="header-nav__item">Equipment</a>
-                            <a asp-controller="Assemblies" asp-action="Index" class="header-nav__item">Assemblies</a>
-                            <a asp-controller="Counterparties" asp-action="Index" class="header-nav__item">Counterparties</a>
-                            <a asp-controller="Providers" asp-action="Index" class="header-nav__item">Providers</a>
-                            <a asp-controller="Nomenclature" asp-action="Index" class="header-nav__item">Nomenclature</a>
-                            <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
-                            <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
-                            <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
-                            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
-
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a class="header-nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
-                            }
-                            <a class="header-nav__item" asp-controller="Account" asp-action="ChangePassword">
-                                Password
-                            </a>
-                            <a class="header-nav__item" asp-controller="Account" asp-action="EditProfile">
-                                Profile
-                            </a>
-
-                        }
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <div class="nav-item">
-                                <form method="post" asp-action="logout" asp-controller="account">
-                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
-                                        Logout @User.Identity.Name
-                                    </button>
-                                </form>
-                            </div>
-                        }
-                        else
-                        {
-                            <a class="header-nav__item" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                            <a class="header-nav__item" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                        }
                     </div>
                 </div>
             </div>
-        </header>
-
-        <!-- CONTENT -->
-        <div class="content">
-            <div class="container">
-
-                @RenderBody()
-
-            </div>
         </div>
 
-        <!-- FOOTER -->
-        <footer class="footer">
-            <p class="footer-copyright">
-                &copy; 2020 - Infocom LTD
-            </p>
-        </footer>
+        <div class="main-column__center">
+            <!-- CONTENT -->
+            <div class="content">
+                <div class="container">
+
+                    @RenderBody()
+
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="footer">
+                <p class="footer-copyright">
+                    &copy; 2020 - Infocom LTD
+                </p>
+            </footer>
+        </div>
+
     </div>
 
     @RenderSection("Scripts", required: false)

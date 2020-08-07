@@ -1,5 +1,9 @@
 ﻿
-$(document).ready(function () {
+$(document).ready(function () {   
+    $(".main-column__left-inner").mCustomScrollbar();
+    if($("#paged-list").length){
+        $("#paged-list").mCustomScrollbar({ axis:"x", theme: "dark" });
+    }
     $(".js-btn-edit").click(function () {
         $(this).parent().hide().next().fadeIn();
     });
@@ -167,7 +171,6 @@ $(document).ready(function () {
     
 });
 
-});
 
 function confirmDelete(uniqueId, isDeleteClicked) {
     var deleteSpan = 'deleteSpan_' + uniqueId;
