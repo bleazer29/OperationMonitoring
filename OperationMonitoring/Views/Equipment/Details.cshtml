@@ -1,0 +1,260 @@
+﻿@model OperationMonitoring.Models.Equipment
+
+<div class="content-heading">
+    <div class="content-heading__info">
+        <h4>
+            Information about equipment -
+            @Html.DisplayFor(model => model.Title)
+            <span class="equip-current-status">
+                Status:
+                @Html.DisplayFor(model => model.Status.Title)
+            </span>
+        </h4>
+    </div>
+</div>
+
+<!-- INFO -->
+<div class="info-panel">
+    <!-- GENERAL INFO -->
+    @{
+        ViewData["Controller"] = "Equipment";
+        <partial name="_EquipmentInfo" model="Model" view-data="ViewData" />
+    }
+    <!-- EDIT FORM -->
+    <div class="EditEquipmentForm form-pos hidden">
+        <form asp-controller="Equipment"
+              asp-action="EditEquipment" method="post"
+              asp-route-equipmentId="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Department" class="control-label"></label>
+                <select name="editDepartment" class="form-select" asp-items="@(new SelectList(ViewBag.DepartmentList, "Id", "Title"))">
+                </select>
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select name="editCategory" class="form-select" asp-items="@(new SelectList(ViewBag.CategoryList, "Id", "Title"))">
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select name="editType" class="form-select" asp-items="@(new SelectList(ViewBag.TypeList, "Id", "Title"))">
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input name="editTitle" required value="@Model.Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SerialNum" class="control-label"></label>
+                <input name="editSerialNum" required value="@Model.SerialNum" class="form-control" />
+                <span asp-validation-for="SerialNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InventoryNum" class="control-label"></label>
+                <input name="editInventoryNum" required value="@Model.InventoryNum" class="form-control" />
+                <span asp-validation-for="InventoryNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiameterOuter" class="control-label"></label>
+                <input name="editDiameterOuter" required type="number" value="@Model.DiameterOuter" class="form-control" />
+                <span asp-validation-for="DiameterOuter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiameterInner" class="control-label"></label>
+                <input name="editDiameterInner" required type="number" value="@Model.DiameterInner" class="form-control" />
+                <span asp-validation-for="DiameterInner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Length" class="control-label"></label>
+                <input name="editLength" required type="number" value="@Model.Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OperatingTime" class="control-label"></label>
+                <input name="editOperatingTime" required type="number" value="@(Model.OperatingTime / 60)" min="0" class="form-control" />
+                <span asp-validation-for="OperatingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarningTime" class="control-label"></label>
+                <input name="editWarningTime" required type="number" value="@(Model.WarningTime / 60)" min="0" class="form-control" />
+                <span asp-validation-for="WarningTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+    <!-- ASSEMBLY INFO -->
+    @if (Model.Status.Title == "RFU" || Model.Status.Title == "JF" || Model.Status.Title == "WS")
+    {
+        <div class="form-pos form-info">
+            <div class="form-info__heading">
+                <span>Assembly information</span>
+                <i class="icon-arrow"></i>
+            </div>
+            <div class="info-dropdown">
+                @*@foreach (var item in assembly)
+                    {
+                        <div class="form-info__item">
+                            <div class="form-info__label">
+                                Title, specification
+                            </div>
+                            <div class="form-info_data">
+                                x amount
+                            </div>
+                        </div>
+                    }*@
+            </div>
+        </div>
+    }
+</div>
+<!-- assemble -->
+@if (Model.Status.Title == "NA")
+{
+    <a asp-action="Preset" asp-route-id="@Model.Id" class="btn btn-primary btn-auto">Assemble Equipment</a>
+}
+
+<!-- DAILY NOTES -->
+@{
+    ViewData["Controller"] = "Equipment";
+    ViewData["EquipmentId"] = Model.Id;
+    ViewData["EntityType"] = "General";
+    ViewData["EntityId"] = null;
+    ViewData["Heading"] = "Daily notes";
+    <partial name="_FormAddNote" view-data="ViewData" />
+}
+
+<!-- OPEN ORDER -->
+@if (Model.Status.Title == "RFU")
+{
+    <span class="btn btn-primary js-form-show btn-auto">Open Working Order</span>
+    <div class="form-pos hidden">
+        <form asp-controller="Equipment" asp-action="OpenOrder" id="formOpenOrder" asp-route-equipmentId="@Model.Id">
+            @if (ViewBag.ClientList != null)
+            {
+                <div class="form-group">
+                    <label class="control-label">Counterparty</label>
+                    <select name="orderClient" class="form-select" asp-items="@(new SelectList(ViewBag.CounterpartyList, "Id", "Name"))">
+                        <option value="-1">Select</option>
+                    </select>
+                    <span class="text-danger hidden">Client must be selected</span>
+                </div>
+                <!-- Options in each next select should be loaded after previous select change -->
+                <div class="form-group">
+                    <label class="control-label">Agreement</label>
+                    <select disabled name="orderContract" class="form-select">
+                        <optgroup data-client="-1">
+                            <option value="-1">No active contracts</option>
+                        </optgroup>
+                        @{
+                            if (ViewBag.ContractList != null)
+                            {
+                                List<Agreement> contracts = ViewBag.AgreementList;
+                                int i = 0;
+                                while (i < contracts.Count)
+                                {
+                                    <optgroup label="@contracts[i].Counterparty.Title" data-client="@contracts[i].Counterparty.Id">
+                                        @{
+                                            var j = contracts[i].Counterparty.Id;
+                                            while (i < contracts.Count && contracts[i].Counterparty.Id == j)
+                                            {
+                                                <option value="@contracts[i].Id">@contracts[i].AgreementNumber</option>
+                                                i++;
+                                            }
+                                        }
+                                    </optgroup>
+                                }
+                            }
+                        }
+                    </select>
+                    <span class="text-danger hidden">Contract must be selected</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Well</label>
+                    <select disabled name="orderWell" class="form-select">
+                        <optgroup data-client="-1">
+                            <option value="-1">No active wells</option>
+                        </optgroup>
+                        @{
+                            if (ViewBag.WellList != null)
+                            {
+                                List<Well> wells = ViewBag.WellList;
+                                int i = 0;
+                                while (i < wells.Count)
+                                {
+                                    <optgroup label="@wells[i].Counterparty.Title" data-client="@wells[i].Counterparty.Id">
+                                        @{
+                                            var j = wells[i].Counterparty.Id;
+                                            while (i < wells.Count && wells[i].Counterparty.Id == j)
+                                            {
+                                                <option value="@wells[i].Id">@wells[i].Title</option>
+                                                i++;
+                                            }
+                                        }
+                                    </optgroup>
+                                }
+                            }
+                        }
+                    </select>
+                    <span class="text-danger hidden">Well must be selected</span>
+                </div>
+                <button class="btn btn-primary">Open Order</button>
+            }
+            else
+            {
+                <p>There is no Clients</p>
+            }
+        </form>
+    </div>
+}
+<!-- ORDER INFO -->
+@if (Model.Status.Title == "JF" && ViewBag.Order != null)
+{
+    ViewData["Controller"] = "Equipment";
+    ViewData["History"] = ViewBag.History;
+    <partial name="_OrderDeatils" model="ViewBag.Order" view-data="ViewData" />
+}
+
+<!-- START MAINTENANCE -->
+@if (Model.Status.Title == "WS")
+{
+    <a asp-action="StartMaintenance" asp-route-id="@Model.Id" class="btn btn-primary btn-auto">Start Maintenance</a>
+}
+<!-- MAINTENANCE INFO -->
+@if (Model.Status.Title == "SP" || Model.Status.Title == "RP")
+{
+    ViewData["Controller"] = "Equipment";
+    ViewData["Scans"] = ViewBag.Scans;
+    ViewData["History"] = ViewBag.History;
+    <partial name="_MaintenanceDetails" model="ViewBag.Maintenance" view-data="ViewData" />
+}
+
+<!-- HISTORY -->
+@{
+    ViewData["History"] = ViewBag.History;
+    ViewData["Type"] = "General";
+    <partial name="_History" view-data="ViewData" />
+}
+
+<!-- WARNING -->
+@if (Model.Status.Title != "NA" && Model.Status.Title != "SP" && Model.Status.Title != "RP" && Model.OperatingTime <= Model.WarningTime)
+{
+    if (Model.OperatingTime != 0)
+    {
+        <div class="alert-message alert-message-warning">
+            <p> Warning! Equipments resource is depleting. </p>
+        </div>
+    }
+    else
+    {
+        <div class="alert-message alert-message-danger">
+            <p> Warning! Equipment must be scheduled for maintenance. </p>
+        </div>
+    }
+}

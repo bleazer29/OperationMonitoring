@@ -50,5 +50,6 @@ namespace OperationMonitoring.Models
 
         [Display(Name = "Alert for Operating Time (hours)")]
         public int WarningTime { get; set; }
+        public Preset Preset { get; set; }
     }
 }

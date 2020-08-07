@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Manage.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OperationMonitoring.Data;
+using OperationMonitoring.Helpers;
 using OperationMonitoring.Models;
-using X.PagedList;
 
 namespace OperationMonitoring.Controllers
 {
@@ -22,16 +25,21 @@ namespace OperationMonitoring.Controllers
         }
 
         // GET: EquipmentController
-        public ActionResult Index(int? page, string searchString)
+        public ActionResult Index()
         {
-            var equipment = db.Equipment;
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            int pageSize = 5;
-            int pageNumber = (page ?? 1);
-            return View(equipment.ToPagedList(pageNumber, pageSize));
+            var equipment = db.Equipment.Include(x => x.Department)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .OrderBy(x => x.Status.Title)
+                .ToList();
+            ViewBag.Orders = db.Orders.Where(x => x.IsOpen == true)
+                .Include(x => x.Well)
+                .ThenInclude(c => c.Counterparty)
+                .Include(x => x.Equipment)
+                .Include(x => x.Agreement).ToList();
+            ViewBag.StatusList = db.EquipmentStatuses.ToList();
+            return View(equipment);
         }
 
         // CREATE
@@ -76,133 +84,304 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        // SEARCHING
-        private List<Nomenclature> Searching(List<Nomenclature> nomenclature,  string searchField, string searchString)
-        {
-            switch (searchField)
-            {
-                case "Title":
-                    nomenclature = nomenclature.Where(x => x.Title.ToLower()
-                        .Contains(searchString.ToLower())).ToList();
-                    break;
-                case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider.Title.ToLower()
-                        .Contains(searchString.ToLower())).ToList();
-                    break;
-                case "Code":
-                    nomenclature = nomenclature.Where(x => x.VendorCode.ToLower()
-                        .Contains(searchString.ToLower())).ToList();
-                    break;
-                default:
-                    break;
-            }
-
-            return nomenclature;
-        }
-
         // PRESET
-        public async Task<ActionResult> Preset(int id, int? presetId, int? page, string searchString, string searchField, string currentSearch, string presetParameters)
+        public async Task<ActionResult> Preset(int id)
         {
-            if (searchField.IsNullOrEmpty())
-            {
-                searchField = "Title";
-            }
-            ViewBag.SearchField = searchField;
-
             var nomenclature = db.Nomenclatures
                 .Include(x => x.Specification)
                 .ThenInclude(i => i.UsageType)
-                .Include(x => x.Provider).ToList();
+                .Include(x => x.Provider)
+                .OrderBy(x => x.VendorCode)
+                .ToList();
 
              var equipment = db.Equipment
                 .Include(x => x.Department)
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Include(x => x.Status)
+                .Include(x => x.Preset)
                 .FirstOrDefault(x => x.Id == id);
             ViewBag.Equipment = equipment;
-
-            var preset = db.Presets
+            if (equipment.Preset != null)
+            {
+                ViewBag.Preset = db.Presets
                .Include(x => x.PresetItems)
                    .ThenInclude(i => i.Nomenclature)
                        .ThenInclude(ii => ii.Provider)
                .Include(x => x.PresetItems)
                    .ThenInclude(i => i.Nomenclature)
                        .ThenInclude(ii => ii.Specification)
-               .FirstOrDefault(x => x.Id == presetId);
-            if (preset == null)
-            {
-                preset = new Preset() { Equipment = equipment };
-                db.Presets.Add(preset);
-                await db.SaveChangesAsync();
-            }
-            ViewBag.Preset = preset;
-
-            if (searchString.IsNullOrEmpty())
-            {
-                if (!currentSearch.IsNullOrEmpty())
-                {
-                    nomenclature = Searching(nomenclature, searchField, currentSearch);
-                }               
+               .FirstOrDefault(x => x.Id == equipment.Preset.Id);
             }
             else
             {
-                nomenclature = Searching(nomenclature, searchField, searchString);
-                currentSearch = searchString;
-                page = 1;
+                equipment.Preset = new Preset();
+                equipment.Preset.PresetItems = new List<PresetItem>();
+                db.Presets.Add(equipment.Preset);
+                await db.SaveChangesAsync();
+                ViewBag.Preset = null;
             }
-            ViewBag.CurrentFilter = currentSearch;
-            int pageSize = 5;
-            int pageNumber = (page ?? 1);
-            return View(nomenclature.ToPagedList(pageNumber, pageSize));
+            return View(nomenclature);
+        }
+        public async Task<ActionResult> SavePreset(int equipmentId, bool assemble, string presetParameters)
+        {
+            try
+            {
+                var equipment = db.Equipment.Include(x => x.Preset)
+                       .FirstOrDefault(x => x.Id == equipmentId);
+                var preset = db.Presets
+                    .Include(x => x.PresetItems)
+                    .FirstOrDefault(x => x.Id == equipment.Preset.Id);
+                preset.PresetItems.Clear();
+                var removeItems = db.PresetItems.Where(x => x.Preset.Id == preset.Id);
+                db.PresetItems.RemoveRange(removeItems);
+
+                if (!presetParameters.IsNullOrEmpty())
+                {
+                    List<PresetHelper> presetItems = JsonConvert.DeserializeObject<List<PresetHelper>>(presetParameters);
+                    
+                    List<PresetItem> items = new List<PresetItem>();
+                    foreach (var temp in presetItems)
+                    {
+                        PresetItem item = new PresetItem() { 
+                            Nomenclature = db.Nomenclatures.FirstOrDefault(x => x.Id == temp.Nomenclature), 
+                            Amount = temp.Amount,
+                            Preset = preset
+                        };
+                        preset.PresetItems.Add(item);
+                        db.PresetItems.Add(item);
+                    }                    
+                }
+                var assembleItem = db.Assemblies
+                    .FirstOrDefault(x => x.Equipment.Id == equipmentId && x.IsUsed == true);
+                if (assemble == true && assembleItem == null)
+                {
+                    assembleItem = new Assemble()
+                    {
+                        Equipment = equipment,
+                        Date = DateTime.Now,
+                        IsUsed = true
+                    };
+                    db.Assemblies.Add(assembleItem);
+                }
+                
+                await db.SaveChangesAsync();
+                if (assemble == true)
+                {
+                    return RedirectToAction("Assemble", new { id = equipmentId });
+                }
+                else
+                {
+                    return RedirectToAction("Preset", new { id = equipmentId });
+                }                
+            }
+            catch
+            {
+                return RedirectToAction("Preset", new { equipmentId });
+            }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ClearPreset(int equipmentId)
+        {
+            try
+            {
+                var equipment = db.Equipment.Include(x => x.Preset)
+                    .FirstOrDefault(x => x.Id == equipmentId);
+                var preset = db.Presets
+                    .Include(x => x.PresetItems)
+                    .FirstOrDefault(x => x.Id == equipment.Preset.Id);
+                preset.PresetItems.Clear();
+                await db.SaveChangesAsync();
+                return RedirectToAction("Preset", new { equipmentId });
+            }
+            catch 
+            {
+                return RedirectToAction("Preset", new { equipmentId });
+            }
+        }
+            
+        //public async Task<ActionResult> Preset(int id)
+        //{
+
+        //    return RedirectToAction("Preset", new { id });
+        //}
+
+        public ActionResult Assemble(int id)
+        {
+            var equipment = db.Equipment
+                .Include(x => x.Department)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .FirstOrDefault(x => x.Id == id);
+            return View(equipment);
+        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> AssemblePreset(int id, string param)
+        //{
+        //    try
+        //    {
+        //        // get items from storage,
+        //        // create assembly from storage items,
+        //        return RedirectToAction("FinishCreate", new { id });
+        //    }
+        //    catch
+        //    {
+        //        return RedirectToAction("FinishCreate", new { id });
+        //    }
+        //}
+        //public async Task<ActionResult> FinishCreate(int id)
+        //{
+        //    var equipment = db.Equipment
+        //        .Include(x => x.Department)
+        //        .Include(x => x.Category)
+        //        .Include(x => x.Type)
+        //        .Include(x => x.Status)
+        //        .FirstOrDefault(x => x.Id == id);
+        //    return View(equipment);
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> FinishCreate(int id, string operatingTime, string warningTime)
+        //{
+        //    try
+        //    {
+        //        var equipment = db.Equipment
+        //        .Include(x => x.Department)
+        //        .Include(x => x.Category)
+        //        .Include(x => x.Type)
+        //        .Include(x => x.Status)
+        //        .FirstOrDefault(x => x.Id == id);
+        //        equipment.Status = db.EquipmentStatuses.FirstOrDefault(x => x.Title == "RFU");
+        //        equipment.OperatingTime = int.Parse(operatingTime) * 60;
+        //        equipment.WarningTime = int.Parse(warningTime) * 60;
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction("Index");
+        //    }
+        //    catch
+        //    {
+        //        return RedirectToAction("FinishCreate", new { id });
+        //    }            
+        //}
 
         // GET: EquipmentController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var equipment = db.Equipment
+                .Include(x => x.Department)
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .FirstOrDefault(x => x.Id == id);
+            ViewBag.CounterpartyList = db.Counterparties.OrderBy(x => x.Title).ToList();
+            ViewBag.AgreementList = db.Agreements.OrderBy(x => x.Counterparty.Id).ToList();
+            ViewBag.WellList = db.Wells.OrderBy(x => x.Counterparty.Id).ToList();
+            switch (equipment.Status.Title)
+            {
+                case "NA":
+                    break;
+                case "RFU":
+                    break;
+                case "JF":
+                    var order = db.Orders.Include(x => x.Agreement)
+                            .ThenInclude(contract => contract.Counterparty)
+                        .Include(x => x.Well)
+                        .FirstOrDefault(x => x.Equipment.Id == equipment.Id && x.IsOpen == true);
+                    ViewBag.Order = order;
+                    break;
+                case "WS":
+                    break;
+                case "SP":
+                case "RP":
+                    var maintenance = db.Maintenances.Include(x => x.Equipment)
+                            .ThenInclude(equip => equip.Status)
+                            .FirstOrDefault(x => x.Equipment.Id == equipment.Id
+                            && x.IsOpened == true);
+                    ViewBag.Maintenance = maintenance;
+                    ViewBag.MaintenanceHistory = db.MaintenanceHistory.Include(x => x.Maintenance).Where(x => x.Id == id).ToList();
+                    ViewBag.Scans = db.Docs.Where(x => x.Id == maintenance.Id).ToList();
+                    //ViewBag.Scans = db.DocScans.Where(x => x.Maintenance.Id == maintenance.Id).ToList();
+                    break;
+                default:
+                    break;
+            }
+            ViewBag.History = db.EquipmentHistory.Include(x => x.Status)
+                .Where(x => x.Equipment == equipment).ToList();
+            ViewBag.DepartmentList = db.Departments.ToList();
+            ViewBag.CategoryList = db.EquipmentCategories.ToList();
+            ViewBag.TypeList = db.EquipmentTypes.ToList();
+            // also - 
+            // assembly
+            // order
+            // maintenance
+            return View(equipment);
         }
-        // GET: EquipmentController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: EquipmentController/Edit/5
+        // EDIT INFO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult EditEquipment(int equipmentId,
+                string editDepartment, string editCategory,
+                string editType, string editTitle,
+                string editSerialNum, string editInventoryNum, 
+                string editDiameterOuter, string editDiameterInner, string editLength,
+                string editOperatingTime, string editWarningTime)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var equipment = db.Equipment.Include(x => x.Status)
+                    .FirstOrDefault(x => x.Id == equipmentId);
+                equipment.Department = db.Departments.FirstOrDefault(x => x.Id == int.Parse(editDepartment));
+                equipment.Category = db.EquipmentCategories.FirstOrDefault(x => x.Id == int.Parse(editCategory));
+                equipment.Type = db.EquipmentTypes.FirstOrDefault(x => x.Id == int.Parse(editType));
+                equipment.Title = editTitle;
+                equipment.SerialNum = editSerialNum;
+                equipment.InventoryNum = editInventoryNum;
+                equipment.DiameterOuter = int.Parse(editDiameterOuter);
+                equipment.DiameterInner = int.Parse(editDiameterInner);
+                equipment.Length = int.Parse(editLength);
+                equipment.OperatingTime = int.Parse(editOperatingTime) * 60;
+                equipment.WarningTime = int.Parse(editWarningTime) * 60;
+
+                EquipmentHistory history = new EquipmentHistory()
+                {
+                    Date = DateTime.Now,
+                    Status = equipment.Status,
+                    Equipment = equipment,
+                    Message = "Properties edited"
+                };
+                db.EquipmentHistory.Add(history);
+
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = equipmentId });
             }
             catch
             {
-                return View();
+                return RedirectToAction("Details", new { id = equipmentId });
             }
         }
 
-        // GET: EquipmentController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        //// GET: EquipmentController/Delete/5
+        //public ActionResult Delete(int id)
+        //{
+        //    return View();
+        //}
 
-        // POST: EquipmentController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //// POST: EquipmentController/Delete/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
     }
 }

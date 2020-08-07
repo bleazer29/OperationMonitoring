@@ -121,7 +121,6 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        // GET: StoragesController/Delete/5
         public ActionResult Transfer(string st)
         {
             List<SelectedStock> selectedStocks = JsonConvert.DeserializeObject<List<SelectedStock>>(st);
@@ -164,7 +163,7 @@ namespace OperationMonitoring.Controllers
             db.StorageHistory.AddAsync(newEntry);
         }
 
-        private async Task ImportStock(Stock stock, Storage importStorage, string stockType)
+        private async Task ImportStock(Stock stock, double amount, Storage importStorage, string stockType)
         {
             Stock importStock = null;
             switch (stockType)
@@ -206,40 +205,46 @@ namespace OperationMonitoring.Controllers
             await db.SaveChangesAsync();
         }
 
-        private async Task WriteOffStock(Stock stock, string message)
+        private async Task SubtractStock(int stockId, double amount, string message)
         {
-            Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
-            dbStock.Amount -= stock.Amount;
-            WriteTransferHistory(stock, null, message);
+            Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stockId);
+            dbStock.Amount -= amount;
+            WriteTransferHistory(dbStock, null, message);
         }
 
         private async Task TransferStock(int importStorageId, string jsonStocks)
         {
-            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
+            List<SelectedStock> imports = JsonConvert.DeserializeObject<List<SelectedStock>>(jsonStocks);
+            List<Stock> stocks = db.Stocks
+                .Include(x => x.Equipment)
+                .Include(x => x.Part)
+                .Include(x => x.Nomenclature)
+                .Where(x => x.Amount > 0)
+                .ToList();
             Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
             if (importStorage != null)
             {
-                foreach (var stock in stocks)
+                foreach (var import in imports)
                 {
-                    await WriteOffStock(stock, "Stock was written off");
+                    Stock currentStock = stocks.FirstOrDefault(x => x.Id == import.StockId);
+                    await SubtractStock(import.StockId, import.Amount, "Stock was transfered to storage:" + importStorage.Title);
 
-                    if (stock.Nomenclature != null)
+                    if (currentStock.Nomenclature != null)
                     {
-                        await ImportStock(stock, importStorage, "Nomenclature");
+                        await ImportStock(currentStock, import.Amount, importStorage, "Nomenclature");
                     }
-                    else if (stock.Part != null)
+                    else if (currentStock.Part != null)
                     {
-                        await ImportStock(stock, importStorage, "Part");
+                        await ImportStock(currentStock, import.Amount, importStorage, "Part");
                     }
-                    else if (stock.Equipment != null)
+                    else if (currentStock.Equipment != null)
                     {
-                        await ImportStock(stock, importStorage, "Equipment");
+                        await ImportStock(currentStock, import.Amount, importStorage, "Equipment");
                     }
                 }
             }
         }
 
-        // POST: StoragesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Transfer(int storageId, string stocksJSON)
@@ -247,6 +252,21 @@ namespace OperationMonitoring.Controllers
             try
             {
                 TransferStock(storageId, stocksJSON);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult WriteOff(int stockId, double amount)
+        {
+            try
+            {
+                SubtractStock(stockId, amount, "Stock was written off");
                 return RedirectToAction("Index");
             }
             catch

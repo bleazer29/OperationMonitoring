@@ -364,13 +364,18 @@ namespace OperationMonitoring.Hubs
         public async Task SendEquipment(string searchStatus, string searchString, string searchField, string sortField, bool isAscendingSort)
         {
             List<Equipment> equipment = db.Equipment
+                .Include(x => x.Department)
                 .Include(x => x.Status)
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .ToList();
-            if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
+            if (!searchString.IsNullOrEmpty() || !searchField.IsNullOrEmpty())
             {
                 equipment = SearchEquipment(searchStatus, searchString, searchField, equipment).Result;
+            }
+            if (!sortField.IsNullOrEmpty())
+            {
+                equipment = SortEquipment(sortField, isAscendingSort, equipment).Result;
             }
             var json = JsonConvert.SerializeObject(equipment);
             await Clients.Caller.SendAsync("Receive", json);
@@ -380,6 +385,10 @@ namespace OperationMonitoring.Hubs
         {
             int result;
             bool isInt = int.TryParse(searchString, out result);
+            if (searchString.IsNullOrEmpty())
+            {
+                searchString = "";
+            }
             switch (searchField)
             {
                 case "Department":
@@ -394,8 +403,11 @@ namespace OperationMonitoring.Hubs
                 case "Title":
                     equipment = equipment.Where(x => x.Title.Contains(searchString)).ToList();
                     break;
-                case "SerialNum":
+                case "SerialNumber":
                     equipment = equipment.Where(x => x.SerialNum.Contains(searchString)).ToList();
+                    break;
+                case "InventoryNumber":
+                    equipment = equipment.Where(x => x.InventoryNum.Contains(searchString)).ToList();
                     break;
                 case "DiameterOuter":
                     if (isInt)
