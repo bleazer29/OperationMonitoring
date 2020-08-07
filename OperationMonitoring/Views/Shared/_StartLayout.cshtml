@@ -1,0 +1,23 @@
+﻿@inject SignInManager<IdentityUser> signInManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OperationMonitoring</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="main-login">
+        <div class="login-heading">
+            <h1>Weatherford</h1>
+            <h2>@ViewData["Heading"]</h2>
+        </div>
+        <div class="login-form-pos">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>
