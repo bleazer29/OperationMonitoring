@@ -430,12 +430,20 @@
         });
 
         $(function () {
-            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+            $('#storagesTreeViewFrom').on("select_node.jstree", function (e, data) {
                 search = $("#searchString").val();
                 storageId = Number(data.selected);
+                $("#select-storage-from-tb").val(data.node.text);
                 hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
             });
         });
+
+        $(function () {
+            $('#storagesTreeViewTo').on("select_node.jstree", function (e, data) {
+                $("#select-storage-to-tb").val(data.node.text);
+            });
+        });
+
 
         $('.js-btn-search').click(function () {
             console.log("send");
@@ -458,7 +466,7 @@
         },
         "contextmenu": {
             "items": function ($node) {
-                var tree = $("#storagesTreeViewExport").jstree(true);
+                var tree = $("#storagesTreeViewTo").jstree(true);
                 return {
                     "Details": {
                         "separator_before": false,
@@ -486,7 +494,7 @@
             },
             "contextmenu": {
                 "items": function ($node) {
-                    var tree = $("#storagesTreeViewExport").jstree(true);
+                    var tree = $("#storagesTreeViewFrom").jstree(true);
                     return {
                         "Details": {
                             "separator_before": false,
@@ -506,10 +514,12 @@
                 var stockId = Number($(this).attr("value"));
                 var amount = Number($(this).attr("amount"));
                 selectedAmountList.set(stockId, amount);
+                $(".storage-select-to").fadeIn();
                 hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
             } else {
                 var st = Number($(this).attr("value"));
                 selectedAmountList.delete(st);
+                if (selectedAmountList.size <= 0) $(".storage-select-to").hide();
                 hubConnection.invoke("RemoveSelectedStock", st);
             }
         });
@@ -533,6 +543,8 @@
             console.log(JSON.stringify(temp));
             $("#JSONId").val(JSON.stringify(temp));
         });
+
+        $(".storages-select").append($(".storage-select-to").hide());
 
         hubConnection.start();
     </script>
