@@ -1,4 +1,4 @@
-﻿@model X.PagedList.IPagedList<OperationMonitoring.Models.Nomenclature>
+﻿@model IEnumerable<OperationMonitoring.Models.Nomenclature>
 
 @{
     ViewData["Title"] = "Preset";
@@ -13,7 +13,7 @@
     {
         CurrentPreset.Id = -1;
     }
-    
+
     Equipment equipment = ViewBag.Equipment;
 }
 
@@ -37,7 +37,7 @@
     {
         <p class="selected-parts__empty">
             Please select items on the list below.
-        </p>
+        </p>        
     }
     else
     {
@@ -46,42 +46,46 @@
         </p>
         foreach (PresetItem item in CurrentPreset.PresetItems)
         {
-            <div class="selected-parts__item" data-item="@item.Id">
-                <div class="selected-parts__item-code">
-                    @item.Nomenclature.VendorCode
-                </div>
-                <div class="selected-parts__item-provider">
-                    @if (@item.Nomenclature.Provider != null)
-                    {
-                        @item.Nomenclature.Provider.Title
-                    }
-                    else
-                    {
-                        <span>&lt;Unknown&gt;</span>
-                    }
-                </div>
-                <div class="selected-parts__item-title">
-                    @item.Nomenclature.Title
-                    @if (@item.Nomenclature.Specification != null)
-                    {
-                        <p>
-                            <span>@item.Nomenclature.Specification.Material</span>
-                            <span>@item.Nomenclature.Specification.Weight</span>
-                            <span>@item.Nomenclature.Specification.Height</span>
-                            <span>@item.Nomenclature.Specification.OperatingTime</span>
-                        </p>
-                    }
-                    else
-                    {
-                        <p>&lt;Unknown Specification&gt;</p>
-                    }
+            <div class="selected-parts__item" data-nomenclature="@item.Nomenclature.Id">
+                <div class="selected-parts__left">
+                    <div class="selected-parts__item-code">
+                        @item.Nomenclature.VendorCode
+                    </div>
+                    <div class="selected-parts__item-provider">
+                        @if (@item.Nomenclature.Provider != null)
+                        {
+                            @item.Nomenclature.Provider.Title
+                        }
+                        else
+                        {
+                            <span>&lt;Unknown&gt;</span>
+                        }
+                    </div>
+                    <div class="selected-parts__item-title">
+                        @item.Nomenclature.Title
+                        @if (@item.Nomenclature.Specification != null)
+                        {
+                            <p>
+                                <span>@item.Nomenclature.Specification.Material</span>
+                                <span>@item.Nomenclature.Specification.Weight</span>
+                                <span>@item.Nomenclature.Specification.Height</span>
+                                <span>@item.Nomenclature.Specification.OperatingTime</span>
+                            </p>
+                        }
+                        else
+                        {
+                            <p>&lt;Unknown Specification&gt;</p>
+                        }
 
+                    </div>
                 </div>
-                <div class="selected-parts__item-amount">
-                    @item.Amount
-                </div>
-                <div class="selected-parts__item-btn">
-                    <span class="btn btn-remove"></span>
+                <div class="selected-parts__right">
+                    <div class="selected-parts__item-amount">
+                        @item.Amount
+                    </div>
+                    <div class="selected-parts__item-btn">
+                        <span class="btn btn-remove"></span>
+                    </div>
                 </div>
             </div>
         }
@@ -89,26 +93,25 @@
 </div>
 <div class="selected-parts__forms">
     <form asp-action="ClearPreset"
-          asp-route-equipmentId="@equipment.Id"
-          asp-route-presetId="@CurrentPreset.Id">
+          asp-route-equipmentId="@equipment.Id">
         <button class="btn btn-alter">Clear List</button>
     </form>
     <div class="selected-parts__forms-right">
         <form id="FormSavePreset" asp-action="SavePreset"
               asp-route-equipmentId="@equipment.Id"
-              asp-route-presetId="@CurrentPreset.Id">
+              asp-route-assemble="false">
             <input type="hidden" name="presetParameters" />
             <button class="btn btn-primary">Save</button>
         </form>
-        <form id="FormFinishPreset" asp-action="FinishPreset"
+        <form id="FormFinishPreset" asp-action="SavePreset"
               asp-route-equipmentId="@equipment.Id"
-              asp-route-presetId="@CurrentPreset.Id">
+              asp-route-assemble="true">
             <input type="hidden" name="presetParameters" />
             <button class="btn btn-primary">Finish Selecting Parts</button>
         </form>
     </div>
     <!-- LATER
-        SAVE PRESET
+        SAVE PRESET AS
     <form asp-action="SaveTempPreset">
         <h5>Save as preset: </h5>
         <div class="form-group">
@@ -120,109 +123,74 @@
     -->
 </div>
 
-<!-- PARTS FILTER -->
-<div class="search-panel">
-    <form asp-action="Preset"
-          asp-route-id="@equipment.Id"
-          asp-route-presetId="@CurrentPreset.Id">
-        <div class="search-field">
-            <div class="search-label">
-                <label class="control-label">Field:</label>
-            </div>
-            <div class="search-select">
-                <select name="searchField" class="form-select">
-                    <option selected value="Title">Title</option>
-                    <option value="Code">Code</option>
-                    <option value="Provider">Provider</option>
-                </select>
-            </div>
-        </div>
-        <div class="search-field search-field-input">
-            <div class="search-label">
-                <label class="control-label">Search:</label>
-            </div>
-            <div class="search-textbox">
-                <input name="searchString" type="text" value="@ViewBag.CurrentFilter" />
-            </div>
-        </div>
-        <button class="btn btn-primary search-btn">Search</button>
-        <span class="btn btn-alter btn-refresh">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="m120.6 38.723c-3.312-7.713-7.766-14.367-13.36-19.961-5.595-5.594-12.248-10.05-19.962-13.361-7.713-3.314-15.805-4.97-24.278-4.97-7.984 0-15.71 1.506-23.18 4.521-7.468 3.01-14.11 7.265-19.92 12.751l-10.593-10.511c-1.63-1.684-3.503-2.064-5.622-1.141-2.173.924-3.259 2.527-3.259 4.808v36.5c0 1.412.516 2.634 1.548 3.666 1.033 1.032 2.255 1.548 3.667 1.548h36.5c2.282 0 3.884-1.086 4.807-3.259.923-2.118.543-3.992-1.141-5.622l-11.162-11.243c3.803-3.585 8.148-6.341 13.04-8.27 4.889-1.928 9.994-2.893 15.317-2.893 5.649 0 11.04 1.101 16.17 3.3 5.133 2.2 9.572 5.174 13.32 8.922 3.748 3.747 6.722 8.187 8.922 13.32 2.199 5.133 3.299 10.523 3.299 16.17 0 5.65-1.1 11.04-3.299 16.17-2.2 5.133-5.174 9.573-8.922 13.321-3.748 3.748-8.188 6.722-13.32 8.921-5.133 2.2-10.525 3.3-16.17 3.3-6.464 0-12.574-1.412-18.332-4.236-5.757-2.824-10.618-6.816-14.583-11.977-.38-.543-1-.87-1.874-.979-.815 0-1.494.244-2.037.733l-11.162 11.244c-.434.436-.665.991-.692 1.67-.027.68.15 1.29.53 1.833 5.921 7.17 13.09 12.724 21.509 16.661 8.419 3.937 17.3 5.907 26.642 5.907 8.473 0 16.566-1.657 24.279-4.97 7.713-3.313 14.365-7.768 19.961-13.361 5.594-5.596 10.05-12.248 13.361-19.961 3.313-7.713 4.969-15.807 4.969-24.279 0-8.474-1.657-16.564-4.97-24.277" transform="matrix(.12785 0 0 .12786 2.95 2.948)" fill="#ffffff" /></svg>
-        </span>
-    </form>
-</div>
-
-<!-- PARTS LIST -->
-<div id="nomenclature-list" class="nomenclature-list">
-    <h5>Nomenclature</h5>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th class="width-20">Provider</th>
-                <th class="width-80">Detail</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr data-nomenclature="@item.Id">
-                    <td>
-                        @item.VendorCode
-                    </td>
-                    <td>
-                        @if (item.Provider != null)
-                        {
-                            @item.Provider.Title
-                        }
-                        else
-                        {
-                            <p>&lt;Unknown&gt;</p>
-                        }
-                    </td>
-                    <td>
-                        @item.Title
-                        @if (@item.Specification != null)
-                        {
-                            <p>
-                                <span>@item.Specification.Material</span>
-                                <span>@item.Specification.Weight</span>
-                                <span>@item.Specification.Height</span>
-                                <span>@item.Specification.OperatingTime</span>
-                            </p>
-                        }
-                        else
-                        {
-                            <p>&lt;Unknown Specification&gt;</p>
-                        }
-                    </td>
-                    <td class="nomenclature-list-amount">
-                        <input type="text" name="input-@item.Id" />
-                    </td>
-                    <td><span data-input="" class="btn btn-primary js-get-nomenclature">Get</span></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="pages">
-        <span>Page @(Model.PageCount<Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
-        @X.PagedList.Mvc.Core.HtmlHelper.PagedListPager(Html, Model, page => Url.Action("Preset",
-             new { page, searchField = ViewBag.CurrentField, currentSearch = ViewBag.CurrentFilter }))
-    </div>
-</div>
+<!-- PARTS -->
+@{
+    ViewData["Controller"] = "Preset";
+    <partial name="_Nomenclature" model="Model" view-data="ViewData" />
+}
 
 <script>
-    $(function () {
-        $('.js-get-nomenclature').click(function () {
-            var inputValue = $('[name="presetParameters"]').val();
-            $('[name="presetParameters"]').val(inputValue + '12');
-        });
+    $(document).on('click', '.js-get-nomenclature', function () {
+        var nomenclature = $(this).attr("data-id");
+        var amount = $("input[name=input-" + nomenclature + "]").val();
+        $("input[name=input-" + nomenclature + "]").val("");
+        var vendorcode = $(this).closest("tr").find(".vendor").html();
+        var info = $(this).closest("tr").find(".info").html();
+        var provider = $(this).closest("tr").find(".provider").html();
 
-        $('.pages a').click(function (e) {
-            e.preventDefault();
-            window.location.href = $(this).attr("href") + "?presetParameters=" + $('[name="presetParameters"]').val();
-        });
+        if (amount !== "") {
+            if (!$("[data-nomenclature=" + nomenclature + "]").length) {
+                $(".selected-parts").append(
+                    '<div class="selected-parts__item" data-nomenclature="' + nomenclature + '">' +
+                    '<div class="selected-parts__left">' +
+                    '<div class="selected-parts__item-code">' +
+                    '</div>' +
+                    '<div class="selected-parts__item-provider">' +
+                    '</div>' +
+                    '<div class="selected-parts__item-title">' +
+                    '</div >' +
+                    '</div>' +
+                    '<div class="selected-parts__right">' +
+                    '<div class="selected-parts__item-amount">' +
+                    '</div>' +
+                    '<div class="selected-parts__item-btn">' +
+                    '<span class="btn btn-remove"></span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+                );
+                $item = $("[data-nomenclature=" + nomenclature + "]");
+                $item.find(".selected-parts__item-code").append(vendorcode);
+                $item.find(".selected-parts__item-provider").append(provider);
+                $item.find(".selected-parts__item-title").append(info);
+            }
+            $inputValue = $("[data-nomenclature=" + nomenclature + "]").find(".selected-parts__item-amount");
+            if ($inputValue.html() !== "") {
+                $inputValue.html(parseInt($inputValue.html()) + parseInt(amount));
+            }
+            else {
+                $inputValue.html(parseInt(amount));
+            }            
+            $(".selected-parts__empty").addClass("hidden");
+        }
     });
+    $(document).on('click', '.btn-remove', function () {
+        $(this).closest(".selected-parts__item").remove();
+    });
+
+    $("#FormSavePreset, #FormFinishPreset").submit(function () {
+        var PartsList = [];
+        $(".selected-parts__item").each(function () {
+            var nomenclature = $(this).attr("data-nomenclature");
+            var amount = $(this).find(".selected-parts__item-amount").html();
+            PartsList.push({
+                Nomenclature: nomenclature,
+                Amount: amount,
+            });
+        });
+        var paramString = JSON.stringify(PartsList);
+        $("[name=presetParameters]").val(paramString);
+        return true;
+    });
+
 </script>

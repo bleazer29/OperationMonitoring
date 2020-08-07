@@ -9,7 +9,6 @@ namespace OperationMonitoring.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public virtual Equipment Equipment { get; set; }
         public virtual ICollection<PresetItem> PresetItems { get; set; }
     }
 }

@@ -13,96 +13,21 @@ namespace OperationMonitoring.Controllers
 {
     public class NomenclatureController : Controller
     {
-        private readonly ApplicationContext db;
-        private int pageSize = 10;   
-        
+        private readonly ApplicationContext db;        
         public NomenclatureController(ApplicationContext context)
         {
             db = context;   
         }
 
-        // SEARCH
-        private List<Nomenclature> Searching(List<Nomenclature> nomenclature, string searchField, string searchString)
-        {
-            switch (searchField)
-            {
-                case "Title":
-                    nomenclature = nomenclature.Where(x => x.Title != null && x.Title.ToLower().Contains(searchString.ToLower())).ToList();
-                    break;
-                case "VendorCode":
-                    nomenclature = nomenclature.Where(x => x.VendorCode != null && x.VendorCode.ToLower().Contains(searchString.ToLower())).ToList();
-                    break;
-                case "Provider":
-                    nomenclature = nomenclature.Where(x => x.Provider != null && x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToList();
-                    break;
-                default:
-                    break;
-            }
-            return nomenclature;
-        }
-
-        // SORTING
-        private List<Nomenclature> Sorting(string sortOrder, List<Nomenclature> nomenclature)
-        {
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    nomenclature = nomenclature.OrderByDescending(s => s.Title).ToList();
-                    break;
-                case "vendorCode_desc":
-                    nomenclature = nomenclature.OrderByDescending(s => s.VendorCode).ToList();
-                    break;
-                case "vendorCode":
-                    nomenclature = nomenclature.OrderBy(s => s.VendorCode).ToList();
-                    break;
-                case "providerName_desc":
-                    nomenclature = nomenclature.OrderByDescending(s => s.Provider.Title).ToList();
-                    break;
-                case "providerName":
-                    nomenclature = nomenclature.OrderBy(s => s.Provider.Title).ToList();
-                    break;
-                default:
-                    nomenclature = nomenclature.OrderBy(s => s.Title).ToList();
-                    break;
-            }
-            return nomenclature;
-        }
-
         // GET: Controller
-        public ActionResult Index(string oldSortOrder, string newSortOrder, string searchString, string searchField, int? page)
+        public ActionResult Index()
         {
-            ViewBag.CurrentFilter = searchString;
-            ViewBag.SearchField = string.IsNullOrEmpty(searchField) ? "Title" : searchField;
-
-            var nomenclature = db.Nomenclatures.Include(x => x.Specification).Include(x => x.Provider).ToList();
-            ViewBag.Nomenclature = nomenclature;
-            var providers = db.Providers.ToList();
-            ViewBag.Providers = providers;
-            
-            // SEARCH
-            nomenclature = Searching(nomenclature, searchField, searchString);
-
-            // SORTING
-            if (string.IsNullOrEmpty(newSortOrder))
-            {
-                newSortOrder = "name";
-            }
-            else if (newSortOrder == oldSortOrder)
-            {
-                newSortOrder += "_desc";
-            }
-            ViewBag.CurrentSort = newSortOrder;
-            nomenclature = Sorting(newSortOrder, nomenclature);
-
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            int pageNumber = (page ?? 1);
-
-
-            return View(nomenclature.ToPagedList(pageNumber, pageSize));
-
+            var nomenclature = db.Nomenclatures
+                .Include(x => x.Specification)
+                .Include(x => x.Provider)
+                .OrderBy(x => x.VendorCode)
+                .ToList();
+            return View(nomenclature);
         }
 
         // DETAILS 
