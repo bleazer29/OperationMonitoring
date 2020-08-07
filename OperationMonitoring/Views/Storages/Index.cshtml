@@ -3,97 +3,82 @@
 @{
     ViewData["Title"] = "Storages";
 }
-    <div class="flex-container">
-        <div class="storagesTreeView-container">
-            <div class="content-heading">
-                <h4><a class="all-storages-link" href="" storage-id="0">Storages</a></h4>
-                    <a class="btn btn-primary" asp-action="Create">+</a>
-            </div>
-            <div id="storagesTreeViewExport">
-
-            </div>
-        </div>
-        <div class="storage-items-container" style="max-width:initial">
-            <!-- SEARCH PANEL -->
-            <div class="search-panel">
-                @using (Html.BeginForm())
-                {
-                    <div class="search-form">
-                        <div class="search-field">
-                            <div class="search-select">
-                                <select id="type-search-select" name="type-search-select" class="form-select">
-                                    <option value="1" selected>All</option>
-                                    <option value="2">Nomenclature</option>
-                                    <option value="3">Parts</option>
-                                    <option value="4">Equipment</option>
-                                </select>
-                            </div>
+<div class="flex-container">
+    <div class="storage-items-container">
+        <!-- SEARCH PANEL -->
+        <div class="search-panel">
+            @using (Html.BeginForm())
+            {
+                <div class="search-form">
+                    <div class="search-field">
+                        <div class="search-select">
+                            <select id="type-search-select" name="type-search-select" class="form-select">
+                                <option value="All" selected>All</option>
+                                <option value="Nomenclature" selected>Nomenclature</option>
+                                <option value="Parts" selected>Parts</option>
+                                <option value="Equipment" selected>Equipment</option>
+                            </select>
                         </div>
-                        <div class="search-field search-field-input">
-                            <div class="search-label">
-                                <label class="control-label">Search:</label>
-                            </div>
-                            <div class="search-textbox">
-                                @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
-                            </div>
-                        </div>
-                        <button class="btn btn-primary search-btn">Search</button>
-                        <a asp-action="Index" class="btn btn-alter btn-refresh">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="m120.6 38.723c-3.312-7.713-7.766-14.367-13.36-19.961-5.595-5.594-12.248-10.05-19.962-13.361-7.713-3.314-15.805-4.97-24.278-4.97-7.984 0-15.71 1.506-23.18 4.521-7.468 3.01-14.11 7.265-19.92 12.751l-10.593-10.511c-1.63-1.684-3.503-2.064-5.622-1.141-2.173.924-3.259 2.527-3.259 4.808v36.5c0 1.412.516 2.634 1.548 3.666 1.033 1.032 2.255 1.548 3.667 1.548h36.5c2.282 0 3.884-1.086 4.807-3.259.923-2.118.543-3.992-1.141-5.622l-11.162-11.243c3.803-3.585 8.148-6.341 13.04-8.27 4.889-1.928 9.994-2.893 15.317-2.893 5.649 0 11.04 1.101 16.17 3.3 5.133 2.2 9.572 5.174 13.32 8.922 3.748 3.747 6.722 8.187 8.922 13.32 2.199 5.133 3.299 10.523 3.299 16.17 0 5.65-1.1 11.04-3.299 16.17-2.2 5.133-5.174 9.573-8.922 13.321-3.748 3.748-8.188 6.722-13.32 8.921-5.133 2.2-10.525 3.3-16.17 3.3-6.464 0-12.574-1.412-18.332-4.236-5.757-2.824-10.618-6.816-14.583-11.977-.38-.543-1-.87-1.874-.979-.815 0-1.494.244-2.037.733l-11.162 11.244c-.434.436-.665.991-.692 1.67-.027.68.15 1.29.53 1.833 5.921 7.17 13.09 12.724 21.509 16.661 8.419 3.937 17.3 5.907 26.642 5.907 8.473 0 16.566-1.657 24.279-4.97 7.713-3.313 14.365-7.768 19.961-13.361 5.594-5.596 10.05-12.248 13.361-19.961 3.313-7.713 4.969-15.807 4.969-24.279 0-8.474-1.657-16.564-4.97-24.277" transform="matrix(.12785 0 0 .12786 2.95 2.948)" fill="#ffffff" /></svg>
-                        </a>
                     </div>
-                }
-            </div>
-            <div id="paged-list" class="nomenclature-table">
-                <div class="scrollable-table" style="overflow-x:scroll;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <a href="#" data-sort="Status">
-                                        Status
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="VendorCode">
-                                        Vendor code
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="SerialNumber">
-                                        Serial number
-                                    </a>
-                                </th>
-                                <th class="sort-asc">
-                                    <a href="#" data-sort="Name">
-                                        Name
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="Provider">
-                                        Provider
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="Operationtime">
-                                        Operation time
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="Amount">
-                                        Amount
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" data-sort="Storage">
-                                        Storage
-                                    </a>
-                                </th>
-                                <th>
-                                    @*actions*@
-                                </th>
-                            </tr>
-                        </thead>
+                    <div class="search-field search-field-input">
+                        <div class="search-label">
+                            <label class="control-label">Search:</label>
+                        </div>
+                        <div class="search-textbox">
+                            @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
+                        </div>
+                    </div>
+                    <button class="btn btn-primary search-btn">Search</button>
+                    <a asp-action="Index" class="btn btn-alter btn-refresh">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path d="m120.6 38.723c-3.312-7.713-7.766-14.367-13.36-19.961-5.595-5.594-12.248-10.05-19.962-13.361-7.713-3.314-15.805-4.97-24.278-4.97-7.984 0-15.71 1.506-23.18 4.521-7.468 3.01-14.11 7.265-19.92 12.751l-10.593-10.511c-1.63-1.684-3.503-2.064-5.622-1.141-2.173.924-3.259 2.527-3.259 4.808v36.5c0 1.412.516 2.634 1.548 3.666 1.033 1.032 2.255 1.548 3.667 1.548h36.5c2.282 0 3.884-1.086 4.807-3.259.923-2.118.543-3.992-1.141-5.622l-11.162-11.243c3.803-3.585 8.148-6.341 13.04-8.27 4.889-1.928 9.994-2.893 15.317-2.893 5.649 0 11.04 1.101 16.17 3.3 5.133 2.2 9.572 5.174 13.32 8.922 3.748 3.747 6.722 8.187 8.922 13.32 2.199 5.133 3.299 10.523 3.299 16.17 0 5.65-1.1 11.04-3.299 16.17-2.2 5.133-5.174 9.573-8.922 13.321-3.748 3.748-8.188 6.722-13.32 8.921-5.133 2.2-10.525 3.3-16.17 3.3-6.464 0-12.574-1.412-18.332-4.236-5.757-2.824-10.618-6.816-14.583-11.977-.38-.543-1-.87-1.874-.979-.815 0-1.494.244-2.037.733l-11.162 11.244c-.434.436-.665.991-.692 1.67-.027.68.15 1.29.53 1.833 5.921 7.17 13.09 12.724 21.509 16.661 8.419 3.937 17.3 5.907 26.642 5.907 8.473 0 16.566-1.657 24.279-4.97 7.713-3.313 14.365-7.768 19.961-13.361 5.594-5.596 10.05-12.248 13.361-19.961 3.313-7.713 4.969-15.807 4.969-24.279 0-8.474-1.657-16.564-4.97-24.277" transform="matrix(.12785 0 0 .12786 2.95 2.948)" fill="#ffffff" /></svg>
+                    </a>
+                </div>
+            }
+        </div>
+        <div id="paged-list" class="nomenclature-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="#" data-sort="Status">
+                                Status
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#" data-sort="VendorCode">
+                                Vendor code
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#" data-sort="SerialNumber">
+                                Serial number
+                            </a>
+                        </th>
+                        <th class="sort-asc">
+                            <a href="#" data-sort="Name">
+                                Name
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#" data-sort="Provider">
+                                Provider
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#" data-sort="Operationtime">
+                                Operation time
+                            </a>
+                        </th>
+                        <th>
+                            <a href="#" data-sort="Amount">
+                                Amount
+                            </a>
+                        </th>
+                        <th>
+                            @*actions*@
+                        </th>
+                    </tr>
+                </thead>
 
                         <tbody>
                             @if (stocks != null)
@@ -103,193 +88,195 @@
                                     var tableClass = "";
                                     if (item.Nomenclature != null)
                                     {
-                                        <tr class="@tableClass">
-                                            <td></td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                <a asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">@item.Nomenclature.Title</a>
+                            <tr class="@tableClass">
+                                <td>
+                                    <input type="checkbox" id="nom-@item.Nomenclature.Id" name="nom-@item.Nomenclature.Id">
+                                    <label for="nom-@item.Nomenclature.Id"></label><br>
+                                </td>
+                                <td></td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nomenclature.VendorCode)
+                                </td>
+                                <td></td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nomenclature.Title)
+                                </td>
+                                <td>
+                                    @if (item.Nomenclature.Provider != null)
+                                    {
+                                        <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">@item.Nomenclature.Provider.Title</a>
+                                    }
 
-                                            </td>
-                                            <td>
-                                                @if (item.Nomenclature.Provider != null)
-                                                {
-                                                    <a asp-controller="Providers" asp-action="Details" asp-route-id="@item.Nomenclature.Provider.Id">@item.Nomenclature.Provider.Title</a>
-                                                }
-
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Amount)
-                                            </td>
-                                            <td>
-                                                @if (item.Storage != null)
-                                                {
-                                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                                }
-                                            </td>
-                                            <td>
-                                                <form>
-                                                    <input type="checkbox" id="vehicle-@item.Nomenclature.Id" name="vehicle-@item.Nomenclature.Id" value="Bike">
-
-                                                </form>
-                                            </td>
-                                        </tr>
+                                </td>
+                                <td></td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Amount)
+                                </td>
+                                <td>
+                                    @if (item.Storage != null)
+                                    {
+                                        <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" asp-controller="Nomenclature" asp-action="Details" asp-route-id="@item.Nomenclature.Id">Details</a>
+                                </td>
+                            </tr>
                                     
                                     }
                                     else if (item.Part != null)
                                     {
                                         tableClass = (item.Part.OperatingTime > 0) ? (item.Part.OperatingTime < item.Part.WarningTime ? ((item.Part.OperatingTime == item.Part.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
-                                        <tr class="@tableClass">
-                                            <td>
-                                                @{
-                                                    if (item.Part.Status != null)
-                                                    {
-                                                        <span class="equip-current-status">
-                                                            @Html.DisplayFor(model => item.Part.Status.Title)
-                                                        </span>
-                                                    }
-                                                }
-                                            </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td>
-                                                 <a asp-controller="Parts" asp-action="Details" asp-route-id="@item.Part.Id">@item.Part.Title</a>
-                                            </td>
-                                            <td> </td>
-                                            <td>
-                                                @{
-                                                    int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
-                                                    if (timeLeft > 0)
-                                                    {
-                                                        @(timeLeft / 60)<span>:</span>{
-                                                            string minutes;
-                                                            if (timeLeft % 60 < 10)
-                                                            {
-                                                                minutes = "0" + (timeLeft % 60);
-                                                            }
-                                                            else
-                                                            {
-                                                                minutes = (timeLeft % 60).ToString();
-                                                            }
-                                                            @minutes
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        timeLeft *= -1;
-                                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                                            string minutes;
-                                                            if (timeLeft % 60 < 10)
-                                                            {
-                                                                minutes = "0" + (timeLeft % 60);
-                                                            }
-                                                            else
-                                                            {
-                                                                minutes = (timeLeft % 60).ToString();
-                                                            }
-                                                            @minutes
-                                                        }
-                                                        <p>No operating time left! Needs maintenance!</p>
-                                                    }
-                                                }
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Amount)
-                                            </td>
-                                            <td>
-                                                @if (item.Storage != null)
-                                                {
-                                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                                }
-                                            </td>
-                                            <td>
-                                                <form>
-                                                    <input type="checkbox" id="vehicle-@item.Part.Id" name="vehicle-@item.Part.Id" value="Bike">
-
-                                                </form>
-                                            </td>
-                                        </tr>
+                        <tr class="@tableClass">
+                            <td>
+                                <input type="checkbox" id="part-@item.Part.Id" name="part-@item.Part.Id">
+                                <label for="part-@item.Part.Id"></label><br>
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Part.Status != null)
+                                    {
+                                        <span class="equip-current-status">
+                                            @Html.DisplayFor(model => item.Part.Status.Title)
+                                        </span>
+                                    }
+                                }
+                            </td>
+                            <td> </td>
+                            <td> </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Part.Title)
+                            </td>
+                            <td> </td>
+                            <td>
+                                @{
+                                    int timeLeft = item.Part.WarningTime - item.Part.OperatingTime;
+                                    if (timeLeft > 0)
+                                    {
+                                        @(timeLeft / 60)<span>:</span>{
+                                            string minutes;
+                                            if (timeLeft % 60 < 10)
+                                            {
+                                                minutes = "0" + (timeLeft % 60);
+                                            }
+                                            else
+                                            {
+                                                minutes = (timeLeft % 60).ToString();
+                                            }
+                                            @minutes
+                                        }
+                                    }
+                                    else
+                                    {
+                                        timeLeft *= -1;
+                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
+                                            string minutes;
+                                            if (timeLeft % 60 < 10)
+                                            {
+                                                minutes = "0" + (timeLeft % 60);
+                                            }
+                                            else
+                                            {
+                                                minutes = (timeLeft % 60).ToString();
+                                            }
+                                            @minutes
+                                        }
+                                        <p>No operating time left! Needs maintenance!</p>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @if (item.Storage != null)
+                                {
+                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Parts" asp-action="Details" asp-route-id="@item.Part.Id">Details</a>
+                            </td>
+                        </tr>
                                     }
                                     else if (item.Equipment != null)
                                     {
                                         tableClass = (item.Equipment.OperatingTime > 0) ? (item.Equipment.OperatingTime < item.Equipment.WarningTime ? ((item.Equipment.OperatingTime == item.Equipment.WarningTime) ? "table-time-warning" : "") : "table-time-danger") : "";
 
-                                        <tr class="@tableClass">
-                                            <td>
-                                                @{
-                                                    if (item.Equipment.Status != null)
-                                                    {
-                                                        <span class="equip-current-status">
-                                                            @Html.DisplayFor(model => item.Equipment.Status.Title)
-                                                        </span>
-                                                    }
-                                                }
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                @Html.DisplayFor(model => item.Equipment.SerialNum)
-                                            </td>
-                                            <td>
-                                                <a asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Equipment.Id">@item.Equipment.Title</a>
+                        <tr class="@tableClass">
+                            <td>
+                                <input type="checkbox" id="eq-@item.Equipment.Id" name="eq-@item.Equipment.Id">
+                                <label for="eq-@item.Equipment.Id"></label><br>
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Equipment.Status != null)
+                                    {
+                                        <span class="equip-current-status">
+                                            @Html.DisplayFor(model => item.Equipment.Status.Title)
+                                        </span>
+                                    }
+                                }
+                            </td>
+                            <td></td>
+                            <td>
+                                @Html.DisplayFor(model => item.Equipment.SerialNum)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Equipment.Title)
+                            </td>
+                            <td></td>
+                            <td>
+                                @{
+                                    int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
+                                    if (timeLeft > 0)
+                                    {
+                                        @(timeLeft / 60)<span>:</span>{
+                                            string minutes;
+                                            if (timeLeft % 60 < 10)
+                                            {
+                                                minutes = "0" + (timeLeft % 60);
+                                            }
+                                            else
+                                            {
+                                                minutes = (timeLeft % 60).ToString();
+                                            }
+                                            @minutes
+                                        }
+                                    }
+                                    else
+                                    {
+                                        timeLeft *= -1;
+                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
+                                            string minutes;
+                                            if (timeLeft % 60 < 10)
+                                            {
+                                                minutes = "0" + (timeLeft % 60);
+                                            }
+                                            else
+                                            {
+                                                minutes = (timeLeft % 60).ToString();
+                                            }
+                                            @minutes
+                                        }
+                                        <p>No operating time left! Needs maintenance!</p>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @if (item.Storage != null)
+                                {
+                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Equipment.Id">Details</a>
 
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                @{
-                                                    int timeLeft = item.Equipment.WarningTime - item.Equipment.OperatingTime;
-                                                    if (timeLeft > 0)
-                                                    {
-                                                        @(timeLeft / 60)<span>:</span>{
-                                                            string minutes;
-                                                            if (timeLeft % 60 < 10)
-                                                            {
-                                                                minutes = "0" + (timeLeft % 60);
-                                                            }
-                                                            else
-                                                            {
-                                                                minutes = (timeLeft % 60).ToString();
-                                                            }
-                                                            @minutes
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        timeLeft *= -1;
-                                                        <span>Overwork by</span> @(timeLeft / 60)<span>:</span>{
-                                                            string minutes;
-                                                            if (timeLeft % 60 < 10)
-                                                            {
-                                                                minutes = "0" + (timeLeft % 60);
-                                                            }
-                                                            else
-                                                            {
-                                                                minutes = (timeLeft % 60).ToString();
-                                                            }
-                                                            @minutes
-                                                        }
-                                                        <p>No operating time left! Needs maintenance!</p>
-                                                    }
-                                                }
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Amount)
-                                            </td>
-                                            <td>
-                                                @if (item.Storage != null)
-                                                {
-                                                    <a asp-controller="Storages" asp-action="Details" asp-route-id="@item.Storage.Id">@item.Storage.Title</a>
-                                                }
-                                            </td>
-                                            <td>
-                                                <form>
-                                                    <input type="checkbox" id="vehicle-@item.Equipment.Id" name="vehicle-@item.Equipment.Id" value="Bike">
-
-                                                </form>
-                                            </td>
-                                        </tr>
+                            </td>
+                        </tr>
                                     }
                                  }
                              }
@@ -396,12 +383,18 @@
 <script>
     var search = "";
     var searchField = "Title"; // default - "Title"
+    var searchObjType = "All";
+
     var sortField = "Title"; // default - "Title"
     var sortAsc = true; // default
     var storageId = 0;
 
     var pagedList = "#paged-list";
     GenList(pagedList);
+
+    $('#type-search-select').change(function () {
+        searchObjType = $('#type-search-select').val();
+    });
 
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl("/data")
@@ -511,6 +504,7 @@
 
             $(pagedList + " tbody").append( 
                 "<tr>" +
+                "<td> </td>" +
                 "<td>" + status + "</td>" +
                 "<td>" + vendorcode + "</td>" +
                 "<td>" + serialnum + "</td>" +
@@ -529,7 +523,7 @@
         $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
             search = $("#searchString").val();
             storageId = Number(data.selected);
-            hubConnection.invoke("SendStocks", search, storageId, searchField);
+            hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
         });
     });
 

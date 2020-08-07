@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,13 +9,11 @@ namespace OperationMonitoring.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        ApplicationContext db;
-       
-        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
+        public ILogger<HomeController> Logger { get; }
+
+        public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
-            db = context;
+            Logger = logger;
         }
 
         public IActionResult Index()

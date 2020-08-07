@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<IdentityUser> signInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,15 +23,45 @@
                 <div class="header-nav">
                     <span class="header-nav__icon"><i></i></span>
                     <div class="header-nav__container">
-                        <a asp-controller="Equipment" asp-action="Index" class="header-nav__item">Equipment</a>
-                        <a asp-controller="Counterparties" asp-action="Index" class="header-nav__item">Counterparties</a>
-                        <a asp-controller="Providers" asp-action="Index" class="header-nav__item">Providers</a>
-                        <a asp-controller="Nomenclature" asp-action="Index" class="header-nav__item">Nomenclature</a>
-                        <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
-                        <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
-                        <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
-                        <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
-                        <a asp-controller="Adminpanel" asp-action="Index" class="header-nav__item">Adminpanel</a>
+
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <a asp-controller="Equipment" asp-action="Index" class="header-nav__item">Equipment</a>
+                            <a asp-controller="Counterparties" asp-action="Index" class="header-nav__item">Counterparties</a>
+                            <a asp-controller="Providers" asp-action="Index" class="header-nav__item">Providers</a>
+                            <a asp-controller="Nomenclature" asp-action="Index" class="header-nav__item">Nomenclature</a>
+                            <a asp-controller="Storages" asp-action="Index" class="header-nav__item">Storages</a>
+                            <a asp-controller="Orders" asp-action="Index" class="header-nav__item">Orders</a>
+                            <a asp-controller="Maintenance" asp-action="Index" class="header-nav__item">Maintenance</a>
+                            <a asp-controller="Settings" asp-action="Index" class="header-nav__item">Settings</a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="header-nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
+                            }
+                            <a class="header-nav__item" asp-controller="Account" asp-action="ChangePassword">
+                                Password
+                            </a>
+                            <a class="header-nav__item" asp-controller="Account" asp-action="EditProfile">
+                                Profile
+                            </a>
+
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="nav-item">
+                                <form method="post" asp-action="logout" asp-controller="account">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Logout @User.Identity.Name
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="header-nav__item" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            <a class="header-nav__item" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        }
                     </div>
                 </div>
             </div>

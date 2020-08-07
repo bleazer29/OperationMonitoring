@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
@@ -59,6 +57,11 @@ namespace OperationMonitoring.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+ 
             EquipmentStatus[] statuses = {
                 new EquipmentStatus() { Id = 1, Title = "NA" },
                 new EquipmentStatus() { Id = 2, Title = "RFU" },
