@@ -662,101 +662,13 @@ namespace OperationMonitoring.Hubs
             return temp;
         }
 
-        public void WriteTransferHistory(Stock stock, Storage importStorage, string message)
-        {
-            StorageHistory newEntry = new StorageHistory()
-            {
-                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
-                Amount = stock.Amount,
-                Message = message,
-                Stock = stock,
-                StorageTo = importStorage,
-                Date = DateTime.Now
-            };
-            db.StorageHistory.AddAsync(newEntry);
-        }
-
-        public async Task ImportStock(Stock stock, Storage importStorage, string stockType)
-        {
-            Stock importStock = null;
-            switch (stockType)
-            {
-                case "Nomenclature":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id);
-                    break;
-                case "Part":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id);
-                    break;
-                case "Equipment":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id);
-                    break;
-            }
-            if (importStock != null)
-            {
-                importStock.Amount += stock.Amount;
-            }
-            else
-            {
-                importStock = new Stock(); 
-                switch (stockType)
-                {
-                    case "Nomenclature":
-                        importStock.Nomenclature = stock.Nomenclature;
-                        break;
-                    case "Part":
-                        importStock.Part = stock.Part;
-                        break;
-                    case "Equipment":
-                        importStock.Equipment = stock.Equipment;
-                        break;
-                }
-                importStock.Amount = stock.Amount;
-                importStock.Storage = importStorage;
-                db.Stocks.Add(importStock);
-            }
-            WriteTransferHistory(stock, importStorage, message: "Stock transfered");
-            await db.SaveChangesAsync();
-        }
-
-        public async Task WriteOffStock(Stock stock, string message)
-        {
-            Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
-            dbStock.Amount -= stock.Amount;
-            WriteTransferHistory(stock, null, message);
-        }
-
-        public async Task TranserStock(int importStorageId, string jsonStocks)
-        {
-            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
-            Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
-            if(importStorage != null)
-            {
-                foreach (var stock in stocks)
-                {
-                    await WriteOffStock(stock, "Stock was written off");
-                    if (stock.Nomenclature != null)
-                    {
-                        await ImportStock(stock, importStorage, "Nomenclature");
-                    }
-                    else if(stock.Part != null)
-                    {
-                        await ImportStock(stock, importStorage, "Part");
-                    }
-                    else if (stock.Equipment != null)
-                    {
-                        await ImportStock(stock, importStorage, "Equipment");
-                    }
-                }
-            }
-        }
-
         public async Task AssembleEquipment(string jsonStocks, int assemblyId)
         {
             List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
             foreach(var stock in stocks)
             {
                 var message = "Stock was sended on assembly #" + assemblyId.ToString("D8");
-                await WriteOffStock(stock, message);
+                //await WriteOffStock(stock, message);
             }
         }
 
