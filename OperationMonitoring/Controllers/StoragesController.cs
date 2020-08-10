@@ -43,16 +43,18 @@ namespace OperationMonitoring.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(string JSONId)
+        public async Task<ActionResult> Index(string JSONId, int toStorageId)
         {
-            try
-            {
-                return RedirectToAction("Transfer", new { st = JSONId });
-            }
-            catch
-            {
-                return RedirectToAction("Index");
-            }
+                try
+                {
+                    await TransferStock(toStorageId, JSONId);
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return RedirectToAction("Index");
+                }
+           
         }
         // GET: StoragesController/Details/5
         public ActionResult Details(int id)
@@ -73,6 +75,7 @@ namespace OperationMonitoring.Controllers
             ViewBag.StorageParents = storageParents;
             return View(storage);
         }
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditStorage(int storageId, string editName, string editAddress, int? parentId)
@@ -121,34 +124,6 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        public ActionResult Transfer(string st)
-        {
-            List<SelectedStock> selectedStocks = JsonConvert.DeserializeObject<List<SelectedStock>>(st);
-            List<Stock> selected = new List<Stock>();
-
-            List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
-               .Include(x => x.Equipment).ThenInclude(x => x.Status)
-               .Include(x => x.Part).ThenInclude(x => x.Status)
-               .ToList();
-
-            for (int i = 0; i < selectedStocks.Count; i++)
-            {
-                Stock stock = stocks.FirstOrDefault(x => x.Id == selectedStocks[i].StockId);
-                stock.Amount = selectedStocks[i].Amount;
-                if (stock != null) selected.Add(stock);
-            }
-            ViewBag.Stocks = selected;
-
-            List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
-            List<TreeViewStorage> treeViewStorages = new List<TreeViewStorage>();
-            foreach (Storage storage in storages)
-            {
-                treeViewStorages.Add(new TreeViewStorage(storage));
-            }
-            ViewBag.TreeViewStorages = treeViewStorages;
-            return View();
-        }
-
         private void WriteTransferHistory(Stock stock, Storage importStorage, string message)
         {
             StorageHistory newEntry = new StorageHistory()
@@ -189,12 +164,15 @@ namespace OperationMonitoring.Controllers
                 {
                     case "Nomenclature":
                         importStock.Nomenclature = stock.Nomenclature;
+                        
                         break;
                     case "Part":
                         importStock.Part = stock.Part;
+                        
                         break;
                     case "Equipment":
                         importStock.Equipment = stock.Equipment;
+                      
                         break;
                 }
                 importStock.Amount = stock.Amount;
@@ -242,21 +220,6 @@ namespace OperationMonitoring.Controllers
                         await ImportStock(currentStock, import.Amount, importStorage, "Equipment");
                     }
                 }
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Transfer(int storageId, string stocksJSON)
-        {
-            try
-            {
-                await TransferStock(storageId, stocksJSON);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return RedirectToAction("Index");
             }
         }
 

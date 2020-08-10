@@ -34,7 +34,7 @@
 
 <div class="container">
     @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
-     {
+    {
         <div class="nomenclature-table selected-nomenclature-table" id="selected-nomenclature-table">
             <div class="scrollable-table" style="overflow-x:scroll;">
                 <table class="table">
@@ -92,10 +92,11 @@
             </div>
         </div>
 
+        <input type="hidden" id="toStorageId" name="toStorageId" value="" />
         <input type="hidden" id="JSONId" name="JSONId" value="" />
         <button id="writeOffBTN" class="btn btn-primary" type="button" style="display:block;width:100%;">Write off</button>
         <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
-     }
+    }
 </div>
 
 @section Scripts{
@@ -295,7 +296,7 @@
 
         function parseSelectedAmount(jsonObj, currAmount) {
             var amountHTML = "";
-            amountHTML = "<input onchange='saveAmount(this);' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
+            amountHTML = "<input onchange='saveAmount(this);' class='amountInput' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
             return amountHTML;
         }
 
@@ -319,12 +320,12 @@
 
             var res = "";
             if (jsonObj.Nomenclature != null) {
-                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' onclick='addChecked(this);' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             }
             else if (jsonObj.Part != null) {
-                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' onclick='addChecked(this);' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             } if (jsonObj.Equipment != null) {
-                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' onclick='addChecked(this);' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             }
 
             return res;
@@ -510,21 +511,21 @@
             }
         });
 
-        function addChecked (input) {
-            if ($(input).is(":checked")) {
-                var name = "#" + input.name;
-                var stockId = Number($(name).attr("value"));
-                var amount = Number($(name).attr("amount"));
+
+        $(document).on("click", ".check", function () {
+            if ($(this).is(":checked")) {
+                var stockId = Number($(this).attr("value"));
+                var amount = Number($(this).attr("amount"));
                 selectedAmountList.set(stockId, amount);
                 $(".storage-select-to").fadeIn();
-                hubConnection.invoke("AddSelectedStock", Number($(name).attr("value")));
+                hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
             } else {
-                var st = Number($(name).attr("value"));
+                var st = Number($(this).attr("value"));
                 selectedAmountList.delete(st);
                 if (selectedAmountList.size <= 0) $(".storage-select-to").hide();
                 hubConnection.invoke("RemoveSelectedStock", st);
             }
-        }
+        });
 
         function saveAmount(inp) {
             var i = "#" + inp.id;
@@ -543,6 +544,7 @@
                 temp.push(elem);
             }
             console.log(JSON.stringify(temp));
+            $("#toStorageId").val($('#storagesTreeViewTo').jstree('get_selected')[0]);
             $("#JSONId").val(JSON.stringify(temp));
         });
 
