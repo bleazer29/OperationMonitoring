@@ -19,7 +19,8 @@
 <body>
     <div class="main">
         <div class="main-column__left">
-            <div class="main-column__left-inner navigation-open"> <!-- later - remember user settings for navigation? -->
+            <div class="main-column__left-inner navigation-open">
+                <!-- later - remember user settings for navigation? -->
                 <!-- HEADER -->
                 <header class="header">
                     <h1 class="header-letter">W</h1>
@@ -31,12 +32,12 @@
                 <div class="nav">
                     <div class="nav__container">
                         @*<div class="nav-item">
-            <form method="post" asp-action="logout" asp-controller="account">
-                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
-                    Logout @User.Identity.Name
-                </button>
-            </form>
-        </div>*@
+                                <form method="post" asp-action="logout" asp-controller="account">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Logout @User.Identity.Name
+                                    </button>
+                                </form>
+                            </div>*@
                         <a asp-controller="Equipment" asp-action="Index" class="nav__item">Equipment</a>
                         <a asp-controller="Assemblies" asp-action="Index" class="nav__item">Assemblies</a>
                         <a asp-controller="Counterparties" asp-action="Index" class="nav__item">Counterparties</a>
@@ -51,7 +52,7 @@
                         <hr />
                         <a asp-controller="Settings" asp-action="Index" class="nav__item">Settings</a>
                         @*<a asp-controller="Account" asp-action="ChangePassword" class="nav__item">Password</a>
-        <a asp-controller="Account" asp-action="EditProfile" class="nav__item">Profile</a>*@
+                            <a asp-controller="Account" asp-action="EditProfile" class="nav__item">Profile</a>*@
                         <a asp-action="logout" asp-controller="account" class="nav__item">Logout @User.Identity.Name</a>
 
                     </div>
@@ -80,5 +81,23 @@
     </div>
 
     @RenderSection("Scripts", required: false)
+
+    <script>
+        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+    </script>
 </body>
 </html>

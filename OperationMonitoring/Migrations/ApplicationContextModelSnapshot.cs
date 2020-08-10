@@ -223,9 +223,10 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AgreementNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CounterpartyId")
+                    b.Property<int>("CounterpartyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateDue")
@@ -288,6 +289,7 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EDRPOU")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -306,6 +308,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -338,6 +341,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RelatedEntityId")
@@ -361,6 +365,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -379,18 +384,20 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Patronymic")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PositionId")
+                    b.Property<int>("PositionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -431,7 +438,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PresetId")
+                    b.Property<int>("PresetId")
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNum")
@@ -474,6 +481,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -542,6 +550,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -594,6 +603,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -626,6 +636,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -660,7 +671,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("CounterpartyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EstimateDate")
@@ -672,16 +683,16 @@ namespace OperationMonitoring.Migrations
                     b.Property<bool>("IsOpened")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MaintenanceCategoryId")
+                    b.Property<int>("MaintenanceCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("MaintenanceReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaintenanceTypeId")
+                    b.Property<int>("MaintenanceTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ResponsibleId")
+                    b.Property<int>("ResponsibleId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ReturnStorageId")
@@ -715,6 +726,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -738,10 +750,11 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MaintenanceId")
+                    b.Property<int>("MaintenanceId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -761,6 +774,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -792,16 +806,18 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ProviderId")
+                    b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SpecificationId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VendorCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -811,38 +827,6 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("SpecificationId");
 
                     b.ToTable("Nomenclatures");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Title = "Motor"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Title = "Spacer"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Title = "Ring"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Title = "Shaft"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Title = "Ring"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Title = "Shaft"
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Order", b =>
@@ -852,7 +836,7 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AgreementId")
+                    b.Property<int>("AgreementId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateFinish")
@@ -864,7 +848,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<string>("DeliveryLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EstimateDate")
@@ -876,7 +860,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("ResponsibleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WellId")
+                    b.Property<int>("WellId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -909,12 +893,13 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OperatingTime")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -939,16 +924,17 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("InventoryNum")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("NomenclatureId")
+                    b.Property<int>("NomenclatureId")
                         .HasColumnType("int");
 
                     b.Property<int>("OperatingTime")
@@ -957,10 +943,11 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WarningTime")
@@ -992,12 +979,13 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PartId")
+                    b.Property<int>("PartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1017,6 +1005,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1032,6 +1021,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1049,10 +1039,10 @@ namespace OperationMonitoring.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("NomenclatureId")
+                    b.Property<int>("NomenclatureId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PresetId")
+                    b.Property<int>("PresetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1075,6 +1065,7 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EDRPOU")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -1200,7 +1191,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("PartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StorageId")
+                    b.Property<int>("StorageId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1214,28 +1205,6 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("StorageId");
 
                     b.ToTable("Stocks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Amount = 5.0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amount = 2.0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Amount = 5.0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Amount = 5.0
-                        });
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Storage", b =>
@@ -1336,16 +1305,17 @@ namespace OperationMonitoring.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("HistoryTypeId")
+                    b.Property<int>("HistoryTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StockId")
+                    b.Property<int>("StockId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StorageToId")
+                    b.Property<int>("StorageToId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1369,6 +1339,7 @@ namespace OperationMonitoring.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1395,13 +1366,14 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CounterpartyId")
+                    b.Property<int>("CounterpartyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1467,7 +1439,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
                         .WithMany()
                         .HasForeignKey("CounterpartyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Doc", "Doc")
                         .WithMany()
@@ -1506,7 +1479,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Position", "Position")
                         .WithMany()
                         .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Equipment", b =>
@@ -1524,7 +1498,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Preset", "Preset")
                         .WithMany()
                         .HasForeignKey("PresetId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
@@ -1565,22 +1540,26 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.MaintenanceCategory", "MaintenanceCategory")
                         .WithMany()
                         .HasForeignKey("MaintenanceCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.MaintenanceType", "MaintenanceType")
                         .WithMany()
                         .HasForeignKey("MaintenanceTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
                         .WithMany()
                         .HasForeignKey("ResponsibleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Storage", "ReturnStorage")
                         .WithMany()
@@ -1598,7 +1577,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Maintenance", "Maintenance")
                         .WithMany()
                         .HasForeignKey("MaintenanceId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Nomenclature", b =>
@@ -1606,7 +1586,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Provider", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Specification", "Specification")
                         .WithMany()
@@ -1619,12 +1600,14 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Agreement", "Agreement")
                         .WithMany()
                         .HasForeignKey("AgreementId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Employee", "Responsible")
                         .WithMany()
@@ -1634,7 +1617,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Well", "Well")
                         .WithMany()
                         .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.OrderHistory", b =>
@@ -1647,7 +1631,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Part", b =>
@@ -1660,12 +1645,14 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
                         .HasForeignKey("NomenclatureId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Part", "Parent")
                         .WithMany()
@@ -1675,7 +1662,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.PartHistory", b =>
@@ -1683,12 +1671,14 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Part", "Part")
                         .WithMany()
                         .HasForeignKey("PartId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.PresetItem", b =>
@@ -1696,12 +1686,14 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
                         .HasForeignKey("NomenclatureId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Preset", "Preset")
                         .WithMany("PresetItems")
                         .HasForeignKey("PresetId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Specification", b =>
@@ -1732,7 +1724,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Storage", "Storage")
                         .WithMany()
                         .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Storage", b =>
@@ -1753,17 +1746,20 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.HistoryType", "HistoryType")
                         .WithMany()
                         .HasForeignKey("HistoryTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Stock", "Stock")
                         .WithMany()
                         .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
                         .HasForeignKey("StorageToId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
@@ -1771,7 +1767,8 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Counterparty", "Counterparty")
                         .WithMany()
                         .HasForeignKey("CounterpartyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

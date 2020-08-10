@@ -1,4 +1,5 @@
-﻿using OperationMonitoring.Helpers.ValidationAttributes;
+﻿using Microsoft.AspNetCore.Identity;
+using OperationMonitoring.Helpers.ValidationAttributes;
 using System;
 using System.Collections.Generic;
 
