@@ -36,19 +36,6 @@ namespace OperationMonitoring.Controllers
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
             this.memoryCache = memoryCache;
         }  
-        
-
-
-
-        [HttpGet]
-        public ActionResult<string> Get()
-        {
-            return "wegewgewgwe"; 
-        }
-
-
-
-
 
 
         public IActionResult Index() {  return View();  }
