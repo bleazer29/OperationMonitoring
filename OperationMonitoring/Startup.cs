@@ -40,7 +40,7 @@ namespace OperationMonitoring
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-
+            services.AddResponseCompression();
             services.AddMemoryCache();
         }
 
@@ -64,6 +64,9 @@ namespace OperationMonitoring
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseResponseCompression();
+
 
             app.UseEndpoints(endpoints =>
             {
