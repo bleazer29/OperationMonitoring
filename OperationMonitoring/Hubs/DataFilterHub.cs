@@ -662,14 +662,44 @@ namespace OperationMonitoring.Hubs
             return temp;
         }
 
-        public async Task AssembleEquipment(string jsonStocks, int assemblyId)
+        public async Task SendDepartments(string searchString, string searchField, bool isAscendedSort)
         {
-            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
-            foreach(var stock in stocks)
+            List<Department> departments = db.Departments.ToList();
+            if (!string.IsNullOrEmpty(searchString))
             {
-                var message = "Stock was sended on assembly #" + assemblyId.ToString("D8");
-                //await WriteOffStock(stock, message);
+                departments = await SearchDepartments(searchString, searchField, departments);
             }
+            departments = await SortDepartment(isAscendedSort, departments);
+            var json = JsonConvert.SerializeObject(departments);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+
+        public async Task<List<Department>> SearchDepartments(string searchString, string searchField, List<Department> departments)
+        {
+            switch (searchField)
+            {
+                case "Title":
+                    departments = departments.Where(x => x.Title.Contains(searchString)).ToList();
+                    break;
+                case "Address":
+                    departments = departments.Where(x => x.Address.Contains(searchString)).ToList();
+                    break;
+            }
+            return departments;
+        }
+
+        public async Task<List<Department>> SortDepartment(bool isAscendSort, List<Department> departments)
+        {
+            switch (isAscendSort)
+            {
+                case true:
+                    departments = departments.OrderBy(x => x.Title).ToList();
+                    break;
+                case false:
+                    departments = departments.OrderByDescending(x => x.Title).ToList();
+                    break;
+            }
+            return departments;
         }
 
     }

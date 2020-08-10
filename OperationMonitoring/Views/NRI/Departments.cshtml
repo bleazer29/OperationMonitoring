@@ -11,21 +11,27 @@
     <h4>Departments</h4>
 </div>
 
-<div class="form-pos">
-    <form asp-action="CreateDepartment">
-        <fieldset>
-            <legend>Create new department</legend>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </fieldset>
-    </form>
+<button type="button" class="collapsible">Create department</button>
+<div class="accorion-content form-pos accordion-panel">
+        <form asp-action="CreateDepartment">
+            <fieldset>
+                <legend>Create new department</legend>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </fieldset>
+        </form>
 </div>
 
 <!-- SEARCH PANEL -->
@@ -37,9 +43,8 @@
             </div>
             <div class="search-select">
                 <select id="search-type-select" name="searchField" class="form-select">
-                    <option selected value="Name">Name</option>
+                    <option selected value="Title">Title</option>
                     <option value="Address">Address</option>
-                    <option value="EDRPOU">EDRPOU</option>
                 </select>
             </div>
         </div>
@@ -62,9 +67,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    Id
-                </th>
                 <th class="sort-asc">
                     <a href="#" data-sort="Title">
                         Title
@@ -79,17 +81,14 @@
         <tbody>
             @foreach (var item in Departments)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                </tr>
             }
         </tbody>
 
@@ -137,7 +136,7 @@
 
     $(".js-btn-search").click(function () {
         search = $("#searchString").val();
-        hubConnection.invoke("SendProviders", search, searchField, sortAsc);
+        hubConnection.invoke("SendDepartments", search, searchField, sortAsc);
     });
 
     $(pagedList + " th a").click(function (e) {
@@ -156,10 +155,21 @@
             $(this).parent().addClass("sort-desc");
         }
         sortField = $(this).attr("data-sort");
-        hubConnection.invoke("SendProviders", search, sortField, sortAsc);
+        hubConnection.invoke("SendDepartments", search, searchField, sortAsc);
     });
 
     hubConnection.start();
 
 </script>
 
+<script>
+    $('.collapsible').click(function () {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+    });
+</script>
