@@ -9,7 +9,28 @@
     @await Html.PartialAsync("_StoragesPartial")
 </div>
 
+<div class="storage-select-to flex-container search-panel">
+    <label class="control-label">To: </label> <input id="select-storage-to-tb" disabled="disabled" type="text" class="search-textbox" />
+    <button id="select-storage-to-btn" class="btn btn-primary">Select...</button>
+</div>
 
+<div id="storage-select-modal-to" class="modal" hidden="hidden">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+
+        </div>
+        <div class="storagesTreeView-to-container">
+            <div class="content-heading">
+                <h4><a class="all-storages-link" href="" storage-id="0">Storages</a></h4>
+                <a class="btn btn-primary" asp-action="Create">+</a>
+            </div>
+            <div id="storagesTreeViewTo">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
@@ -71,7 +92,9 @@
             </div>
         </div>
 
+        <input type="hidden" id="toStorageId" name="toStorageId" value="" />
         <input type="hidden" id="JSONId" name="JSONId" value="" />
+        <button id="writeOffBTN" class="btn btn-primary" type="button" style="display:block;width:100%;">Write off</button>
         <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
     }
 </div>
@@ -95,20 +118,23 @@
             searchObjType = $('#type-search-select').val();
         });
 
-
-        $('#storage-select-modal').hide();
+        $('#storage-select-modal-to').hide();
+        $('#storage-select-modal-from').hide();
 
         $('#select-storage-from-btn').click(function () {
-            $('#storage-select-modal').fadeIn();
+            $('#storage-select-modal-from').fadeIn();
         })
         $('#select-storage-to-btn').click(function () {
-            $('#storage-select-modal').fadeIn();
+            $('#storage-select-modal-to').fadeIn();
         })
 
         $(window).click(function (event) {
             console.log(event.target);
-            if (event.target.id == 'storage-select-modal' || event.target.id == 'storage-select-modal-close') {
-                $('#storage-select-modal').hide();
+            if (event.target.id == 'storage-select-modal-to' || event.target.id == 'storage-select-modal-to-close') {
+                $('#storage-select-modal-to').hide();
+            }
+            else if (event.target.id == 'storage-select-modal-from' || event.target.id == 'storage-select-modal-from-close') {
+                $('#storage-select-modal-from').hide();
             }
         });
 
@@ -270,7 +296,7 @@
 
         function parseSelectedAmount(jsonObj, currAmount) {
             var amountHTML = "";
-            amountHTML = "<input onchange='saveAmount(this);' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
+            amountHTML = "<input onchange='saveAmount(this);' class='amountInput' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
             return amountHTML;
         }
 
@@ -286,7 +312,7 @@
             }
             return res;
         }
-
+       
         function parseCheckBox(jsonObj) {
             var isChecked = "";
             if (selectedAmountList.has(jsonObj.Id))
@@ -294,12 +320,12 @@
 
             var res = "";
             if (jsonObj.Nomenclature != null) {
-                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             }
             else if (jsonObj.Part != null) {
-                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             } if (jsonObj.Equipment != null) {
-                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck check'" + isChecked + "type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='" + jsonObj.Id + "' amount='" + jsonObj.Amount + "'/><span class='checkmark'></span></label>";
             }
 
             return res;
@@ -329,7 +355,7 @@
             }
             return rowStyle;
         }
-        
+
         hubConnection.on("Receive", function (data) {
             console.log("recieve");
             $(pagedList + " tbody").empty();
@@ -373,7 +399,7 @@
             var json = JSON.parse(data);
             for (let i = 0; i < json.length; i++) {
                 console.log(json[i]);
-                
+
                 var title = parseTitle(json[i]);
                 var status = parseStatus(json[i]);
                 var vendorcode = parseVendorCode(json[i]);
@@ -385,7 +411,7 @@
                 var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
                 var trclass = parseStyle(json[i]);
                 var btnDetails = parseButton(json[i]);
-                
+
                 console.log(opertime);
 
                 $("#selected-nomenclature-table" + " tbody").append(
@@ -406,12 +432,20 @@
         });
 
         $(function () {
-            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+            $('#storagesTreeViewFrom').on("select_node.jstree", function (e, data) {
                 search = $("#searchString").val();
                 storageId = Number(data.selected);
+                $("#select-storage-from-tb").val(data.node.text);
                 hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
             });
         });
+
+        $(function () {
+            $('#storagesTreeViewTo').on("select_node.jstree", function (e, data) {
+                $("#select-storage-to-tb").val(data.node.text);
+            });
+        });
+
 
         $('.js-btn-search').click(function () {
             console.log("send");
@@ -421,7 +455,7 @@
 
         var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
 
-        $('#storagesTreeViewExport').jstree({
+        $('#storagesTreeViewTo').jstree({
         "plugins": ["wholerow", "contextmenu", "search"],
         "core": {
             "multiple": false,
@@ -434,7 +468,7 @@
         },
         "contextmenu": {
             "items": function ($node) {
-                var tree = $("#storagesTreeViewExport").jstree(true);
+                var tree = $("#storagesTreeViewTo").jstree(true);
                 return {
                     "Details": {
                         "separator_before": false,
@@ -447,17 +481,48 @@
                 };
             }
         }
-    });
+        });
 
-        $(".check").click(function () {
+        $('#storagesTreeViewFrom').jstree({
+            "plugins": ["wholerow", "contextmenu", "search"],
+            "core": {
+                "multiple": false,
+                "themes": {
+                    "dots": false,
+                    "icons": false,
+                    "responsive": false
+                },
+                "data": storagesJSON
+            },
+            "contextmenu": {
+                "items": function ($node) {
+                    var tree = $("#storagesTreeViewFrom").jstree(true);
+                    return {
+                        "Details": {
+                            "separator_before": false,
+                            "separator_after": false,
+                            "label": "Details",
+                            "action": function (obj) {
+                                window.location.href = $node.a_attr.href;
+                            }
+                        }
+                    };
+                }
+            }
+        });
+
+
+        $(document).on("click", ".check", function () {
             if ($(this).is(":checked")) {
                 var stockId = Number($(this).attr("value"));
-                var amount = Number($(this).attr("amount"));            
+                var amount = Number($(this).attr("amount"));
                 selectedAmountList.set(stockId, amount);
+                $(".storage-select-to").fadeIn();
                 hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
             } else {
                 var st = Number($(this).attr("value"));
                 selectedAmountList.delete(st);
+                if (selectedAmountList.size <= 0) $(".storage-select-to").hide();
                 hubConnection.invoke("RemoveSelectedStock", st);
             }
         });
@@ -479,8 +544,11 @@
                 temp.push(elem);
             }
             console.log(JSON.stringify(temp));
+            $("#toStorageId").val($('#storagesTreeViewTo').jstree('get_selected')[0]);
             $("#JSONId").val(JSON.stringify(temp));
         });
+
+        $(".storages-select").append($(".storage-select-to").hide());
 
         hubConnection.start();
     </script>
