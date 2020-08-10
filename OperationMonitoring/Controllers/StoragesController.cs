@@ -144,18 +144,18 @@ namespace OperationMonitoring.Controllers
             switch (stockType)
             {
                 case "Nomenclature":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id);
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id && x.Storage.Id == importStorage.Id);
                     break;
                 case "Part":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id);
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id && x.Storage.Id == importStorage.Id);
                     break;
                 case "Equipment":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id);
+                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id && x.Storage.Id == importStorage.Id);
                     break;
             }
             if (importStock != null)
             {
-                importStock.Amount += stock.Amount;
+                importStock.Amount += amount;
             }
             else
             {
@@ -179,7 +179,7 @@ namespace OperationMonitoring.Controllers
                 importStock.Storage = importStorage;
                 db.Stocks.Add(importStock);
             }
-            WriteTransferHistory(stock, importStorage, message: "Stock transfered");
+            WriteTransferHistory(stock, importStorage, message: "Stock was delivered");
             await db.SaveChangesAsync();
         }
 
