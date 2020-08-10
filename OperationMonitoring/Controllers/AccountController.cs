@@ -54,29 +54,6 @@ namespace OperationMonitoring.Controllers
 
                     // добавляем пользователя
                     var result = await userManager.CreateAsync(user, model.Password);
-                   
-                    /////////////////////////////////////////////////////////////
-
-                    //Добавление первой роли для администратора
-                    //IdentityRole identityRole = new IdentityRole 
-                    //{
-                    //    Name = "Admin"
-                    //};
-
-
-                    //IdentityResult rolesResult = await this.roleManager.CreateAsync(identityRole);
-
-                    //var firstRoles = new IdentityUserRole<string>
-                    //{
-                    //    RoleId = identityRole.Id,
-                    //    UserId = user.Id
-                    //};
-
-                    //db.UserRoles.Add(firstRoles);
-                    //db.SaveChanges();
-
-
-                    /////////////////////////////////////////////////////////////////
                     if (result.Succeeded)
                     {
                         Employee employee = new Employee

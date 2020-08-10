@@ -1,0 +1,487 @@
+﻿@{List<OperationMonitoring.Helpers.TreeViewStorage> treeViewStorages = ViewBag.TreeViewStorages;}
+@{List<OperationMonitoring.Models.Stock> stocks = ViewBag.Stocks;}
+@{List<OperationMonitoring.Models.Stock> selectedStocks = new List<Stock>();}
+@{
+    ViewData["Title"] = "Storages";
+}
+
+<div>
+    @await Html.PartialAsync("_StoragesPartial")
+</div>
+
+
+
+<div class="container">
+    @using (Html.BeginForm("Index", "Storages", FormMethod.Post))
+    {
+        <div class="nomenclature-table selected-nomenclature-table" id="selected-nomenclature-table">
+            <div class="scrollable-table" style="overflow-x:scroll;">
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                <a href="#" data-sort="Status">
+                                    Status
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="VendorCode">
+                                    Vendor code
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="SerialNumber">
+                                    Serial number
+                                </a>
+                            </th>
+                            <th class="sort-asc">
+                                <a href="#" data-sort="Name">
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Provider">
+                                    Provider
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Operationtime">
+                                    Operation time
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Amount">
+                                    Amount
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" data-sort="Storage">
+                                    Storage
+                                </a>
+                            </th>
+                            <th>
+                                @*actions*@
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody> </tbody>
+                </table>
+            </div>
+        </div>
+
+        <input type="hidden" id="JSONId" name="JSONId" value="" />
+        <button id="submitBTN" class="btn btn-primary transfer-button" type="submit" value="submit" style="display:block;width:100%;">Transfer</button>
+    }
+</div>
+
+@section Scripts{
+    <script>
+        var search = "";
+        var searchField = "Title"; // default - "Title"
+        var searchObjType = "All";
+
+        var sortField = "Title"; // default - "Title"
+        var sortAsc = true; // default
+        var storageId = 0;
+
+        var selectedAmountList = new Map();
+
+        var pagedList = "#paged-list";
+        GenList(pagedList);
+
+        $('#type-search-select').change(function () {
+            searchObjType = $('#type-search-select').val();
+        });
+
+
+        $('#storage-select-modal').hide();
+
+        $('#select-storage-from-btn').click(function () {
+            $('#storage-select-modal').fadeIn();
+        })
+        $('#select-storage-to-btn').click(function () {
+            $('#storage-select-modal').fadeIn();
+        })
+
+        $(window).click(function (event) {
+            console.log(event.target);
+            if (event.target.id == 'storage-select-modal' || event.target.id == 'storage-select-modal-close') {
+                $('#storage-select-modal').hide();
+            }
+        });
+
+
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/data")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+
+        function parseTitle(jsonObj) {
+            var titleHTML;
+            if (jsonObj.Nomenclature == null) {
+                if (jsonObj.Part == null) {
+                    if (jsonObj.Equipment == null) {
+                        titleHTML = "";
+                    }
+                    else titleHTML = jsonObj.Equipment.Title;
+                }
+                else titleHTML = jsonObj.Part.Title;
+            }
+            else {
+                titleHTML = jsonObj.Nomenclature.Title;
+            }
+            return titleHTML;
+        }
+
+        function parseStatus(jsonObj) {
+            var statusHTML;
+            if (jsonObj.Part == null) {
+                if (jsonObj.Equipment == null) {
+                    statusHTML = "";
+                }
+                else {
+                    statusHTML = jsonObj.Equipment.Status.Title;
+                }
+            }
+            else statusHTML = jsonObj.Part.Status.Title;
+            return statusHTML;
+        }
+
+        function parseVendorCode(jsonObj) {
+            var vendorCodeHTML;
+            if (jsonObj.Nomenclature == null) {
+                vendorCodeHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.VendorCode == null) {
+                    vendorCodeHTML = "";
+                }
+                else
+                    vendorCodeHTML = jsonObj.Nomenclature.VendorCode;
+            }
+            return vendorCodeHTML;
+        }
+
+        function parseProvider(jsonObj) {
+            var providerHTML;
+            if (jsonObj.Nomenclature == null) {
+                providerHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.Provider == null) {
+                    providerHTML = "";
+                }
+                else
+                    providerHTML = jsonObj.Nomenclature.Provider.Title;
+            }
+            return providerHTML;
+        }
+
+        function parseProviderId(jsonObj) {
+            var providerHTML;
+            if (jsonObj.Nomenclature == null) {
+                providerHTML = "";
+            }
+            else {
+                if (jsonObj.Nomenclature.Provider == null) {
+                    providerHTML = "";
+                }
+                else
+                    providerHTML = jsonObj.Nomenclature.Provider.Id;
+            }
+            return providerHTML;
+        }
+
+        function parseOperatingTime(jsonObj) {
+            var operatingTimeHTML;
+            var warningTimeHTML;
+            var result = "";
+            if (jsonObj.Part == null) {
+                if (jsonObj.Equipment == null) {
+                    operatingTimeHTML = "";
+                    warningTimeHTML = "";
+                }
+                else {
+                    operatingTimeHTML = jsonObj.Equipment.OperatingTime;
+                    warningTimeHTML = jsonObj.Equipment.WarningTime;
+                }
+            }
+            else {
+                operatingTimeHTML = jsonObj.Part.OperatingTime;
+                warningTimeHTML = jsonObj.Part.WarningTime;
+            }
+
+            if (operatingTimeHTML != "" && warningTimeHTML != "") {
+                var timeLeft = warningTimeHTML - operatingTimeHTML;
+                if (timeLeft > 0) {
+                    var minutes;
+                    if (timeLeft % 60 < 10) {
+                        minutes = "0" + (timeLeft % 60);
+                    }
+                    else {
+                        minutes = (timeLeft % 60);
+                    }
+                    result = "<span>" + Math.round(timeLeft / 60) + ":" + minutes + "</span>";
+                }
+                else {
+                    timeLeft *= -1;
+
+                    var minutes;
+                    if (timeLeft % 60 < 10) {
+                        minutes = "0" + (timeLeft % 60);
+                    }
+                    else {
+                        minutes = (timeLeft % 60);
+                    }
+                    result = "<span>Overwork by " + Math.round(timeLeft / 60) + ":" + minutes + "</span>" + "<p>No operating time left! Needs maintenance!</p>"
+                }
+            }
+
+
+            return result;
+        }
+
+        function parseSerialNumber(jsonObj) {
+            var serialNumberHTML;
+            if (jsonObj.Equipment == null) {
+                serialNumberHTML = " ";
+            }
+            else {
+                serialNumberHTML = jsonObj.Equipment.SerialNum;
+            }
+            return serialNumberHTML;
+        }
+
+        function parseAmount(jsonObj) {
+            var amountHTML;
+            if (jsonObj.Amount == null) {
+                if (jsonObj.Part == null) {
+                    amountHTML = Number(1);
+                }
+                else amountHTML = Number(jsonObj.Part.Amount);
+            }
+            else amountHTML = Number(jsonObj.Amount);
+
+            return amountHTML;
+        }
+
+        function parseSelectedAmount(jsonObj, currAmount) {
+            var amountHTML = "";
+            amountHTML = "<input onchange='saveAmount(this);' type='number' stockId='" + jsonObj.Id + "' id='amount-" + jsonObj.Id + "' name='amount-" + jsonObj.Id + "'min='0.001' step='any' max='" + jsonObj.Amount + "' value='" + currAmount +"'>";
+            return amountHTML;
+        }
+
+        function parseButton(jsonObj) {
+            var res = "";
+            if (jsonObj.Nomenclature != null) {
+                res = "<a class='btn btn-primary' href='/Nomenclature/Details/" + jsonObj.Nomenclature.Id + "'>Details</a>";
+            }
+            else if (jsonObj.Part != null) {
+                res = "<a class='btn btn-primary' href='/Parts/Details/" + jsonObj.Part.Id + "'>Details</a>";
+            } if (jsonObj.Equipment != null) {
+                res = "<a class='btn btn-primary' href='/Equipment/Details/" + jsonObj.Equipment.Id + "'>Details</a>";
+            }
+            return res;
+        }
+
+        function parseCheckBox(jsonObj) {
+            var isChecked = "";
+            if (selectedAmountList.has(jsonObj.Id))
+                isChecked = "checked='true'";
+
+            var res = "";
+            if (jsonObj.Nomenclature != null) {
+                res = "<label class='checkBox-container' for='nom-" + jsonObj.Nomenclature.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='nom-" + jsonObj.Nomenclature.Id + "' name='nom-" + jsonObj.Nomenclature.Id + "' value='nom-" + jsonObj.Nomenclature.Id + "'/><span class='checkmark'></span></label>";
+            }
+            else if (jsonObj.Part != null) {
+                res = "<label class='checkBox-container' for='part-" + jsonObj.Part.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='part-" + jsonObj.Part.Id + "' name='part-" + jsonObj.Part.Id + "' value='part-" + jsonObj.Part.Id + "'/><span class='checkmark'></span></label>";
+            } if (jsonObj.Equipment != null) {
+                res = "<label class='checkBox-container' for='eq-" + jsonObj.Equipment.Id + "'>" + "<input class='transferCheck'" + isChecked + "type='checkbox' id='eq-" + jsonObj.Equipment.Id + "' name='eq-" + jsonObj.Equipment.Id + "' value='eq-" + jsonObj.Equipment.Id + "'/><span class='checkmark'></span></label>";
+            }
+
+            return res;
+        }
+
+        function parseStyle(jsonObj) {
+            var rowStyle = "";
+            if (jsonObj.Part != null) {
+                if (jsonObj.Part.OperatingTime > 0) {
+                    if (jsonObj.Part.OperatingTime < jsonObj.Part.WarningTime) {
+                        if (jsonObj.Part.OperatingTime === jsonObj.Part.WarningTime) {
+                            rowStyle = "table-time-warning"
+                        }
+                    }
+                    else rowStyle = "table-time-danger"
+                }
+            }
+            else if (jsonObj.Equipment != null) {
+                if (jsonObj.Equipment.OperatingTime > 0) {
+                    if (jsonObj.Equipment.OperatingTime < jsonObj.Equipment.WarningTime) {
+                        if (jsonObj.Equipment.OperatingTime === jsonObj.Equipment.WarningTime) {
+                            rowStyle = "table-time-warning"
+                        }
+                    }
+                    else rowStyle = "table-time-danger"
+                }
+            }
+            return rowStyle;
+        }
+        
+        hubConnection.on("Receive", function (data) {
+            console.log("recieve");
+            $(pagedList + " tbody").empty();
+            var json = JSON.parse(data);
+            for (let i = 0; i < json.length; i++) {
+                console.log(json[i]);
+                var title = parseTitle(json[i]);
+                var status = parseStatus(json[i]);
+                var vendorcode = parseVendorCode(json[i]);
+                var provider = parseProvider(json[i]);
+                var providerId = parseProviderId(json[i]);
+
+                var opertime = parseOperatingTime(json[i]);
+                var serialnum = parseSerialNumber(json[i]);
+                var amount = parseAmount(json[i]);
+                var trclass = parseStyle(json[i]);
+                var btnDetails = parseButton(json[i]);
+                var checkBox = parseCheckBox(json[i]);
+                console.log(opertime);
+
+                $(pagedList + " tbody").append(
+                    "<tr class='" + trclass + "'>" +
+                    "<td>" + checkBox + "</td>" +
+                    "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
+                    "<td>" + vendorcode + "</td>" +
+                    "<td>" + serialnum + "</td>" +
+                    "<td>" + title + "</td>" +
+                    "<td>" + "<a href='/Providers/Details/" + providerId + "'>" + provider + "</a></td>" +
+                    "<td>" + opertime + "</td>" +
+                    "<td>" + amount + "</td>" +
+                    "<td>" + "<a href='/Storages/Details/" + json[i].Storage.Id + "'>" + json[i].Storage.Title + "</a></td>" +
+                    "<td>" + btnDetails + "</td>" +
+                    "</tr>"
+                );
+            }
+            GenList(pagedList);
+        });
+
+        hubConnection.on("RecieveSelectedStocks", function (data) {
+            $("#selected-nomenclature-table" + " tbody").empty();
+            var json = JSON.parse(data);
+            for (let i = 0; i < json.length; i++) {
+                console.log(json[i]);
+                
+                var title = parseTitle(json[i]);
+                var status = parseStatus(json[i]);
+                var vendorcode = parseVendorCode(json[i]);
+                var provider = parseProvider(json[i]);
+                var providerId = parseProviderId(json[i]);
+
+                var opertime = parseOperatingTime(json[i]);
+                var serialnum = parseSerialNumber(json[i]);
+                var amount = parseSelectedAmount(json[i], selectedAmountList.get(json[i].Id));
+                var trclass = parseStyle(json[i]);
+                var btnDetails = parseButton(json[i]);
+                
+                console.log(opertime);
+
+                $("#selected-nomenclature-table" + " tbody").append(
+                    "<tr class='" + trclass + "'>" +
+                    "<td>" + "<span class='equip-current-status'>" + status + "</span>" + "</td>" +
+                    "<td>" + vendorcode + "</td>" +
+                    "<td>" + serialnum + "</td>" +
+                    "<td>" + title + "</td>" +
+                    "<td>" + "<a href='/Providers/Details/" + providerId + "'>" + provider + "</a></td>" +
+                    "<td>" + opertime + "</td>" +
+                    "<td>" + amount + "</td>" +
+                    "<td>" + "<a href='/Storages/Details/" + json[i].Storage.Id + "'>" + json[i].Storage.Title + "</a></td>" +
+                    "<td>" + btnDetails + "</td>" +
+                    "</tr>"
+                );
+            }
+
+        });
+
+        $(function () {
+            $('#storagesTreeViewExport').on("select_node.jstree", function (e, data) {
+                search = $("#searchString").val();
+                storageId = Number(data.selected);
+                hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
+            });
+        });
+
+        $('.js-btn-search').click(function () {
+            console.log("send");
+            search = $("#searchString").val();
+            hubConnection.invoke("SendStocks", search, storageId, searchField, searchObjType);
+        })
+
+        var storagesJSON = JSON.parse('@Html.Raw(OperationMonitoring.Helpers.JSConverter.SerializeObject(treeViewStorages))');
+
+        $('#storagesTreeViewExport').jstree({
+        "plugins": ["wholerow", "contextmenu", "search"],
+        "core": {
+            "multiple": false,
+            "themes": {
+                "dots": false,
+                "icons": false,
+                "responsive":false
+            },
+            "data": storagesJSON
+        },
+        "contextmenu": {
+            "items": function ($node) {
+                var tree = $("#storagesTreeViewExport").jstree(true);
+                return {
+                    "Details": {
+                        "separator_before": false,
+                        "separator_after": false,
+                        "label": "Details",
+                        "action": function (obj) {
+                            window.location.href = $node.a_attr.href;
+                        }
+                    }
+                };
+            }
+        }
+    });
+
+        $(".check").click(function () {
+            if ($(this).is(":checked")) {
+                var stockId = Number($(this).attr("value"));
+                var amount = Number($(this).attr("amount"));            
+                selectedAmountList.set(stockId, amount);
+                hubConnection.invoke("AddSelectedStock", Number($(this).attr("value")));
+            } else {
+                var st = Number($(this).attr("value"));
+                selectedAmountList.delete(st);
+                hubConnection.invoke("RemoveSelectedStock", st);
+            }
+        });
+
+        function saveAmount(inp) {
+            var i = "#" + inp.id;
+            var stId = Number($(i).attr("stockId"));
+            var amount = Number(inp.value);
+            selectedAmountList.set(stId, amount);
+        }
+
+        $("#submitBTN").click(function () {
+            var temp = [];
+            for (const [key, value] of selectedAmountList.entries()) {
+                let elem = {
+                    StockId: key,
+                    Amount: value
+                }
+                temp.push(elem);
+            }
+            console.log(JSON.stringify(temp));
+            $("#JSONId").val(JSON.stringify(temp));
+        });
+
+        hubConnection.start();
+    </script>
+}

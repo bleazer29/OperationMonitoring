@@ -1,12 +1,22 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OperationMonitoring.Hubs;
+using Microsoft.AspNetCore.Http.Connections;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring
@@ -17,6 +27,7 @@ namespace OperationMonitoring
         {
             Configuration = configuration;
         }
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -37,9 +48,14 @@ namespace OperationMonitoring
             services.Configure<DataProtectionTokenProviderOptions>(o=>o.TokenLifespan = TimeSpan.FromHours(8));
 
             services.AddSingleton<DataProtectionPurposeStrings>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+            });
             services.AddResponseCompression();
             services.AddMemoryCache();
         }
@@ -55,6 +71,7 @@ namespace OperationMonitoring
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -70,8 +87,19 @@ namespace OperationMonitoring
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute( name: "default",  pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<DataFilterHub>("/data",
+                    options =>
+                    {
+                        options.ApplicationMaxBufferSize = 64;
+                        options.TransportMaxBufferSize = 64;
+                        options.LongPolling.PollTimeout = TimeSpan.FromSeconds(60);
+                        options.Transports = HttpTransportType.LongPolling | HttpTransportType.WebSockets;
+                    }
+                    );
             });
         }
     }

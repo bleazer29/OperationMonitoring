@@ -11,14 +11,18 @@ namespace OperationMonitoring.Models
     public class StorageHistory : IHistory
     {
         public int Id { get; set; }
-        public virtual Part Part { get; set; }
-        public virtual Storage StorageFrom { get; set; }
+        [Required]
+        public virtual Stock Stock { get; set; }
+        public double? Amount { get; set; }
+        [Required]
         public virtual Storage StorageTo { get; set; }
+        [Required]
         public virtual HistoryType HistoryType { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required]
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get; set; }
+        [Required]
+        public string Message { get; set; }
     }
 }

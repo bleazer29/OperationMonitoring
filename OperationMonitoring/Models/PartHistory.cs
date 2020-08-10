@@ -10,10 +10,13 @@ namespace OperationMonitoring.Models
     public class PartHistory
     {
         public int Id { get; set; }
+        [Required]
         public virtual Part Part { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required]
         public DateTime Date { get; set; }
+        [Required]
         public EquipmentStatus Status { get; set; }
+        [Required]
+        public string Message { get; set; }
     }
 }

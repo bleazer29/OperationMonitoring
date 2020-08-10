@@ -10,14 +10,14 @@ namespace OperationMonitoring.Models
     public class Agreement
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Counterparty not specified")]
         public virtual Counterparty Counterparty { get; set; }
+        [Required(ErrorMessage = "Agreement number not specified")]
         public string AgreementNumber { get; set; }
         public virtual Doc Doc { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "Start date not specified")]
         public DateTime DateStart { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateDue { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

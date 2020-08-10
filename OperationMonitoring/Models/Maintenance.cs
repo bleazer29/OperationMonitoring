@@ -9,27 +9,26 @@ namespace OperationMonitoring.Models
     public class Maintenance
     {
         public int Id { get; set; }
+        [Required]
         public virtual Equipment Equipment { get; set; }
+        [Required]
         public virtual Employee Responsible { get; set; }
         public virtual Counterparty Counterparty { get; set; }
         /// <summary>
         /// внешний или внутренний ремонт (потом может добавятся ещё типы)
         /// </summary>
+        [Required]
         public virtual MaintenanceType MaintenanceType { get; set; }
         /// <summary>
         /// плановый или аварийный (потом может добавятся ещё категории)
         /// </summary>
+        [Required]
         public virtual MaintenanceCategory MaintenanceCategory { get; set; }
         public virtual Storage ReturnStorage { get; set; }
         public string MaintenanceReason { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required]
         public DateTime StartDate { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EstimateDate { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FinishDate { get; set; }
         public string Title { get { return "WO-" + Id + "/" + StartDate.Year; } }
         public bool IsOpened { get; set; }

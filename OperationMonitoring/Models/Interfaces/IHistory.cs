@@ -10,6 +10,7 @@ namespace OperationMonitoring.Models.Interfaces
     {
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
+        public string Message { get; set; }
         public Employee Author { get; set; } //кто коммент написал
     }
 }

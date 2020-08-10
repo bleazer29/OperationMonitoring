@@ -1,0 +1,101 @@
+﻿@model OperationMonitoring.Models.Order
+
+<div class="form-pos form-info block-width-100">
+    @if ((string)@ViewData["Controller"] == "Orders")
+    {
+        <div class="form-info__heading">
+            Working Order #@Model.Id:
+        </div>
+        <div class="form-info__note">
+            Status:
+            @if (Model.IsOpen)
+            {
+                <span>Open</span>
+            }
+            else
+            {
+                <span>Closed</span>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="form-info__heading">
+            Current Working Order:
+        </div>
+    }
+
+    @if ((string)@ViewData["Controller"] == "Orders")
+    {
+        <div class="form-info__item">
+            <div class="form-info__label">Equipment</div>
+            <div class="form-info_data">
+                <a asp-controller="Equipment" asp-action="Details" asp-route-id="@Model.Equipment.Id">
+                    @Model.Equipment.Title,
+                    <br /> @Model.Equipment.Type,
+                    <br /> @Model.Equipment.Category,
+                    <br /> @Model.Equipment.Department
+                </a>
+            </div>
+        </div>
+    }
+    <div class="form-info__item">
+        <div class="form-info__label">Counterparty</div>
+        <div class="form-info_data">
+            <a asp-controller="Clients" asp-action="Details" asp-route-id="@Model.Agreement.Counterparty.Id">
+                @Model.Agreement.Counterparty.Title
+            </a>
+        </div>
+    </div>
+    <div class="form-info__item">
+        <div class="form-info__label">Agreement</div>
+        <div class="form-info_data">@Model.Agreement.AgreementNumber</div>
+    </div>
+    <div class="form-info__item">
+        <div class="form-info__label">Well</div>
+        <div class="form-info_data">@Model.Well.Title</div>
+    </div>
+
+    @if (Model.IsOpen == true)
+    {
+        ViewData["EquipmentId"] = Model.Equipment.Id;
+        ViewData["EntityType"] = "Order";
+        ViewData["EntityId"] = Model.Id;
+        ViewData["Heading"] = "Working order notes";
+        <partial name="_FormAddNote" view-data="ViewData" />
+
+        <div class="form-pos small-form">
+            <div class="form-info__heading">Today's Operating Hours:</div>
+            <form method="post"
+                  asp-controller="Shared" asp-action="AddHours"
+                  asp-route-equipmentId="@Model.Equipment.Id"
+                  asp-route-orderId="@Model.Id"
+                  asp-route-controllerId="@ViewData["Controller"]">
+                <div class="form-group small-fields">
+                    <label class="control-label">Hours</label>
+                    <input required name="hours" type="number" value="0" min="0" max="24" class="form-control" />
+                </div>
+                <div class="form-group small-fields">
+                    <label class="control-label">Minutes</label>
+                    <input required name="minutes" type="number" value="0" min="0" max="59" class="form-control" />
+                </div>
+                <button class="btn btn-primary">Add Hours</button>
+            </form>
+        </div>
+    }
+
+    <!-- Order History -->
+    @{
+        ViewData["Type"] = "Order";
+        ViewData["EntityId"] = Model.Id;
+        <partial name="_History" view-data="ViewData" />
+    }
+
+    @if (Model.IsOpen == true)
+    {
+        <a asp-action="CloseOrder" asp-controller="Shared" asp-route-orderId="@Model.Id" asp-route-controllerId='@ViewData["Controller"]' class="btn btn-alter btn-auto">
+            Close Order
+        </a>
+    }
+
+</div>

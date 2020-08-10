@@ -12,5 +12,6 @@ namespace OperationMonitoring.Models
         public double Weight { get; set; }
         public string Material { get; set; }
         public double Height { get; set; }
+        public virtual UsageType UsageType { get; set; }
     }
 }

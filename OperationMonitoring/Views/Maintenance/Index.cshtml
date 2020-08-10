@@ -1,0 +1,163 @@
+﻿@model X.PagedList.IPagedList<OperationMonitoring.Models.Maintenance>
+
+@{
+    ViewData["Title"] = "Maintenance";
+}
+
+<div class="content-heading">
+    <h4>Maintenance</h4>
+</div>
+
+<div id="paged-list">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a href="#" data-sort="Title">Title</a>
+                </th>
+                <th >
+                    <a> href="#" data-sort="Status"Status</a>
+                </th>
+                <th>
+                    <a href="#" data-sort="StartDate">Start date</a>
+                </th>
+                <th>
+                    <a href="#" data-sort="FinishDate">Finish date</a>
+                </th>
+                <th>
+                    Equipment
+                </th>
+                <th>
+                    <!-- actions -->
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @if (item.IsOpened == true)
+                        {
+                            <span>Active</span>
+                        }
+                        else
+                        {
+                            <span>Closed</span>
+                        }
+                    </td>
+                    <td>
+                        @item.StartDate.ToString("dd.MM.yyyy")
+                    </td>
+                    <td>
+                        @if (item.IsOpened == true)
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <span>@item.FinishDate.ToString("dd.MM.yyyy")</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Equipment" asp-action="Details" asp-route-id="@item.Title">
+                            @Html.DisplayFor(modelItem => item.Equipment.Title), <br />
+                            @Html.DisplayFor(modelItem => item.Equipment.Category), <br />
+                            @Html.DisplayFor(modelItem => item.Equipment.Department)
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="simple-pagination">
+        <div class="simple-pagination-first"></div>
+        <div class="simple-pagination-previous"></div>
+        <div class="simple-pagination-page-numbers"></div>
+        <div class="simple-pagination-next"></div>
+        <div class="simple-pagination-last"></div>
+    </div>
+</div>
+
+
+<script>
+    var search = "";
+    var sortField = "Title"; // default - "Title"
+    var sortAsc = true; // default
+
+    var pagedList = "#paged-list";
+    GenList(pagedList);
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/data")
+        .build();
+
+    function parseStatus(jsonObj) {
+        if (jsonObj.IsOpened == true) {
+            return "Active"
+        }
+        else {
+            return "Closed"
+        }
+    }
+
+    function parseDate(jsonObj, isStartDate) {
+        if (isStartDate == false) {
+            if (jsonObj.IsOpened == true) {
+                return "-";
+            }
+            else {
+                return new Date(jsonObj.FinishDate);
+            }
+        }
+        else {
+            return new Date(jsonObj.StartDate);
+        }
+    }
+
+    hubConnection.on("Receive", function (data) {
+        $(pagedList + " tbody").empty();
+        var json = JSON.parse(data);
+        for (let i = 0; i < json.length; i++) {
+            $(pagedList + " tbody").append(
+                "<tr>" +
+                "<td>" + json[i].Title + "</td>" +
+                "<td>" + parseStatus(json[i]) + "</td>" +
+                "<td>" + parseDate(json[i], true) + "</td>" +
+                "<td>" + parseDate(json[i], false) + "</td>" +
+                "<td>" +
+                "<a href='/Equipment/Details/" + json[i].Id + "' class='btn'>" +
+                json[i].Equipment.Title + ", <br/>" +
+                json[i].Equipment.Category + ", <br/>" +
+                json[i].item.Equipment.Department + ", <br/>" +
+                "</a>" +
+                "</td>" +
+                "</tr>"
+            );
+        }
+        GenList(pagedList);
+    });
+
+    $(pagedList + " th a").click(function (e) {
+        e.preventDefault();
+        $(pagedList + " th").removeClass();
+        if (sortField == $(this).attr("data-sort")) {
+            sortAsc = false;
+            $(this).parent().addClass("sort-desc");
+        }
+        else {
+            sortAsc = true;
+            $(this).parent().addClass("sort-asc");
+            sortField = $(this).attr("data-sort");
+        }
+        hubConnection.invoke("SendMaintenances", sortField, sortAsc);
+    });
+
+    hubConnection.start();
+</script>

@@ -1,0 +1,137 @@
+﻿@model OperationMonitoring.Models.Equipment
+<!-- INFO -->
+    <div class="form-pos form-info">
+        <div class="form-info__heading">
+            @if ((string)@ViewData["Controller"] == "Preset")
+            {
+                <span class="icon-check"></span>
+            }
+            <span>General information</span>
+            <i class="icon-arrow"></i>
+        </div>
+        <div class="info-dropdown">
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Department)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Department.Title)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Category)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Category.Title)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Type)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Type.Title)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Title)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Title)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.SerialNum)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.SerialNum)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.InventoryNum)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.InventoryNum)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.DiameterOuter)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.DiameterOuter)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.DiameterInner)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.DiameterInner)
+                </div>
+            </div>
+            <div class="form-info__item">
+                <div class="form-info__label">
+                    @Html.DisplayNameFor(model => model.Length)
+                </div>
+                <div class="form-info_data">
+                    @Html.DisplayFor(model => model.Length)
+                </div>
+            </div>
+            @if (Model.Status.Title == "RFU" || Model.Status.Title == "JF")
+            {
+                <div class="form-info__item">
+                    <div class="form-info__label">
+                        @Html.DisplayNameFor(model => model.OperatingTime)
+                    </div>
+                    <div class="form-info_data">
+                        <span class="hours">
+                            @(Model.OperatingTime / 60):@{
+                                string minutes;
+                                if (Model.OperatingTime % 60 < 10)
+                                {
+                                    minutes = "0" + (Model.OperatingTime % 60);
+                                }
+                                else
+                                {
+                                    minutes = (Model.OperatingTime % 60).ToString();
+                                }
+                                @minutes
+                            }
+                        </span>
+                        <span>hours</span>
+                    </div>
+                </div>
+                <div class="form-info__item">
+                    <div class="form-info__label">
+                        @Html.DisplayNameFor(model => model.WarningTime)
+                    </div>
+                    <div class="form-info_data">
+                        <span class="hours">
+                            @(Model.WarningTime / 60):@{
+                                string minutes2;
+                                if (Model.WarningTime % 60 < 10)
+                                {
+                                    minutes2 = "0" + (Model.WarningTime % 60);
+                                }
+                                else
+                                {
+                                    minutes2 = (Model.WarningTime % 60).ToString();
+                                }
+                                @minutes2
+                            }
+                        </span>
+                        <span>hours</span>
+                    </div>
+                </div>
+            }
+            @if ((string)@ViewData["Controller"] != "Preset")
+            {
+                <div class="btn btn-primary js-btn-edit-equipment">Edit information</div>
+            }
+        </div>
+    </div>

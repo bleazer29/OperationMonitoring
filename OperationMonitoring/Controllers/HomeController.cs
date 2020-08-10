@@ -1,15 +1,21 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using OperationMonitoring.Data;
 using OperationMonitoring.Models;
 
 namespace OperationMonitoring.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
-        {
+        public ILogger<HomeController> Logger { get; }
 
+        public HomeController(ILogger<HomeController> logger)
+        {
+            Logger = logger;
         }
+
         public IActionResult Index()
         {
             return View();

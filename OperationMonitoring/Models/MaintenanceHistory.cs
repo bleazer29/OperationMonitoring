@@ -11,11 +11,13 @@ namespace OperationMonitoring.Models
     public class MaintenanceHistory: IHistory
     {
         public int Id { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required]
         public DateTime Date { get; set; }
         public string Commentary { get; set; }
         public virtual Employee Author { get ; set; }
+        [Required]
         public virtual Maintenance Maintenance { get; set; }
+        [Required]
+        public string Message { get; set; }
     }
 }
