@@ -11,5 +11,6 @@ namespace OperationMonitoring.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Title must be specified")]
         public string Title { get; set; }
+        public string Address { get; set; }
     }
 }
