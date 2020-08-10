@@ -29,7 +29,7 @@
                             @if ((string)ViewData["Type"] == "General")
                             {
                                 <th>
-                                    STatus
+                                    Status
                                 </th>
                             }
                             <th>
@@ -46,11 +46,11 @@
                                 </td>
                                 @if ((string)ViewData["Type"] == "General")
                                 {
-                                    <td>
+                                    @*<td>
                                         @item.Status 
-                                    </td>
+                                    </td>*@
                                 }
-                                <td>
+                                @*<td>
                                     @if (item.OperatingHours != null)
                                     {
                                         <p>
@@ -76,7 +76,7 @@
                                     {
                                         <p>@item.Commentary</p>
                                     }
-                                </td>
+                                </td>*@
                             </tr>
                         }
                     </tbody>

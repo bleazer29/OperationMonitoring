@@ -68,7 +68,7 @@ namespace OperationMonitoring.Controllers
             {
                 searchString = currentFilter;
             }
-            int pageSize = 5;
+            //int pageSize = 5;
             int pageNumber = (page ?? 1);
             ViewBag.CounterpartyContracts = db.Agreements.ToList();
             ViewBag.CounterpartyWells = db.Wells.ToList();

@@ -1137,4 +1137,374 @@ p {
         margin-left: 0;
         margin-right: 8px;
     }
+
+    
+}
+.two-rows{
+    max-width: none;
+}
+.two-rows form{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.two-rows .form-group{
+    width: calc(50% - 10px);
+}
+.two-rows .button-pos{
+    width: 100%;
+}
+.two-rows .btn{
+    min-width: 300px;
+}
+.two-rows hr{
+    margin: 0;
+    border: none;
+    width: 100%;
+    height: 1px;
+}
+.content-heading-auto{
+    display: block;
+}
+.info-dropdown{
+    display: none;
+    padding: 0px 20px 23px;
+}
+.icon-check{
+    position: relative;
+    display: inline-block;
+    width: 13px;
+    height: 25px;
+    border-bottom: 3px solid green;
+    border-right: 3px solid green;
+    transform: rotate(45deg);
+    margin-right: 6px;
+    margin-left: 5px;
+}
+.icon-check + span{
+    color: green;
+}
+.icon-arrow{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-left: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg);
+    right: 20px;
+    top: 50%;
+    margin-top: -9px;
+}
+
+.selected-parts{
+    margin-top: 30px;
+}
+.selected-parts__forms{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+.selected-parts__forms-right{
+    display: flex;
+}
+.selected-parts__forms-right form{
+    margin-left: 20px;
+}
+.nomenclature-list{
+    margin-top: 30px;
+}
+.nomenclature-list-amount{
+    width: 115px;
+    min-width: 115px;
+}
+td.nomenclature-list-amount{
+    padding-right: 0;
+}
+.nomenclature-list .table .btn{
+    min-height: 40px;
+    padding: 5px 10px;
+    display: flex;
+}
+.nomenclature-list .table input{
+    text-align: center;
+    margin-right: -10px;
+}
+.nomenclature-list .hidden{
+    display: none !important;
+}
+.width-20{
+    width: 20%;
+}
+.width-80{
+    width: 80%;
+}
+
+.storages-tree :last-child {
+    display: none;
+}
+
+.flex-container {
+    display: flex;
+    justify-content:space-between;   
+}
+
+.storagesTreeView-container{
+    margin-top:20px;
+}
+
+
+@media (max-width: 992px) {
+    .flex-container {
+        display: flex;
+        justify-content: stretch;
+        flex-wrap: wrap;
+    }
+
+    .storagesTreeView-container {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+}
+
+.svg-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 10;
+    stroke: black;
+    fill: black;
+}
+.table-nomenclature .nomenclature-list-amount,
+.table-nomenclature .nomenclature-list-button{
+    display: none;
+}
+.table-preset .nomenclature-list-amount,
+.table-preset .nomenclature-list-button{
+    display: table-cell;
+    width: 0;
+}
+.table-preset th:last-child,
+.table-preset td:last-child{
+    display: none;
+}
+.table-preset .btn{
+    min-height: 40px;
+    padding: 7px 15px;
+    display: flex;
+}
+.nomenclature-list-amount input{
+    text-align: center;
+}
+.hidden + .selected-parts__item{
+    margin-top: 15px;
+}
+.selected-parts__empty{
+    text-align: center;
+    padding: 20px;
+}
+.selected-parts__item{
+    display: flex;
+    margin-top: 3px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    justify-content: space-between;
+}
+.selected-parts__item div{
+    padding: 3px 10px;
+    font-size: 16px;
+}
+.selected-parts__item > div{
+    display: flex;
+    align-items: center;
+}
+.selected-parts__left{
+    width: 100%;
+}
+.selected-parts__right{
+    width: auto;
+}
+.btn-remove{
+    position: relative;
+    background: #ce1141;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    min-height: 35px;
+    margin: 0;
+}
+.btn-remove:before,
+.btn-remove:after{
+    content: "";
+    width: 22px;
+    height: 4px;
+    border-radius: 2px;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -11px;
+    margin-top: -2px;
+}
+.btn-remove:before{
+    transform: rotate(45deg);
+}
+.btn-remove:after{
+    transform: rotate(-45deg);
+}
+.selected-parts__item-amount{
+    font-size: 18px;
+    font-weight: 600;
+}
+.info-panel{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.mCSB_inside > .mCSB_container{
+    margin-right: 20px;
+}
+.mCSB_horizontal.mCSB_inside > .mCSB_container{
+    margin-bottom: 25px;
+}
+.mCS-dark.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+    background: #90A4AE !important;
+}
+.mCS-dark.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar{
+    background: #73838b !important;
+}
+.navigation-open .nav-fold{
+    position: absolute;
+}
+
+
+.transferCheck {
+    width: 20px;
+    height: 20px;
+    background-color: floralwhite;
+}
+/*CheckBox*/
+/* Customize the label (the container) */
+.checkBox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+/* Hide the browser's default checkbox */
+.checkBox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #fff;
+    border:1px solid #90A4AE;
+    border-radius: 3px;
+}
+/* On mouse-over, add a grey background color */
+.checkBox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+/* When the checkbox is checked, add a blue background */
+.checkBox-container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+/* Show the checkmark when checked */
+.checkBox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+/* Style the checkmark/indicator */
+.checkBox-container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+.dropdown-btn {
+    padding: 0;
+    display: block;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+/* Add an active class to the active dropdown button */
+.active {
+    background: #37474F;
+}
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+    display: none;
+    padding-left: 8px;
+}
+/* Optional: Style the caret down icon */
+.fa-caret-down {
+    float: right;
+    padding-right: 8px;
 }

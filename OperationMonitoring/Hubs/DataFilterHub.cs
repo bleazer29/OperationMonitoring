@@ -54,10 +54,10 @@ namespace OperationMonitoring.Hubs
                     switch (sortField)
                     {
                         case "Id":
-                            counterparties = counterparties.OrderBy(x => x.Id).ToList();
+                            counterparties = await counterparties.OrderBy(x => x.Id).ToListAsync();
                             break;
                         case "Title":
-                            counterparties = counterparties.OrderBy(x => x.Title).ToList();
+                            counterparties = await counterparties.OrderBy(x => x.Title).ToListAsync();
                             break;
                         default:
                             break;
@@ -67,10 +67,10 @@ namespace OperationMonitoring.Hubs
                     switch (sortField)
                     {
                         case "Id":
-                            counterparties = counterparties.OrderByDescending(x => x.Id).ToList();
+                            counterparties = await counterparties.OrderByDescending(x => x.Id).ToListAsync();
                             break;
                         case "Title":
-                            counterparties = counterparties.OrderByDescending(x => x.Title).ToList();
+                            counterparties = await counterparties.OrderByDescending(x => x.Title).ToListAsync();
                             break;
                         default:
                             break;
@@ -98,13 +98,13 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "Title":
-                    providers = providers.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToList();
+                    providers = await providers.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 case "Address":
-                    providers = providers.Where(x => x.Address.ToLower().Contains(searchString.ToLower())).ToList();
+                    providers = await providers.Where(x => x.Address.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 case "EDRPOU":
-                    providers = providers.Where(x => x.EDRPOU.ToLower().Contains(searchString.ToLower())).ToList();
+                    providers = await providers.Where(x => x.EDRPOU.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 default:
                     break;
@@ -117,10 +117,10 @@ namespace OperationMonitoring.Hubs
             switch (isAscending)
             {
                 case true:
-                    providers = providers.OrderBy(x => x.Title).ToList();
+                    providers = await providers.OrderBy(x => x.Title).ToListAsync();
                     break;
                 case false:
-                    providers = providers.OrderByDescending(x => x.Title).ToList();
+                    providers = await providers.OrderByDescending(x => x.Title).ToListAsync();
                     break;
             }
             return providers;
@@ -171,13 +171,13 @@ namespace OperationMonitoring.Hubs
                     switch (sortField)
                     {
                         case "VendorCode":
-                            nomenclature = nomenclature.OrderBy(x => x.VendorCode).ToList();
+                            nomenclature = await nomenclature.OrderBy(x => x.VendorCode).ToListAsync();
                             break;
                         case "Title":
-                            nomenclature = nomenclature.OrderBy(x => x.Title).ToList();
+                            nomenclature = await nomenclature.OrderBy(x => x.Title).ToListAsync();
                             break;
                         case "Provider":
-                            nomenclature = nomenclature.OrderBy(x => x.Provider.Title).ToList();
+                            nomenclature = await nomenclature.OrderBy(x => x.Provider.Title).ToListAsync();
                             break;
                         default:
                             break;
@@ -227,7 +227,7 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "Counterparty":
-                    orders = orders.Where(x => x.Agreement.Counterparty.Title.ToLower().Contains(searchString.ToLower())).ToList();
+                    orders = await orders.Where(x => x.Agreement.Counterparty.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
                     break;
                 case "Agreement":
                     orders = orders.Where(x => x.Agreement.AgreementNumber.ToLower().Contains(searchString.ToLower())).ToList();
@@ -257,16 +257,16 @@ namespace OperationMonitoring.Hubs
                     switch (sortField)
                     {
                         case "Id":
-                            orders = orders.OrderBy(x => x.Id).ToList();
+                            orders = await orders.OrderBy(x => x.Id).ToListAsync();
                             break;
                         case "Counterparty":
-                            orders = orders.OrderBy(x => x.Agreement.Counterparty.Title).ToList();
+                            orders = await orders.OrderBy(x => x.Agreement.Counterparty.Title).ToListAsync();
                             break;
                         case "Agreement":
-                            orders = orders.OrderBy(x => x.Agreement.AgreementNumber).ToList();
+                            orders = await orders.OrderBy(x => x.Agreement.AgreementNumber).ToListAsync();
                             break;
                         case "Well":
-                            orders = orders.OrderBy(x => x.Well.Title).ToList();
+                            orders = await orders.OrderBy(x => x.Well.Title).ToListAsync();
                             break;
                         default:
                             break;

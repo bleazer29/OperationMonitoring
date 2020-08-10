@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OperationMonitoring.Helpers.ValidationAttributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace OperationMonitoring.Models
 {

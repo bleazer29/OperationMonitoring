@@ -16,7 +16,6 @@ namespace OperationMonitoring.Controllers
     public class StoragesController : Controller
     {
         private readonly ApplicationContext db;
-        private int pageSize = 10;
         public StoragesController(ApplicationContext context)
         {
             db = context;
@@ -251,7 +250,7 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                TransferStock(storageId, stocksJSON);
+                _ = TransferStock(storageId, stocksJSON);
                 return RedirectToAction("Index");
             }
             catch
@@ -266,7 +265,7 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                SubtractStock(stockId, amount, "Stock was written off");
+                _ = SubtractStock(stockId, amount, "Stock was written off");
                 return RedirectToAction("Index");
             }
             catch
