@@ -19,7 +19,6 @@ namespace OperationMonitoring.Models
         public int WarningTime { get; set; }
         [Required]
         public int Amount { get; set; }
-        [Required]
         public virtual Equipment Equipment { get; set; }
         [Required]
         public virtual EquipmentStatus Status { get; set; }

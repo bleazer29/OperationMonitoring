@@ -14,7 +14,6 @@ namespace OperationMonitoring.Models
         [Required]
         public virtual Stock Stock { get; set; }
         public double? Amount { get; set; }
-        [Required]
         public virtual Storage StorageTo { get; set; }
         [Required]
         public virtual HistoryType HistoryType { get; set; }

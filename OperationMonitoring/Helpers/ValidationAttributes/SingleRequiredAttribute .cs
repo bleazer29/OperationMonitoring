@@ -38,6 +38,7 @@ namespace OperationMonitoring.Helpers.ValidationAttributes
                 {
                     if (isOneNotNull == true)
                     {
+                        Console.WriteLine("hui tebe");
                         return false;
                     }
                     isOneNotNull = true;
@@ -49,6 +50,7 @@ namespace OperationMonitoring.Helpers.ValidationAttributes
             }
             else
             {
+                Console.WriteLine("hui tebe");
                 return false;
             }
         }

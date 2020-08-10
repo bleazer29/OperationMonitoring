@@ -307,6 +307,9 @@ namespace OperationMonitoring.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -924,7 +927,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int?>("AssembleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EquipmentId")
+                    b.Property<int?>("EquipmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("InventoryNum")
@@ -1315,7 +1318,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("StockId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StorageToId")
+                    b.Property<int?>("StorageToId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1645,8 +1648,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.Nomenclature", "Nomenclature")
                         .WithMany()
@@ -1758,8 +1760,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
                         .HasForeignKey("StorageToId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>

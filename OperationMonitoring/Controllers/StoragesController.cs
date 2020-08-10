@@ -30,6 +30,7 @@ namespace OperationMonitoring.Controllers
             List<Stock> stocks = db.Stocks.Include(x => x.Nomenclature).ThenInclude(x=> x.Provider)
                 .Include(x => x.Equipment).ThenInclude(x => x.Status)
                 .Include(x => x.Part).ThenInclude(x => x.Status)
+                .Where(x => x.Amount > 0)
                 .ToList();
             ViewBag.Stocks = stocks;
             List<Storage> storages = db.Storages.Include(x => x.Parent).ThenInclude(x => x.Parent).ToList();
@@ -124,18 +125,26 @@ namespace OperationMonitoring.Controllers
             }
         }
 
-        private void WriteTransferHistory(Stock stock, Storage importStorage, string message)
+        private void WriteTransferHistory(int stockId, double amount, Storage importStorage, string message)
         {
+            Storage storageTo = null;
+            Stock stock = db.Stocks.FirstOrDefault(x => x.Id == stockId);
+            if (importStorage != null)
+            {
+                storageTo = db.Storages.FirstOrDefault(x => x.Id == importStorage.Id);
+            }
+            HistoryType historyType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation");
             StorageHistory newEntry = new StorageHistory()
             {
-                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
-                Amount = stock.Amount,
+                HistoryType = historyType,
+                Amount = amount,
                 Message = message,
                 Stock = stock,
-                StorageTo = importStorage,
+                StorageTo = storageTo,
                 Date = DateTime.Now
             };
             db.StorageHistory.AddAsync(newEntry);
+            db.SaveChanges();
         }
 
         private async Task ImportStock(Stock stock, double amount, Storage importStorage, string stockType)
@@ -175,19 +184,18 @@ namespace OperationMonitoring.Controllers
                       
                         break;
                 }
-                importStock.Amount = stock.Amount;
+                importStock.Amount = amount;
                 importStock.Storage = importStorage;
                 db.Stocks.Add(importStock);
             }
-            WriteTransferHistory(stock, importStorage, message: "Stock was delivered");
+            //WriteTransferHistory(stock.Id, amount, importStorage, message: "Stock was delivered");
             await db.SaveChangesAsync();
         }
 
-        private async Task SubtractStock(int stockId, double amount, string message)
+        private async Task SubtractStock(int stockId, double amount)
         {
             Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stockId);
             dbStock.Amount -= amount;
-            WriteTransferHistory(dbStock, null, message);
         }
 
         private async Task TransferStock(int importStorageId, string jsonStocks)
@@ -205,7 +213,8 @@ namespace OperationMonitoring.Controllers
                 foreach (var import in imports)
                 {
                     Stock currentStock = stocks.FirstOrDefault(x => x.Id == import.StockId);
-                    await SubtractStock(import.StockId, import.Amount, "Stock was transfered to storage:" + importStorage.Title);
+                    await SubtractStock(import.StockId, import.Amount);
+                    WriteTransferHistory(import.StockId, import.Amount, importStorage, "Stock was shipped to storage:" + importStorage.Title);
 
                     if (currentStock.Nomenclature != null)
                     {
@@ -229,7 +238,8 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                await SubtractStock(stockId, amount, "Stock was written off");
+                await SubtractStock(stockId, amount);
+                WriteTransferHistory(stockId, amount, null, "Stock was written off");
                 return RedirectToAction("Index");
             }
             catch
