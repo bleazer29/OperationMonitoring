@@ -46,6 +46,15 @@
                         <a asp-controller="Storages" asp-action="Index" class="nav__item">Storages</a>
                         <a asp-controller="Orders" asp-action="Index" class="nav__item">Orders</a>
                         <a asp-controller="Maintenance" asp-action="Index" class="nav__item">Maintenance</a>
+                        <a class="nav__item dropdown-btn ">
+                            NRI panel
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <div class="dropdown-container">
+                            <a class="nav__item" href="#">Departments</a>
+                            <a class="nav__item" href="#">Equipment types</a>
+                            <a class="nav__item" href="#">Equipment categories</a>
+                        </div>
                         <hr />
                         <a asp-action="" class="nav__item">Users</a>
                         <a asp-controller="Admin" asp-action="AdminPanel" class="nav__item">Admin Panel</a>
