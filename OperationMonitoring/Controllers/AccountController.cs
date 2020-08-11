@@ -121,8 +121,10 @@ namespace OperationMonitoring.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = await userManager.FindByNameAsync(loginViewModel.Email);
-                    if (user != null)
+                    var user = await userManager.FindByEmailAsync(loginViewModel.Email);
+                    var user1 = await userManager.FindByNameAsync(loginViewModel.Email);
+
+                    if (user != null && user1!=null)
                     {
                         if (!await userManager.IsEmailConfirmedAsync(user))
                         {
@@ -131,8 +133,15 @@ namespace OperationMonitoring.Controllers
                         }
                     }
 
-                    var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, true);
-                    if (result.Succeeded)
+                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, true);
+
+                    Microsoft.AspNetCore.Identity.SignInResult result1 = null;
+                    if(user != null)
+                    {
+                        result1 = await signInManager.PasswordSignInAsync(user.UserName, loginViewModel.Password, loginViewModel.RememberMe, true);
+                    }
+
+                    if (result.Succeeded || result1!=null && result1.Succeeded)
                     {
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
                         else return RedirectToAction("Index", "Home");
