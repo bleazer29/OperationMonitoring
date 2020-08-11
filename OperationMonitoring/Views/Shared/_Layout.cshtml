@@ -58,10 +58,9 @@
                             <a class="nav__item" href="#">Equipment categories</a>
                         </div>
                         <hr />
-                        <a asp-action="" class="nav__item">Users</a>
                         @if (User.IsInRole("Admin"))
                         {
-                                <a class="nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
+                             <a class="nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
                         }
                             <a class="nav__item" asp-controller="Account" asp-action="ChangePassword">
                                 Password

@@ -33,6 +33,9 @@
                    
                     <div class="card-body">
                         <h5 class="card-title hiaText">@user.UserName</h5>
+                    </div>  
+                    <div class="card-body">
+                        <h5 class="card-title hiaText">@user.Email</h5>
                     </div>
                     <div class="card-footer">
                         <form method="post" asp-action="DeleteUser" asp-controller="Admin" asp-route-id="@user.Id">
