@@ -22,7 +22,7 @@ namespace OperationMonitoring.Models
         [DataType(DataType.Date), Required]
         public DateTime BirthDate { get; set; }
         [Required(ErrorMessage = "Position must be specified")]
-        public virtual Position Position { get; set; }
+        //public virtual Position Position { get; set; }
         public virtual IdentityUser IdentityUser { get; set; }
     }
 }

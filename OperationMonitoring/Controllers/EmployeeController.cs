@@ -9,9 +9,6 @@ using OperationMonitoring.ModelsIdentity.Security;
 using Microsoft.AspNetCore.DataProtection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace OperationMonitoring.Controllers
 {
@@ -53,7 +50,7 @@ namespace OperationMonitoring.Controllers
                     LastName = employees.LastName,
                     Patronymic = employees.Patronymic
                 };
-                await db.AddAsync(employee);
+                db.Employees.Add(employee);
                 await db.SaveChangesAsync();
                 return RedirectToAction("AdminPanel","Admin");
             }
@@ -99,8 +96,8 @@ namespace OperationMonitoring.Controllers
             try
             {
                 var userId = userManager.GetUserId(HttpContext.User);
-                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
-                if (employee.IdentityUser == null || employee.IdentityUser.Id != userId)
+                var employee = await db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
+                if (employee == null || employee.IdentityUser.Id != userId)
                 {
                     db.Employees.Remove(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
                     await db.SaveChangesAsync();
