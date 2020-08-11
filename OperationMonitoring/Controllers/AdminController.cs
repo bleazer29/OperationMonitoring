@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
-using OperationMonitoring.ModelsIdentity;
 using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring.Controllers
@@ -25,21 +22,18 @@ namespace OperationMonitoring.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IDataProtector protector;
         private readonly ApplicationContext db;
-        private readonly IMemoryCache memoryCache;
-
         public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ApplicationContext db,
-            IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings, IMemoryCache memoryCache)
+            IDataProtectionProvider dataProtectionProvider, DataProtectionPurposeStrings dataProtectionPurposeStrings)
         {
             this.db = db;
             this.roleManager = roleManager;
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
-            this.memoryCache = memoryCache;
-        }  
+            
+        }
 
+        public IActionResult Index() { return View(); }
 
-        public IActionResult Index() {  return View();  }
-       
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -63,7 +57,7 @@ namespace OperationMonitoring.Controllers
                 };
                 return View(model);
             }
-            catch  { return View(); }
+            catch { return View(); }
         }
 
         [HttpPost]
@@ -82,8 +76,8 @@ namespace OperationMonitoring.Controllers
                     user.Email = model.Email;
                     user.UserName = model.UserName;
                     var result = await userManager.UpdateAsync(user);
-                    if (result.Succeeded)  return RedirectToAction("AdminPanel");
-                    
+                    if (result.Succeeded) return RedirectToAction("AdminPanel");
+
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
@@ -91,7 +85,7 @@ namespace OperationMonitoring.Controllers
                     return View(model);
                 }
             }
-            catch  {  return View(model); }
+            catch { return View(model); }
         }
 
         [HttpPost]
@@ -127,7 +121,7 @@ namespace OperationMonitoring.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateRole() {return View(); }
+        public IActionResult CreateRole() { return View(); }
 
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
@@ -136,15 +130,15 @@ namespace OperationMonitoring.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    IdentityRole identityRole = new IdentityRole {  Name = model.RoleName  };
+                    IdentityRole identityRole = new IdentityRole { Name = model.RoleName };
                     IdentityResult result = await roleManager.CreateAsync(identityRole);
                     if (result.Succeeded) return RedirectToAction("AdminPanel", "Admin");
-                    foreach (IdentityError error in result.Errors) { ModelState.AddModelError("", error.Description);}
+                    foreach (IdentityError error in result.Errors) { ModelState.AddModelError("", error.Description); }
                 }
                 return View(model);
             }
             catch { return View(model); }
-            
+
         }
 
 
@@ -164,7 +158,7 @@ namespace OperationMonitoring.Controllers
                     Id = role.Id,
                     RoleName = role.Name
                 };
-                foreach (var user in userManager.Users) 
+                foreach (var user in userManager.Users)
                 {
                     if (await userManager.IsInRoleAsync(user, role.Name)) model.Users.Add(user.UserName);
                 }
@@ -189,7 +183,7 @@ namespace OperationMonitoring.Controllers
                     role.Name = model.RoleName;
                     var result = await roleManager.UpdateAsync(role);
                     if (result.Succeeded) return RedirectToAction("AdminPanel");
-                    foreach (var error in result.Errors)  {  ModelState.AddModelError("", error.Description); }
+                    foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
                     return View(model);
                 }
             }
@@ -251,7 +245,7 @@ namespace OperationMonitoring.Controllers
                 }
                 return View(model);
             }
-            catch  {  return View();  }
+            catch { return View(); }
         }
 
         [HttpPost]
@@ -288,46 +282,27 @@ namespace OperationMonitoring.Controllers
                 }
                 return RedirectToAction("EditRole", new { Id = roleId });
             }
-            catch  { return View("NotFound"); }
+            catch { return View("NotFound"); }
         }
 
         [HttpGet]
         public async Task<IActionResult> AdminPanel()
         {
-            //var stopWatch = new Stopwatch();
-            //stopWatch.Start();
-            List<IdentityRole> rolesIdentity;
-            List<IdentityUser> usersIdentity;
-            List<Employee> employees;
-            if (!memoryCache.TryGetValue("rolesIdentity", out rolesIdentity))
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+            for (var i = 0; i < listEmployees.Count; i++)
             {
-                memoryCache.Set("rolesIdentity", await roleManager.Roles.AsNoTracking().ToListAsync(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
-            }
-            if (!memoryCache.TryGetValue("usersIdentity", out usersIdentity))
-            {
-                memoryCache.Set("usersIdentity", await userManager.Users.AsNoTracking().ToListAsync(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
-            }
-            if (!memoryCache.TryGetValue("Employees", out employees))
-            {
-                var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
-                listEmployees.Select(e =>
-                {
-                    e.EncryptedId = protector.Protect(e.Id.ToString());
-                    return e;
-                });
-                memoryCache.Set("Employees", listEmployees, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(12)));
+                listEmployees[i].EncryptedId = protector.Protect(listEmployees[i].Id.ToString());
             }
 
-            rolesIdentity = memoryCache.Get("rolesIdentity") as List<IdentityRole>;
-            usersIdentity = memoryCache.Get("usersIdentity") as List<IdentityUser>;
-            employees = memoryCache.Get("Employees") as List<Employee>;
+            ViewBag.IdentityRoles = await roleManager.Roles.AsNoTracking().ToListAsync() as IEnumerable<IdentityRole>;
+            ViewBag.IdentityUsers = await userManager.Users.AsNoTracking().ToListAsync() as IEnumerable<IdentityUser>;
+            ViewBag.Employee = listEmployees as IEnumerable<Employee>;
 
-            ViewBag.IdentityRoles = rolesIdentity as IEnumerable<IdentityRole>;
-            ViewBag.IdentityUsers = usersIdentity as IEnumerable<IdentityUser>;
-            ViewBag.Employee = employees as IEnumerable<Employee>;
-
-            //stopWatch.Stop();
-            //ViewBag.TotalTime = stopWatch.Elapsed;
+            stopWatch.Stop();
+            ViewBag.TotalTime = stopWatch.Elapsed;
             return View();
         }
 
