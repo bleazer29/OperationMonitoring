@@ -1,14 +1,14 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "AdminPanel";
 }
 
     <div class="container">
-        <h2> Admin Panel </h2>
+        <h2 style="font-size:60px"> Admin Panel </h2>
+        <hr />
         <div class="tab">
-            <button class="tablinks active" onclick="openCity(event, 'Users')">List Users</button>
-            <button class="tablinks" onclick="openCity(event, 'Roles')">List Roles</button>
-            <button class="tablinks" onclick="openCity(event, 'Employees')">List Employees</button>
+            <button class="textStyle tablinks active" onclick="openCity(event, 'Users')">List Users</button>
+            <button class="textStyle tablinks" onclick="openCity(event, 'Roles')">List Roles</button>
+            <button class="textStyle tablinks" onclick="openCity(event, 'Employees')">List Employees</button>
         </div>
     </div>
 
@@ -20,127 +20,121 @@
             IEnumerable<IdentityUser> identityUser = ViewBag.IdentityUsers;
             IEnumerable<IdentityRole> identityRoles = ViewBag.IdentityRoles;
             IEnumerable<Employee> Employee = ViewBag.Employee;
-            <div id="Users" class="tabcontent active">
-                <h1>All Users</h1>
-                @if (identityUser.Any())
-                {
-                    <a asp-action="Register" asp-controller="Account"
-                       class="btn btn-primary mb-3" style="width:auto">
-                        Add new user
-                    </a>
-                    foreach (var user in identityUser)
+                <div id="Users" class="tabcontent">
+                    <h1 class="hia">All Users</h1>
+                    @if (identityUser.Any())
                     {
-                        <div class="card mb-3">
+                        <a asp-action="Register" asp-controller="Account" class="btn btn-primary mb-3" style="width:auto">Add new user</a><hr /><br />
+                        foreach (var user in identityUser)
+                        {
+                <div class="card mb-3">
+                    
+                       <input type="hidden" value="@user.Id"/> 
+                   
+                    <div class="card-body">
+                        <h5 class="card-title hiaText">@user.UserName</h5>
+                    </div>  
+                    <div class="card-body">
+                        <h5 class="card-title hiaText">@user.Email</h5>
+                    </div>
+                    <div class="card-footer">
+                        <form method="post" asp-action="DeleteUser" asp-controller="Admin" asp-route-id="@user.Id">
+                            <a asp-controller="Admin" asp-action="Edituser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+
+                            <div class="container" id="confirmDeleteSpan_@user.Id" style="display:none;">
+                                <div style="margin-top:20px">
+                                    <span style="font-size:20px">Are you sure you want to delete?</span>
+                                </div>
+                                <div style="margin-bottom:50px">
+                                    <button type="submit" class="btn btn-primary buttonStyle">Yes</button>
+                                    <button type="button" class="btn btn-primary buttonStyle" onclick="confirmDelete('@user.Id', false)">No</button>
+                                </div>
+                            </div>
+
+                            <span id="deleteSpan_@user.Id">
+                                <button type="button" class="btn btn-primary widthButton" onclick="confirmDelete('@user.Id', true)">Delete</button>
+                            </span>
+                        </form>
+                    </div>
+                     </div>
+                            <br /><br /><hr />
+                        }
+                    }
+                    else
+                    {
+                        <div class="card">
                             <div class="card-header">
-                                User Id : @user.Id
+                                <h5 class="card-title">
+                                    No users created yet
+                                </h5>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">@user.UserName</h5>
+                                <h5 class="card-title">
+                                    Use the button below to create a user
+                                </h5>
+                                <a class="btn btn-primary" style="width:auto"
+                                   asp-controller="Account" asp-action="Register">
+                                    Add new user
+                                </a>
                             </div>
-                            <div class="card-footer">
-                                <form method="post" asp-action="DeleteUser" asp-controller="Admin" asp-route-id="@user.Id">
-                                    <a asp-controller="Admin" asp-action="Edituser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                        </div>
+                    }
+                </div>
 
-                                    <span id="confirmDeleteSpan_@user.Id" style="display:none">
-                                        <span>Are you sure you want to delete?</span>
-                                        <button type="submit" class="btn btn-danger">Yes</button>
-                                        <button type="button" class="btn btn-primary"
-                                                onclick="confirmDelete('@user.Id', false)">
-                                            No
-                                        </button>
-                                    </span>
+                <div id="Roles" class="tabcontent">
+                    <h1 class="hia">All Roles</h1>
+                    @if (identityRoles.Any())
+                    {
+                        <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="admin">Add new role</a><hr /><br />
+                        foreach (var role in identityRoles)
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title hiaText">@role.Name</h5>
+                                </div>
+                                <form asp-action="DeleteRole" asp-controller="admin" asp-route-id="@role.Id" method="post">
+                                    <a asp-action="EditRole" asp-controller="admin" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
+                                    <div class="container" id="confirmDeleteSpan_@role.Id" style="display:none;">
+                                        <div style="margin-top:20px">
+                                            <span style="font-size:20px">Are you sure you want to delete?</span>
+                                        </div>
+                                        <div style="margin-bottom:50px">
+                                            <button type="submit" class="btn btn-primary buttonStyle">Yes</button>
+                                            <button type="button" class="btn btn-primary buttonStyle" onclick="confirmDelete('@role.Id', false)">No</button>
+                                        </div>
+                                    </div>
 
-                                    <span id="deleteSpan_@user.Id">
-                                        <button type="button" class="btn btn-danger"
-                                                onclick="confirmDelete('@user.Id', true)">
-                                            Delete
-                                        </button>
+                                    <span id="deleteSpan_@role.Id">
+                                        <button type="button" class="btn btn-primary widthButton" onclick="confirmDelete('@role.Id', true)">Delete</button>
                                     </span>
                                 </form>
                             </div>
-                        </div>
+                            <br /><br /><hr />
+                        }
                     }
-                }
-                else
-                {
-                    <div class="card">
-                        <div class="card-header">
-                            No users created yet
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Use the button below to create a user
-                            </h5>
-                            <a class="btn btn-primary" style="width:auto"
-                               asp-controller="Account" asp-action="Register">
-                                Add new user
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
-
-            <div id="Roles" class="tabcontent">
-                <h1>All Roles</h1>
-                @if (identityRoles.Any())
-                {
-                    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="admin">Add new role</a>
-                    foreach (var role in identityRoles)
+                    else
                     {
-                        <div class="card mb-3">
+                        <div class="card">
                             <div class="card-header">
-                                Role Id : @role.Id
+                                <h5 class="card-title">
+                                    No roles created yet
+                                </h5>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">@role.Name</h5>
+                                <h5 class="card-title">
+                                    Use the button below to create a role
+                                </h5>
+                                <a class="btn btn-primary" style="width:auto" asp-controller="admin" asp-action="CreateRole">Create Role</a>
                             </div>
-                            <form asp-action="DeleteRole" asp-controller="admin" asp-route-id="@role.Id" method="post">
-                                <a asp-action="EditRole" asp-controller="admin" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
-                                <span id="confirmDeleteSpan_@role.Id" style="display:none">
-                                    <span>Are you sure you want to delete?</span>
-                                    <button type="submit" class="btn btn-danger">Yes</button>
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="confirmDelete('@role.Id', false)">
-                                        No
-                                    </button>
-                                </span>
-
-                                <span id="deleteSpan_@role.Id">
-                                    <button type="button" class="btn btn-danger"
-                                            onclick="confirmDelete('@role.Id', true)">
-                                        Delete
-                                    </button>
-                                </span>
-                            </form>
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="card">
-                        <div class="card-header">
-                            No roles created yet
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Use the button below to create a role
-                            </h5>
-                            <a class="btn btn-primary" style="width:auto"
-                               asp-controller="admin" asp-action="CreateRole">
-                                Create Role
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
+                </div>
 
 
             <div id="Employees" class="tabcontent">
-                <h1>List Employees</h1>
-
-                <p>
-                    <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create New</a>
-                </p>
+                <h1 class="hia">List Employees</h1>
+                <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create new employee</a>
+                <hr />
                 <table class="table">
                     <thead>
                         <tr>
@@ -164,9 +158,9 @@
                                 <td>@Html.DisplayFor(modelItem => item.FullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.BirthDate)</td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
-                                    @Html.ActionLink("Details", "Details", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
-                                    @Html.ActionLink("Delete", "Delete", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary d-flex justify-content-center" })
+                                    @Html.ActionLink("Edit", "Edit", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
+                                    @Html.ActionLink("Details", "Details", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
+                                    @Html.ActionLink("Delete", "Delete", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
                                 </td>
                             </tr>
                         }
@@ -201,35 +195,60 @@
 }
 
 <style>
-    /* Style the tab */
+    .buttonStyle {
+        width:49%;
+        float:left; 
+        margin-right:10px
+    }
+    .hia {
+        font-family: 'Open Sans';
+        font-size: 50px;
+    }
+
+    .hiaText {
+        font-family: 'Open Sans';
+        font-size: 35px;
+    }
+    .textStyle{
+        width:33.3333%;
+        font-size:20px;
+        font-family: 'Open Sans';
+        font-weight:bold;
+    }
+
+    .bs{
+        width:31%;
+        height:30px
+    }
+
+    .widthButton {
+        width:100%
+    }
+
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
         background-color: #f1f1f1;
     }
 
-        /* Style the buttons that are used to open the tab content */
-        .tab button {
-            background-color: inherit;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-        }
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
 
-            /* Change background color of buttons on hover */
-            .tab button:hover {
-                background-color: #ddd;
-            }
+    .tab button:hover {
+        background-color: #ddd;
+    }
 
-            /* Create an active/current tablink class */
-            .tab button.active {
-                background-color: #ccc;
-            }
+    .tab button.active {
+        background-color: #ccc;
+    }
 
-    /* Style the tab content */
     .tabcontent {
         display: none;
         padding: 6px 12px;

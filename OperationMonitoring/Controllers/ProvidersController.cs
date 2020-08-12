@@ -195,7 +195,7 @@ namespace OperationMonitoring.Controllers
         {
             try
             {
-                List<Stock> stocks = db.Stocks
+                List<Stock> stocks = db.Stocks.AsNoTracking()
                     .Where(x => x.Nomenclature != null && x.Nomenclature.Provider != null && x.Nomenclature.Provider.Id == providerId)
                     .Include(x => x.Storage)
                     .ThenInclude(x =>x.Parent)
@@ -214,14 +214,14 @@ namespace OperationMonitoring.Controllers
                 }
                 ViewBag.CurrentSort = newSortOrder;
                 stocks = SortingStock(newSortOrder, stocks);
-                int pageNumber = (page ?? 1);
+                int pageNumber = page ?? 1;
                 ViewBag.Stocks = stocks;
 
                 var provider = db.Providers.FirstOrDefault(x => x.Id == providerId);
                 provider.Title = editName;
                 provider.Address = editAddress;
                 provider.EDRPOU = editEDRPOU;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Details", new { id = providerId, oldSortOrder, newSortOrder, page});
             }
             catch
