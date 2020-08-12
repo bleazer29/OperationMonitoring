@@ -54,9 +54,6 @@ textarea {
     transition-duration: .2s;
     width: 100%;
 }
-input[type="checkbox"]{
-    -webkit-appearance: checkbox;
-}
 
     select:focus,
     input:focus,
@@ -1252,25 +1249,16 @@ td.nomenclature-list-amount{
     justify-content:space-between;   
 }
 
-.storagesTreeView-container{
-    margin-top:20px;
+.storagesTreeView-container {
+    margin-top: 20px;
 }
 
-.storage-items-container {
-    margin-left: 10px;
-    
-}
 
 @media (max-width: 992px) {
     .flex-container {
         display: flex;
         justify-content: stretch;
         flex-wrap: wrap;
-    }
-
-    .storage-items-container {
-        margin-left: 0px;
-        margin-right: 0px;   
     }
 
     .storagesTreeView-container {
@@ -1461,96 +1449,89 @@ td.nomenclature-list-amount{
     transform: rotate(45deg);
 }
 
-/* LOGIN/REGISTRATION */
-.main-login{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.dropdown-btn {
+    padding: 0;
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+/* Add an active class to the active dropdown button */
+.active {
     background: #37474F;
-    position: relative;
-    min-height: 100%;
-    padding: 30px;
 }
-.login-heading{
-    color: #fff;
-    text-align: center;
-}
-.login-heading h1{
-    font-size: 30px;
-    margin-bottom: 5px;
-}
-.login-heading h2{
-    font-size: 20px;
-}
-.login-form-pos {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 30px 30px;
-    border-radius: 3px;
-    background: #fff;
-    border: 1px solid #E0E0E0;
-    margin-top: 20px;
-}
-.login-form-pos .btn{
-    width: 100%;
-}
-.main-login__columns{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-.main-login__link{
-    text-align: center;
-    margin-top: 15px;
-}
-.checkbox label{
-    display: flex;
-    position: relative;
-    align-items: center;
-}
-.checkbox label input{
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
     display: none;
-    opacity: 0;
+    padding-left: 8px;
 }
-.checkbox label span{
-    width: 20px;
-    height: 20px;
-    border: 1px solid #E0E0E0;
-    border-radius: 3px;
-    display: inline-block;
-    position: relative;
-    transition-duration: .2s;
-    margin-right: 10px;
-}
-.checkbox label span:after{
-    content: "";
-    position: absolute;
-    width: 6px;
-    height: 10px;
-    left: 50%;
-    top: 50%;
-    margin-left: -3px;
-    margin-top: -6px;
-    border-bottom: 2px solid #9E9E9E;
-    border-right: 2px solid #9E9E9E;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    opacity: 0;
-    transition: .2s;
-}
-.checkbox label input:checked ~ span{
-    border: 1px solid #9E9E9E;
-}
-.checkbox label input:checked ~ span:after{
-    opacity: 1;
+/* Optional: Style the caret down icon */
+.fa-caret-down {
+    float: right;
+    padding-right: 8px;
 }
 
-
-
-
-
-
-
-
+.collapsible {
+    background-color: #ce1141;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    text-align: left;
+    padding: 15px;
+    margin-top: 5px;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+}
+.accorion-content{
+    margin-top: 0;
+    max-width:none;
+}
+.accordion-panel {
+    padding: 0 15px !important;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+fieldset{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}

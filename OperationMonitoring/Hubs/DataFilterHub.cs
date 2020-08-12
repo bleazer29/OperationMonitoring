@@ -539,6 +539,7 @@ namespace OperationMonitoring.Hubs
                 .Include(x => x.Nomenclature).ThenInclude(x => x.Provider)
                 .Include(x => x.Part).ThenInclude(x => x.Status)
                 .Include(x => x.Equipment).ThenInclude(x => x.Status)
+                .Where(x => x.Amount > 0)
                 .ToList();
             stocks = SearchStocks(searchString, storageId, searchField, searchedObjType, stocks).Result;
             var json = JsonConvert.SerializeObject(stocks);
@@ -623,6 +624,10 @@ namespace OperationMonitoring.Hubs
                     temp.AddRange(stocks.Where(x => x.Storage.Id == child.Id && (x.Amount > 0 || x.Part.Amount > 0)).ToList());
                 }
             }
+            else
+            {
+                temp = stocks;
+            }
             if(searchedObjType != "All")
             {
                 switch (searchedObjType)
@@ -657,102 +662,44 @@ namespace OperationMonitoring.Hubs
             return temp;
         }
 
-        public void WriteTransferHistory(Stock stock, Storage importStorage, string message)
+        public async Task SendDepartments(string searchString, string searchField, bool isAscendedSort)
         {
-            StorageHistory newEntry = new StorageHistory()
+            List<Department> departments = db.Departments.ToList();
+            if (!string.IsNullOrEmpty(searchString))
             {
-                HistoryType = db.HistoryTypes.FirstOrDefault(x => x.Title == "Transportation"),
-                Amount = stock.Amount,
-                Message = message,
-                Stock = stock,
-                StorageTo = importStorage,
-                Date = DateTime.Now
-            };
-            db.StorageHistory.AddAsync(newEntry);
+                departments = await SearchDepartments(searchString, searchField, departments);
+            }
+            departments = await SortDepartment(isAscendedSort, departments);
+            var json = JsonConvert.SerializeObject(departments);
+            await Clients.Caller.SendAsync("Receive", json);
         }
 
-        public async Task ImportStock(Stock stock, Storage importStorage, string stockType)
+        public async Task<List<Department>> SearchDepartments(string searchString, string searchField, List<Department> departments)
         {
-            Stock importStock = null;
-            switch (stockType)
+            switch (searchField)
             {
-                case "Nomenclature":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Nomenclature.Id == stock.Nomenclature.Id);
+                case "Title":
+                    departments = departments.Where(x => x.Title.Contains(searchString)).ToList();
                     break;
-                case "Part":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Part.Id == stock.Part.Id);
-                    break;
-                case "Equipment":
-                    importStock = await db.Stocks.FirstOrDefaultAsync(x => x.Equipment.Id == stock.Equipment.Id);
+                case "Address":
+                    departments = departments.Where(x => x.Address.Contains(searchString)).ToList();
                     break;
             }
-            if (importStock != null)
-            {
-                importStock.Amount += stock.Amount;
-            }
-            else
-            {
-                importStock = new Stock(); 
-                switch (stockType)
-                {
-                    case "Nomenclature":
-                        importStock.Nomenclature = stock.Nomenclature;
-                        break;
-                    case "Part":
-                        importStock.Part = stock.Part;
-                        break;
-                    case "Equipment":
-                        importStock.Equipment = stock.Equipment;
-                        break;
-                }
-                importStock.Amount = stock.Amount;
-                importStock.Storage = importStorage;
-                db.Stocks.Add(importStock);
-            }
-            WriteTransferHistory(stock, importStorage, message: "Stock transfered");
-            await db.SaveChangesAsync();
+            return departments;
         }
 
-        public async Task WriteOffStock(Stock stock, string message)
+        public async Task<List<Department>> SortDepartment(bool isAscendSort, List<Department> departments)
         {
-            Stock dbStock = await db.Stocks.FirstOrDefaultAsync(x => x.Id == stock.Id);
-            dbStock.Amount -= stock.Amount;
-            WriteTransferHistory(stock, null, message);
-        }
-
-        public async Task TranserStock(int importStorageId, string jsonStocks)
-        {
-            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
-            Storage importStorage = await db.Storages.FirstOrDefaultAsync(x => x.Id == importStorageId);
-            if(importStorage != null)
+            switch (isAscendSort)
             {
-                foreach (var stock in stocks)
-                {
-                    await WriteOffStock(stock, "Stock was written off");
-                    if (stock.Nomenclature != null)
-                    {
-                        await ImportStock(stock, importStorage, "Nomenclature");
-                    }
-                    else if(stock.Part != null)
-                    {
-                        await ImportStock(stock, importStorage, "Part");
-                    }
-                    else if (stock.Equipment != null)
-                    {
-                        await ImportStock(stock, importStorage, "Equipment");
-                    }
-                }
+                case true:
+                    departments = departments.OrderBy(x => x.Title).ToList();
+                    break;
+                case false:
+                    departments = departments.OrderByDescending(x => x.Title).ToList();
+                    break;
             }
-        }
-
-        public async Task AssembleEquipment(string jsonStocks, int assemblyId)
-        {
-            List<Stock> stocks = JsonConvert.DeserializeObject<List<Stock>>(jsonStocks);
-            foreach(var stock in stocks)
-            {
-                var message = "Stock was sended on assembly #" + assemblyId.ToString("D8");
-                await WriteOffStock(stock, message);
-            }
+            return departments;
         }
 
     }

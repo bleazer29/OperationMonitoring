@@ -50,7 +50,7 @@ namespace OperationMonitoring.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source = (localdb)\\mssqllocaldb; Initial Catalog = OperationMonitorDB; Integrated Security = True;");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source = IL634\\SQLEXPRESS; Initial Catalog = OperationMonitorDB; Integrated Security = True;");
             }
         }
 
@@ -115,15 +115,15 @@ namespace OperationMonitoring.Data
             Storage[] storages = { st1, st2, st3, st4, st5, st6, st7, st8, st9};
             modelBuilder.Entity<Storage>().HasData(storages);
 
-            Nomenclature[] nomenclatures = {
-                new Nomenclature() { Id = 1, Title="Motor"},
-                new Nomenclature() { Id = 2, Title="Spacer"},
-                new Nomenclature() { Id = 3, Title="Ring"},
-                new Nomenclature() { Id = 4, Title="Shaft"},
-                new Nomenclature() { Id = 5, Title="Ring"},
-                new Nomenclature() { Id = 6, Title="Shaft"},
-            };
-            modelBuilder.Entity<Nomenclature>().HasData(nomenclatures);
+            //Nomenclature[] nomenclatures = {
+            //    new Nomenclature() { Id = 1, Title="Motor"},
+            //    new Nomenclature() { Id = 2, Title="Spacer"},
+            //    new Nomenclature() { Id = 3, Title="Ring"},
+            //    new Nomenclature() { Id = 4, Title="Shaft"},
+            //    new Nomenclature() { Id = 5, Title="Ring"},
+            //    new Nomenclature() { Id = 6, Title="Shaft"},
+            //};
+            //modelBuilder.Entity<Nomenclature>().HasData(nomenclatures);
             Specification[] specifications =
             {
                 new Specification() { Id=1, Weight=3000, OperatingTime=12000  },
@@ -135,13 +135,13 @@ namespace OperationMonitoring.Data
             };
             modelBuilder.Entity<Specification>().HasData(specifications);
 
-            Stock[] stocks = {
-               new Stock() { Id = 1, Amount=5},
-               new Stock() { Id = 2, Amount=2},
-               new Stock() { Id = 3, Amount=5},
-               new Stock() { Id = 4, Amount=5}
-            };
-            modelBuilder.Entity<Stock>().HasData(stocks);
+            //Stock[] stocks = {
+            //   new Stock() { Id = 1, Amount=5},
+            //   new Stock() { Id = 2, Amount=2},
+            //   new Stock() { Id = 3, Amount=5},
+            //   new Stock() { Id = 4, Amount=5}
+            //};
+            //modelBuilder.Entity<Stock>().HasData(stocks);
 
             Department[] departments =
             {
