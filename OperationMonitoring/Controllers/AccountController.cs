@@ -144,8 +144,8 @@ namespace OperationMonitoring.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = await userManager.FindByEmailAsync(loginViewModel.Email);
-                    var user1 = await userManager.FindByNameAsync(loginViewModel.Email);
+                    var user = await userManager.FindByEmailAsync(loginViewModel.Login);
+                    var user1 = await userManager.FindByNameAsync(loginViewModel.Login);
 
                     if (user != null && user1!=null)
                     {
@@ -156,7 +156,7 @@ namespace OperationMonitoring.Controllers
                         }
                     }
 
-                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RememberMe, true);
+                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(loginViewModel.Login, loginViewModel.Password, loginViewModel.RememberMe, true);
 
                     Microsoft.AspNetCore.Identity.SignInResult result1 = null;
                     if(user != null)
