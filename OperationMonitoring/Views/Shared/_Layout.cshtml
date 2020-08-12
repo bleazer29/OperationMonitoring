@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] - OperationMonitoring</title>
     <link rel="stylesheet" href="~/lib/vakata-jstree-6dce227/dist/themes/default/style.min.css" />
     <link rel="stylesheet" href="~/css/jquery.mCustomScrollbar.css" />
+    <link rel="stylesheet" href="~/css/fontawesome.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -46,10 +47,10 @@
                         <a asp-controller="Storages" asp-action="Index" class="nav__item">Storages</a>
                         <a asp-controller="Orders" asp-action="Index" class="nav__item">Orders</a>
                         <a asp-controller="Maintenance" asp-action="Index" class="nav__item">Maintenance</a>
-                        <a class="nav__item dropdown-btn ">
-                            NRI panel
+                        <div class="nav__item dropdown-btn ">
+                            <span>NRI panel</span>
                             <i class="fa fa-caret-down"></i>
-                        </a>
+                        </div>
                         <div class="dropdown-container">
                             <a asp-controller="NRI" asp-action="Departments" class="nav__item">Departments</a>
                             <a asp-controller="NRI" asp-action="Index" class="nav__item">Equipment types</a>

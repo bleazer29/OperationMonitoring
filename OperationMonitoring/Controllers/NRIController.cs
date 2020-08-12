@@ -21,32 +21,53 @@ namespace OperationMonitoring.Controllers
             return View();
         }
 
+        // DEPARTMENT
         public IActionResult Departments()
         {
             List<Department> departments = db.Departments.ToList();
             ViewBag.Departments = departments;
             return View();
         }
-
-        public ActionResult CreateDepartment()
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateDepartment(Department department)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Departments.Add(department);
-                await db.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    db.Departments.Add(department);
+                    await db.SaveChangesAsync();
+                }
                 return RedirectToAction("Departments");
             }
-            else
+            catch
             {
-                return View();
+                return RedirectToAction("Departments");
             }
         }
+
+        // EQUIPMENT TYPE
+
+
+        // EQUIPMENT CATEGORY
+
+
+        // PROVIDERS
+
+
+        // NOMENCLATURE
+
+
+        // COUNTERPARTIES 
+
+
+        // STORAGES
+
+
+        // EMPLOYEES
+
+
+        // POSITIONS
     }
 }
