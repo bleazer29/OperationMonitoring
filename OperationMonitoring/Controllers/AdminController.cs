@@ -101,15 +101,27 @@ namespace OperationMonitoring.Controllers
             {
                 try
                 {
+                    var userId = userManager.GetUserId(HttpContext.User);
                     if (db.Employees.Any(x => x.IdentityUser.Id.Equals(id)))
                     {
                         db.Employees.Remove(db.Employees.FirstOrDefault(x => x.IdentityUser.Id.Equals(id)));
                         db.SaveChanges();
                     }
-                    var result = await userManager.DeleteAsync(user);
-                    if (result.Succeeded) return RedirectToAction(nameof(AdminPanel));
-                    foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
-                    return View(nameof(AdminPanel));
+
+                    if(user.Id != userId)
+                    {
+                        var result = await userManager.DeleteAsync(user);
+                        if (result.Succeeded) return RedirectToAction(nameof(AdminPanel));
+                        foreach (var error in result.Errors) { ModelState.AddModelError("", error.Description); }
+                        return View(nameof(AdminPanel));
+                    }
+                    else
+                    {
+                        ViewBag.ErrorTitle = $"Вы не можете удалить самого себя!";
+                        return View("Error");
+                    }
+
+                    
                 }
                 catch
                 {
@@ -291,7 +303,7 @@ namespace OperationMonitoring.Controllers
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+            var listEmployees = await db.Employees.ToListAsync();
             for (var i = 0; i < listEmployees.Count; i++)
             {
                 listEmployees[i].EncryptedId = protector.Protect(listEmployees[i].Id.ToString());

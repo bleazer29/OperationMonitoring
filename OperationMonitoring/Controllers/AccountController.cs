@@ -19,14 +19,16 @@ namespace OperationMonitoring.Controllers
         private readonly ApplicationContext db;
         private readonly UserManager<IdentityUser> userManager;
         private SignInManager<IdentityUser> signInManager { get; set; }
-        private readonly IDataProtector protector;
+        private readonly IDataProtector protector; 
+        private readonly RoleManager<IdentityRole> roleManager;
         public AccountController(UserManager<IdentityUser> userManager, 
                                     SignInManager<IdentityUser> signInManager, 
                                     ApplicationContext db,
                                     IDataProtectionProvider dataProtectionProvider, 
-                                    DataProtectionPurposeStrings dataProtectionPurposeStrings)
+                                    DataProtectionPurposeStrings dataProtectionPurposeStrings, RoleManager<IdentityRole> roleManager)
         {
             this.db = db;
+            this.roleManager = roleManager;
             this.userManager = userManager;
             this.signInManager = signInManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
@@ -54,8 +56,29 @@ namespace OperationMonitoring.Controllers
 
                     // добавляем пользователя
                     var result = await userManager.CreateAsync(user, model.Password);
+
+                    //Добавление первой роли для администратора
+                    //IdentityRole identityRole = new IdentityRole
+                    //{
+                    //    Name = "Admin"
+                    //};
+
+
+                    //IdentityResult rolesResult = await this.roleManager.CreateAsync(identityRole);
+
+                    //var firstRoles = new IdentityUserRole<string>
+                    //{
+                    //    RoleId = identityRole.Id,
+                    //    UserId = user.Id
+                    //};
+
+                    //db.UserRoles.Add(firstRoles);
+                    //db.SaveChanges();
+
+                    //здесь
                     if (result.Succeeded)
                     {
+                        
                         Employee employee = new Employee
                         {
                             IdentityUser = user
