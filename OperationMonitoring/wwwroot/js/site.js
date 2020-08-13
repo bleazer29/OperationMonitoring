@@ -187,7 +187,7 @@ function confirmDelete(uniqueId, isDeleteClicked) {
 }
 function GenList(listId) {
     $(listId).simplePagination({
-        items_per_page: 5,
+        items_per_page: 10,
         number_of_visible_page_numbers: 10,
         first_content: '<<',
         previous_content: '<',

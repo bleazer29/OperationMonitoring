@@ -75,18 +75,36 @@
                 <th>
                     Address
                 </th>
+                <th>
+                    @* edit *@
+                </th>
             </tr>
         </thead>
 
         <tbody>
             @foreach (var item in Departments)
             {
-                <tr>
+                <tr class="list-row">
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        <a class="btn-primary edit-btn">Edit</a>
+                    </td>
+                </tr>
+                <tr class="edit-row">
+                    <td contenteditable="true">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td contenteditable="true">
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        <a class="btn-primary commit-edit-btn">Commit</a>
+                        <a class="btn-primary cancel-edit-btn">Cancel</a>
                     </td>
                 </tr>
             }
@@ -130,6 +148,15 @@
         GenList(pagedList);
     });
 
+    $('.edit-row').each(function () {
+        $(this).hide();
+    });
+
+    $('.edit-btn').click(function () {
+        $(this).parent().parent().hide();
+        $(this).parent().parent().next().show()
+    });
+
     $('#search-type-select').change(function () {
         searchField = $('#search-type-select').val();
     });
@@ -159,7 +186,6 @@
     });
 
     hubConnection.start();
-
 </script>
 
 <script>
