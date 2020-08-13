@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] - OperationMonitoring</title>
     <link rel="stylesheet" href="~/lib/vakata-jstree-6dce227/dist/themes/default/style.min.css" />
     <link rel="stylesheet" href="~/css/jquery.mCustomScrollbar.css" />
+    <link rel="stylesheet" href="~/css/fontawesome.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -38,8 +39,6 @@
                                     </button>
                                 </form>
                             </div>*@
-                            @if (signInManager.IsSignedIn(User))
-                            {
                         <a asp-controller="Equipment" asp-action="Index" class="nav__item">Equipment</a>
                         <a asp-controller="Assemblies" asp-action="Index" class="nav__item">Assemblies</a>
                         <a asp-controller="Counterparties" asp-action="Index" class="nav__item">Counterparties</a>
@@ -48,46 +47,30 @@
                         <a asp-controller="Storages" asp-action="Index" class="nav__item">Storages</a>
                         <a asp-controller="Orders" asp-action="Index" class="nav__item">Orders</a>
                         <a asp-controller="Maintenance" asp-action="Index" class="nav__item">Maintenance</a>
-                        <a class="nav__item dropdown-btn ">
-                            NRI panel
+                        <div class="nav__item dropdown-btn ">
+                            <span>NRI panel</span>
                             <i class="fa fa-caret-down"></i>
-                        </a>
+                        </div>
                         <div class="dropdown-container">
-                            <a class="nav__item" href="#">Departments</a>
-                            <a class="nav__item" href="#">Equipment types</a>
-                            <a class="nav__item" href="#">Equipment categories</a>
+                            <a asp-controller="NRI" asp-action="Departments" class="nav__item">Departments</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Equipment types</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Equipment categories</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Providers</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Nomenclature</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Counterparties</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Storages</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Employees</a>
+                            <a asp-controller="NRI" asp-action="Index" class="nav__item">Positions</a>
                         </div>
                         <hr />
-                        @if (User.IsInRole("Admin"))
-                        {
-                             <a class="nav__item" asp-controller="Admin" asp-action="AdminPanel">Admin Panel</a>
-                        }
-                            <a class="nav__item" asp-controller="Account" asp-action="ChangePassword">
-                                Password
-                            </a>
-                            <a class="nav__item" asp-controller="Account" asp-action="EditProfile">
-                                Profile
-                            </a>
-                            
+                        <a asp-action="" class="nav__item">Users</a>
+                        <a asp-controller="Admin" asp-action="AdminPanel" class="nav__item">Admin Panel</a>
                         <hr />
                         <a asp-controller="Settings" asp-action="Index" class="nav__item">Settings</a>
-                            }
-                      
-                          @if (User.Identity.IsAuthenticated)
-                        {  
-                    <div class="nav-item">
-                        <form method="post" asp-action="logout" asp-controller="account">
-                            <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
-                                Logout @User.Identity.Name
-                            </button>
-                        </form>
-                    </div>
-                        }
-                        else
-                        {
-                            <a class="nav__item" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                            <a class="nav__item" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                        }
+                        @*<a asp-controller="Account" asp-action="ChangePassword" class="nav__item">Password</a>
+                            <a asp-controller="Account" asp-action="EditProfile" class="nav__item">Profile</a>*@
+                        <a asp-action="logout" asp-controller="account" class="nav__item">Logout @User.Identity.Name</a>
+
                     </div>
                 </div>
             </div>
@@ -114,24 +97,5 @@
     </div>
 
     @RenderSection("Scripts", required: false)
-
-    <script>
-        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
-        var dropdown = document.getElementsByClassName("dropdown-btn");
-        var i;
-
-        for (i = 0; i < dropdown.length; i++) {
-            dropdown[i].addEventListener("click", function () {
-                this.classList.toggle("active");
-                var dropdownContent = this.nextElementSibling;
-                if (dropdownContent.style.display === "block") {
-                    dropdownContent.style.display = "none";
-                } else {
-                    dropdownContent.style.display = "block";
-                }
-            });
-        }
-    </script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

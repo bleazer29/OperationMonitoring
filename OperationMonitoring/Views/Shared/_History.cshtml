@@ -1,94 +1,94 @@
-﻿@{
-    List<IHistory> history = new List<IHistory>();
-    var temp = ViewData["History"] as List<IHistory>;
-    if (temp != null)
-    {
-        history = temp;
-        //if (ViewData["EntityId"] != null)
-        //{
-        //    history = history.Where(x => x.EntityID == (int)ViewData["EntityId"]
-        //        && x.Type.Type == (string)ViewData["Type"]).ToList();
-        //}
+﻿@*@{
+       // List<IHistory> history = new List<IHistory>();
+        var temp = ViewData["History"] as List<IHistory>;
+        if (temp != null)
+        {
+            history = temp;
+            //if (ViewData["EntityId"] != null)
+            //{
+            //    history = history.Where(x => x.EntityID == (int)ViewData["EntityId"]
+            //        && x.Type.Type == (string)ViewData["Type"]).ToList();
+            //}
+        }
     }
-}
-@{
-    if (history.Any())
-    {
-        <div class="history">
-            <div class="history-heading">
-                History
-            </div>
-            - LATER - dropown 
-            <div class="history-pos">
-                <table class="table table-history">
-                    <thead>
-                        <tr>
-                            <th>
-                                Date
-                            </th>
-                            @if ((string)ViewData["Type"] == "General")
-                            {
-                                <th>
-                                    Status
-                                </th>
-                            }
-                            <th>
-                                Note
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in history)
-                        {
+    @{
+        if (history.Any())
+        {
+            <div class="history">
+                <div class="history-heading">
+                    History
+                </div>
+                - LATER - dropown
+                <div class="history-pos">
+                    <table class="table table-history">
+                        <thead>
                             <tr>
-                                <td>
-                                    @item.Date
-                                </td>
+                                <th>
+                                    Date
+                                </th>
                                 @if ((string)ViewData["Type"] == "General")
                                 {
-                                    @*<td>
-                                        @item.Status 
-                                    </td>*@
+                                    <th>
+                                        Status
+                                    </th>
                                 }
-                                @*<td>
-                                    @if (item.OperatingHours != null)
-                                    {
-                                        <p>
-                                            Operating hours:
-                                            <span class="hours">
-                                                @(item.OperatingHours / 60):@{
-                                                    string minutes;
-                                                    if (item.OperatingHours % 60 < 10)
-                                                    {
-                                                        minutes = "0" + (item.OperatingHours % 60);
-                                                    }
-                                                    else
-                                                    {
-                                                        minutes = (item.OperatingHours % 60).ToString();
-                                                    }
-                                                    @minutes
-                                                }
-                                            </span>
-                                            <span>hours</span>
-                                        </p>
-                                    }
-                                    @if (item.Commentary.Length > 0)
-                                    {
-                                        <p>@item.Commentary</p>
-                                    }
-                                </td>*@
+                                <th>
+                                    Note
+                                </th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="history-navigation">
-                    <div class="simple-pagination-first"></div>
-                    <div class="simple-pagination-previous"></div>
-                    <div class="simple-pagination-page-numbers"></div>
-                    <div class="simple-pagination-next"></div>
-                    <div class="simple-pagination-last"></div>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in history)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Date
+                                    </td>
+                                    @if ((string)ViewData["Type"] == "General")
+                                    {
+                                        @*<td>
+                                            @item.Status
+                                        </td>*@
+                                }
+@*<td>
+                                        @if (item.OperatingHours != null)
+                                        {
+                                            <p>
+                                                Operating hours:
+                                                <span class="hours">
+                                                    @(item.OperatingHours / 60):@{
+                                                        string minutes;
+                                                        if (item.OperatingHours % 60 < 10)
+                                                        {
+                                                            minutes = "0" + (item.OperatingHours % 60);
+                                                        }
+                                                        else
+                                                        {
+                                                            minutes = (item.OperatingHours % 60).ToString();
+                                                        }
+                                                        @minutes
+                                                    }
+                                                </span>
+                                                <span>hours</span>
+                                            </p>
+                                        }
+                                        @if (item.Commentary.Length > 0)
+                                        {
+                                            <p>@item.Commentary</p>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="history-navigation">
+                        <div class="simple-pagination-first"></div>
+                        <div class="simple-pagination-previous"></div>
+                        <div class="simple-pagination-page-numbers"></div>
+                        <div class="simple-pagination-next"></div>
+                        <div class="simple-pagination-last"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-}
+        }
+    }*@

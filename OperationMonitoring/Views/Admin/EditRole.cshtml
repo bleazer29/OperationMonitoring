@@ -14,49 +14,48 @@
             </div>
                 <div class="form-group">
                 <label asp-for="RoleName" class="textStyle">Role Name</label>
-                    @if (Model.RoleName == "Admin")
-                    {
-                        <input asp-for="RoleName" class="form-control inputStyle" disabled>
-                    }
-                    else
-                    {
-                        <input asp-for="RoleName" class="form-control inputStyle">
-                        <span asp-validation-for="RoleName" class="text-danger"></span>
-                    }
-                </div>
+                @if (Model.RoleName == "Admin")
+                {
+                    <input asp-for="RoleName" class="form-control inputStyle" disabled>
+                }
+                else
+                {
+                    <input asp-for="RoleName" class="form-control inputStyle">                    
+                }
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-                <div asp-validation-summary="All" class="text-danger"></div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary widthStyle">Update</button>
-                    <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary widthStyle">Cancel</a>
-                </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary widthStyle">Update</button>
+                <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary widthStyle">Cancel</a>
+            </div>
 
                 <br /><hr /><br />
 
-                <h1 class="hia">Users in this role</h1>
-                <hr />
+            <h1 class="hia">Users in this role</h1>
+            <hr />
 
-                <div>
-                    @if (Model.Users.Any())
+            <div>
+                @if (Model.Users.Any())
+                {
+                    foreach (var user in Model.Users)
                     {
-                        foreach (var user in Model.Users)
-                        {
-                            <h5 class="card-title">@user</h5>
-                            <br />
-                        }
+                        <h5 class="card-title">@user</h5>
+                        <br />
                     }
-                    else
-                    {
-                        <h5 class="card-title">None at the moment</h5>
-                    }
-                </div>
-                <div>
-                    <a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" class="btn btn-primary widthStyle">
-                        Add or remove users from this role
-                    </a>
-                </div>
-            </form>
+                }
+                else
+                {
+                    <h5 class="card-title">None at the moment</h5>
+                }
+            </div>
+            <div>
+                <a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" class="btn btn-primary widthStyle">
+                    Add or remove users from this role
+                </a>
+            </div>
+        </form>
     </div>
 
 

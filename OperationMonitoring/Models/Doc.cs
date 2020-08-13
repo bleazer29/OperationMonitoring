@@ -11,7 +11,7 @@ namespace OperationMonitoring.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Path must be specified")]
         public string FilePath { get; set; }
-        public DocType Type { get; set; }
+        public string FileType { get; set; }
         public int RelatedEntityId { get; set; }
     }
 }
