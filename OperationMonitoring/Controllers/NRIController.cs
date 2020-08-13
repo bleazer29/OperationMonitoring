@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
+using OperationMonitoring.Models.Interfaces;
 
 namespace OperationMonitoring.Controllers
 {
@@ -68,7 +69,48 @@ namespace OperationMonitoring.Controllers
 
 
         // EQUIPMENT CATEGORY
-
+        public IActionResult EquipmentCategories()
+        {
+            var data = db.EquipmentCategories.ToList();
+            var categories = data.Cast<INri>().ToList();
+            ViewBag.Categories = categories;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateCategory(EquipmentCategory category)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    db.EquipmentCategories.Add(category);
+                    await db.SaveChangesAsync();
+                }
+                return RedirectToAction("EquipmentCategories");
+            }
+            catch
+            {
+                return RedirectToAction("EquipmentCategories");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditCategory(int editId, string editTitle)
+        {
+            try
+            {
+                var category = db.EquipmentCategories.FirstOrDefault(x => x.Id == editId);
+                category.Title = editTitle;
+                await db.SaveChangesAsync();
+                return RedirectToAction("EquipmentCategories");
+            }
+            catch
+            {
+                return RedirectToAction("EquipmentCategories");
+            }
+        }
+        
 
         // PROVIDERS
 

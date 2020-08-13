@@ -26,6 +26,9 @@ namespace OperationMonitoring.Hubs
             db = context;
         }
 
+        /// <summary>
+        /// COUNTERPARTIES
+        /// </summary>
         public async Task SendCounterparties(string searchString, string sortField, bool isAscendingSort)
         {
             List<Counterparty> counterparties = db.Counterparties.ToList();
@@ -82,6 +85,9 @@ namespace OperationMonitoring.Hubs
             return counterparties;
         }
 
+        /// <summary>
+        /// PROVIDERS
+        /// </summary>
         public async Task SendProviders(string searchString, string searchField, bool isAscendingSort)
         {
             List<Provider> providers = db.Providers.ToList();
@@ -127,6 +133,9 @@ namespace OperationMonitoring.Hubs
             return providers;
         }
 
+        /// <summary>
+        /// NOMENCLATURE
+        /// </summary>
         public async Task SendNomenclature(string searchString, string searchField, string sortField, bool isAscendingSort)
         {
             List<Nomenclature> nomenclature = db.Nomenclatures
@@ -205,6 +214,9 @@ namespace OperationMonitoring.Hubs
             return nomenclature;
         }
 
+        /// <summary>
+        /// ORDERS
+        /// </summary>
         public async Task SendOrders(string searchString, string searchField, bool searchOnlyActive, string sortField, bool isAscendingSort)
         {
             List<Order> orders = db.Orders.Include(x => x.Equipment)
@@ -297,6 +309,9 @@ namespace OperationMonitoring.Hubs
             return orders;
         }
 
+        /// <summary>
+        /// MAINTENANCE
+        /// </summary>
         public async Task SendMaintenances(string sortField, bool isAscendingSort)
         {
             List<Maintenance> maintenances = db.Maintenances
@@ -362,6 +377,9 @@ namespace OperationMonitoring.Hubs
             return maintenances;
         }
 
+        /// <summary>
+        /// EQUIPMENT
+        /// </summary>
         public async Task SendEquipment(string searchStatus, string searchString, string searchField, string sortField, bool isAscendingSort)
         {
             List<Equipment> equipment = db.Equipment
@@ -381,7 +399,6 @@ namespace OperationMonitoring.Hubs
             var json = JsonConvert.SerializeObject(equipment);
             await Clients.Caller.SendAsync("Receive", json);
         }
-
         public async Task<List<Equipment>> SearchEquipment(string searchStatus, string searchString, string searchField, List<Equipment> equipment)
         {
             int result;
@@ -447,7 +464,6 @@ namespace OperationMonitoring.Hubs
             }
             return equipment;
         }
-
         public async Task<List<Equipment>> SortEquipment(string sortField, bool isAscending, List<Equipment> equipment)
         {
             switch (isAscending)
@@ -526,13 +542,8 @@ namespace OperationMonitoring.Hubs
         }
 
         /// <summary>
-        /// 
+        /// STOCKS
         /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="storageId"></param>
-        /// <param name="searchField"></param>
-        /// <param name="searchedObjType">Номенклатура, оборудование или же детали оборудования</param>
-        /// <returns></returns>
         public async Task SendStocks(string searchString, int storageId, string searchField, string searchedObjType)
         {
             List<Stock> stocks = new List<Stock>();
@@ -666,6 +677,9 @@ namespace OperationMonitoring.Hubs
             return temp;
         }
 
+        /// <summary>
+        /// DEPARTMENTS
+        /// </summary>
         public async Task SendDepartments(string searchString, string searchField, bool isAscendedSort)
         {
             List<Department> departments = db.Departments.ToList();
@@ -706,67 +720,75 @@ namespace OperationMonitoring.Hubs
             return departments;
         }
 
+        /// <summary>
+        /// NRI - GENERAL
+        /// </summary>
         public async Task SendEquipmentTypes(string searchString, bool isAscendedSort)
         {
-            var types = db.EquipmentTypes.ToList();
+            var data = db.EquipmentTypes.ToList();
+            var types = data.Cast<INri>().ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                types = (List<EquipmentType>) await SearchNRI(searchString.ToLower(), types);
+                types = await SearchNRI(searchString.ToLower(), types);
             }
-            types = (List<EquipmentType>) await SortNRI(isAscendedSort, types);
+            types = await SortNRI(isAscendedSort, types);
             var json = JsonConvert.SerializeObject(types);
             await Clients.Caller.SendAsync("Receive", json);
         }
         public async Task SendEquipmentCategories(string searchString, bool isAscendedSort)
         {
-            var categories = db.EquipmentCategories.ToList();
+            var data = db.EquipmentCategories.ToList();
+            var categories = data.Cast<INri>().ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                categories = (List<EquipmentCategory>)await SearchNRI(searchString.ToLower(), categories);
+                categories = await SearchNRI(searchString.ToLower(), categories);
             }
-            categories = (List<EquipmentCategory>)await SortNRI(isAscendedSort, categories);
+            categories = await SortNRI(isAscendedSort, categories);
             var json = JsonConvert.SerializeObject(categories);
             await Clients.Caller.SendAsync("Receive", json);
         }
         public async Task SendMaintenanceTypes(string searchString, bool isAscendedSort)
         {
-            var types = db.MaintenanceTypes.ToList();
+            var data = db.MaintenanceTypes.ToList();
+            var types = data.Cast<INri>().ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                types = (List<MaintenanceType>)await SearchNRI(searchString.ToLower(), types);
+                types = await SearchNRI(searchString.ToLower(), types);
             }
-            types = (List<MaintenanceType>)await SortNRI(isAscendedSort, types);
+            types = await SortNRI(isAscendedSort, types);
             var json = JsonConvert.SerializeObject(types);
             await Clients.Caller.SendAsync("Receive", json);
         }
         public async Task SendMaintenanceCategories(string searchString, bool isAscendedSort)
         {
-            var categories = db.MaintenanceCategories.ToList();
+            var data = db.MaintenanceCategories.ToList();
+            var categories = data.Cast<INri>().ToList(); 
             if (!searchString.IsNullOrEmpty())
             {
-                categories = (List<MaintenanceCategory>)await SearchNRI(searchString.ToLower(), categories);
+                categories = await SearchNRI(searchString.ToLower(), categories);
             }
-            categories = (List<MaintenanceCategory>)await SortNRI(isAscendedSort, categories);
+            categories = await SortNRI(isAscendedSort, categories);
             var json = JsonConvert.SerializeObject(categories);
             await Clients.Caller.SendAsync("Receive", json);
         }
         public async Task SendPosition(string searchString, bool isAscendedSort)
         {
-            var positions = db.Positions.ToList();
+            var data = db.Positions.ToList();
+            var positions = data.Cast<INri>().ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                positions = (List<Position>)await SearchNRI(searchString.ToLower(), positions);
+                positions = await SearchNRI(searchString.ToLower(), positions);
             }
-            positions = (List<Position>)await SortNRI(isAscendedSort, positions);
+            positions = await SortNRI(isAscendedSort, positions);
             var json = JsonConvert.SerializeObject(positions);
             await Clients.Caller.SendAsync("Receive", json);
         }
-        public async Task<IEnumerable<INri>> SearchNRI(string searchString, IEnumerable<INri> nri)
+        public async Task<List<INri>> SearchNRI(string searchString, List<INri> nri)
         {
-            nri = nri.Where(x => x.Title.ToLower().Contains(searchString)).ToList();
+            nri = await nri.Where(x => x.Title.ToLower().Contains(searchString)).ToListAsync();
             return nri;
         }
-        public async Task<IEnumerable<INri>> SortNRI(bool isAscendSort, IEnumerable<INri> nri)
+        public async Task<List<INri>> SortNRI(bool isAscendSort, List<INri> nri)
         {
             switch (isAscendSort)
             {
@@ -780,7 +802,9 @@ namespace OperationMonitoring.Hubs
             return nri;
         }
 
-
+        /// <summary>
+        /// EMPLOYEES
+        /// </summary>
         public async Task SendEmployees(string searchString, string searchField, bool searchOnlyActive, string sortField, bool isAscendingSort)
         {
             List<Employee> employees = db.Employees.Include(x => x.Position)

@@ -1,30 +1,29 @@
-﻿@model OperationMonitoring.Models.Department
+﻿@model OperationMonitoring.Models.Interfaces.INri
+
 @{
-    List<Department> Departments = new List<Department>();
-    if (ViewBag.Departments != null)
+    List<INri> NriList = new List<INri>();
+    if (ViewData["NriList"] != null)
     {
-        Departments = ViewBag.Departments;
+        NriList = ViewData["NriList"] as List<INri>; 
     }
 }
+
 <div class="nri-content">
+    <!-- HEADING -->
     <div class="content-heading">
-        <h4>Departments</h4>
+        <h4>@ViewData["NriContentHeading"]</h4>
     </div>
 
-    <button type="button" class="collapsible">Add Department</button>
+    <!-- FORM ADD -->
+    <button type="button" class="collapsible">@ViewData["NriButtonAdd"]</button>
     <div class="accordion-content form-pos accordion-panel">
-        <form asp-action="CreateDepartment">
+        <form asp-action="@ViewData["FormCreate"]">
             <fieldset>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Title" class="control-label"></label>
                     <input asp-for="Title" required class="form-control" />
                     <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Address" class="control-label"></label>
-                    <input asp-for="Address" class="form-control" />
-                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary btn-auto">Create</button>
@@ -36,23 +35,12 @@
     <!-- SEARCH PANEL -->
     <div class="search-panel">
         <div class="search-form">
-            <div class="search-field">
-                <div class="search-label">
-                    <label class="control-label">Field:</label>
-                </div>
-                <div class="search-select">
-                    <select id="search-type-select" name="searchField" class="form-select">
-                        <option selected value="Title">Title</option>
-                        <option value="Address">Address</option>
-                    </select>
-                </div>
-            </div>
             <div class="search-field search-field-input">
                 <div class="search-label">
-                    <label class="control-label">Search:</label>
+                    <label class="control-label">Search Title:</label>
                 </div>
                 <div class="search-textbox">
-                    <input type="text" id="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="text" id="searchString" />
                 </div>
             </div>
             <button class="btn btn-primary search-btn js-btn-search">Search</button>
@@ -62,8 +50,9 @@
         </div>
     </div>
 
+    <!-- LIST -->
     <div id="paged-list">
-        <form method="post" asp-action="EditDepartment">
+        <form method="post" asp-action="@ViewData["FormEdit"]">
             <table class="table">
                 <thead>
                     <tr>
@@ -76,30 +65,24 @@
                             </a>
                         </th>
                         <th>
-                            Address
-                        </th>
-                        <th>
                             <!-- actions -->
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Departments)
+                    @foreach (var item in NriList)
                     {
-                    <tr data-id="@item.Id">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td data-title>
-                            <span>@Html.DisplayFor(modelItem => item.Title)</span>
-                        </td>
-                        <td data-address>
-                            <span>@Html.DisplayFor(modelItem => item.Address)</span>
-                        </td>
-                        <td data-btn>
-                            <span class="btn btn-edit">Edit</span>
-                        </td>
-                    </tr>
+                        <tr data-id="@item.Id">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td data-title>
+                                <span>@Html.DisplayFor(modelItem => item.Title)</span>
+                            </td>
+                            <td data-btn>
+                                <span class="btn btn-edit">Edit</span>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -113,12 +96,10 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    var search = "";
-    var searchField = "Title"; // default - "Title"
-    var sortField = "Title";
-    var sortAsc = true; // default
 
+<script type="text/javascript">
+    var sortAsc = true; // default, sort by Title
+    var search = "";
     var pagedList = "#paged-list";
     GenList(pagedList);
 
@@ -135,7 +116,6 @@
                 "<tr data-id='" + json[i].Id + "'>" +
                 "<td>" + json[i].Id + "</td>" +
                 "<td data-title><span>" + json[i].Title + "</span></td>" +
-                "<td data-address><span>" + getAddress(json[i].Address) + "</span></td>" +
                 "<td data-btn><span class= 'btn btn-edit'>Edit</span></td >" +
                 "</tr>"
             );
@@ -143,41 +123,28 @@
         GenList(pagedList);
     });
 
-    $('#search-type-select').change(function () {
-        searchField = $('#search-type-select').val();
-    });
-
     $(".js-btn-search").click(function () {
         search = $("#searchString").val();
-        hubConnection.invoke("SendDepartments", search, searchField, sortAsc);
+        hubConnection.invoke("@ViewData["NriDataHub"]", search, sortAsc);
     });
 
     $(pagedList + " th a").click(function (e) {
         e.preventDefault();
         $(pagedList + " th").removeClass("sort-asc sort-desc");
-        if (sortField == $(this).attr("data-sort")) {
-            sortAsc = !sortAsc;
-        }
-        else {
-            sortAsc = true;
-        }
+        sortAsc = !sortAsc;
+        console.log(sortAsc);
         if (sortAsc == true) {
+            console.log("IF");
             $(this).parent().addClass("sort-asc");
         }
         else {
+            console.log("ELSE");
             $(this).parent().addClass("sort-desc");
         }
-        sortField = $(this).attr("data-sort");
-        hubConnection.invoke("SendDepartments", search, searchField, sortAsc);
-    });
 
-    function getAddress(address) {
-        var addressInfo = "<Unknown>";
-        if (address != null) {
-            addressInfo = address;
-        }
-        return addressInfo;
-    }
+        console.log("AFTER");
+        hubConnection.invoke("@ViewData["NriDataHub"]", search, sortAsc);
+    });
 
     hubConnection.start();
 
@@ -187,10 +154,8 @@
         $("td span").show();
         $row = $(this).closest("tr");
         $row.find("span").hide();
-        $row.find("[data-title]").append("<input type=text required class=form-control name=editTitle value=" + $row.find("[data-title] span").text() + ">");
+        $row.find("[data-title]").append("<input type=text required class=form-control name=editTitle>");
         $("[name=editTitle]").val($row.find("[data-title] span").text());
-        $row.find("[data-address]").append("<input type=text class=form-control name=editAddress>");
-        $("[name=editAddress]").val($row.find("[data-address] span").text());
         $row.find("[data-btn]").append("<input type=hidden name=editId>");
         $("[name=editId]").val($row.attr("data-id")); 
         $row.find("[data-btn]").append("<button class='btn'>OK</button>");
