@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
+using OperationMonitoring.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace OperationMonitoring.Hubs
             List<Counterparty> counterparties = db.Counterparties.ToList();
             if (!searchString.IsNullOrEmpty())
             {
-                counterparties = await SearchCounterparty(searchString, counterparties);
+                counterparties = await SearchCounterparty(searchString.ToLower(), counterparties);
             }
             if (!sortField.IsNullOrEmpty())
             {
@@ -42,7 +43,7 @@ namespace OperationMonitoring.Hubs
 
         public async Task<List<Counterparty>> SearchCounterparty(string counterpartyName, List<Counterparty> counterparties)
         {
-            counterparties = await counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName.ToLower())).ToListAsync();
+            counterparties = await counterparties.Where(x => x.Title.ToLower().Contains(counterpartyName)).ToListAsync();
             return counterparties;
         }
 
@@ -86,9 +87,9 @@ namespace OperationMonitoring.Hubs
             List<Provider> providers = db.Providers.ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                providers = await SearchProvider(searchString, searchField, providers);
+                providers = await SearchProvider(searchString.ToLower(), searchField, providers);
             }
-                providers = await SortProviders(isAscendingSort, providers);
+            providers = await SortProviders(isAscendingSort, providers);
             var json = JsonConvert.SerializeObject(providers);
             await Clients.Caller.SendAsync("Receive", json);
         }
@@ -98,13 +99,13 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "Title":
-                    providers = await providers.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    providers = await providers.Where(x => x.Title.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 case "Address":
-                    providers = await providers.Where(x => x.Address.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    providers = await providers.Where(x => x.Address.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 case "EDRPOU":
-                    providers = await providers.Where(x => x.EDRPOU.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    providers = await providers.Where(x => x.EDRPOU.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 default:
                     break;
@@ -134,7 +135,7 @@ namespace OperationMonitoring.Hubs
                 .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                nomenclature = await SearchNomenclature(searchString, searchField, nomenclature);
+                nomenclature = await SearchNomenclature(searchString.ToLower(), searchField, nomenclature);
             }
             if (!sortField.IsNullOrEmpty())
             {
@@ -149,13 +150,13 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "VendorCode":
-                    nomenclature = await nomenclature.Where(x => x.VendorCode.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    nomenclature = await nomenclature.Where(x => x.VendorCode.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 case "Title":
-                    nomenclature = await nomenclature.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    nomenclature = await nomenclature.Where(x => x.Title.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 case "Provider":
-                    nomenclature = await nomenclature.Where(x => x.Provider.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    nomenclature = await nomenclature.Where(x => x.Provider.Title.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 default:
                     break;
@@ -212,7 +213,7 @@ namespace OperationMonitoring.Hubs
                 .ToList();
             if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
             {
-                orders = await SearchOrders(searchString, searchField, searchOnlyActive, orders);
+                orders = await SearchOrders(searchString.ToLower(), searchField, searchOnlyActive, orders);
             }
             if (!sortField.IsNullOrEmpty())
             {
@@ -227,13 +228,13 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "Counterparty":
-                    orders = await orders.Where(x => x.Agreement.Counterparty.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+                    orders = await orders.Where(x => x.Agreement.Counterparty.Title.ToLower().Contains(searchString)).ToListAsync();
                     break;
                 case "Agreement":
-                    orders = orders.Where(x => x.Agreement.AgreementNumber.ToLower().Contains(searchString.ToLower())).ToList();
+                    orders = orders.Where(x => x.Agreement.AgreementNumber.ToLower().Contains(searchString)).ToList();
                     break;
                 case "Well":
-                    orders = orders.Where(x => x.Well.Title.ToLower().Contains(searchString.ToLower())).ToList();
+                    orders = orders.Where(x => x.Well.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 default:
                     break;
@@ -389,25 +390,26 @@ namespace OperationMonitoring.Hubs
             {
                 searchString = "";
             }
+            searchString = searchString.ToLower();
             switch (searchField)
             {
                 case "Department":
-                    equipment = equipment.Where(x => x.Department.Title.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.Department.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 case "Category":
-                    equipment = equipment.Where(x => x.Category.Title.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.Category.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 case "Type":
-                    equipment = equipment.Where(x => x.Type.Title.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.Type.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 case "Title":
-                    equipment = equipment.Where(x => x.Title.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 case "SerialNumber":
-                    equipment = equipment.Where(x => x.SerialNum.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.SerialNum.ToLower().Contains(searchString)).ToList();
                     break;
                 case "InventoryNumber":
-                    equipment = equipment.Where(x => x.InventoryNum.Contains(searchString)).ToList();
+                    equipment = equipment.Where(x => x.InventoryNum.ToLower().Contains(searchString)).ToList();
                     break;
                 case "DiameterOuter":
                     if (isInt)
@@ -541,6 +543,7 @@ namespace OperationMonitoring.Hubs
                 .Include(x => x.Equipment).ThenInclude(x => x.Status)
                 .Where(x => x.Amount > 0)
                 .ToList();
+
             stocks = SearchStocks(searchString, storageId, searchField, searchedObjType, stocks).Result;
             var json = JsonConvert.SerializeObject(stocks);
             await Clients.All.SendAsync("Receive", json);
@@ -645,15 +648,16 @@ namespace OperationMonitoring.Hubs
                         break;
                 }
             }
-            if (string.IsNullOrEmpty(searchString) == false)
+            if (searchString.IsNullOrEmpty() == false)
             {
+                searchString = searchString.ToLower();
                 switch (searchField)
                 {
                     case "Title":
                         temp = temp.Where(x =>
-                           x.Nomenclature.Title.Contains(searchString)
-                        || x.Equipment.Title.Contains(searchString)
-                        || x.Part.Title.Contains(searchString)).ToList();
+                           x.Nomenclature.Title.ToLower().Contains(searchString)
+                        || x.Equipment.Title.ToLower().Contains(searchString)
+                        || x.Part.Title.ToLower().Contains(searchString)).ToList();
                         break;
                     default:
                         break;
@@ -667,7 +671,7 @@ namespace OperationMonitoring.Hubs
             List<Department> departments = db.Departments.ToList();
             if (!string.IsNullOrEmpty(searchString))
             {
-                departments = await SearchDepartments(searchString, searchField, departments);
+                departments = await SearchDepartments(searchString.ToLower(), searchField, departments);
             }
             departments = await SortDepartment(isAscendedSort, departments);
             var json = JsonConvert.SerializeObject(departments);
@@ -679,7 +683,7 @@ namespace OperationMonitoring.Hubs
             switch (searchField)
             {
                 case "Title":
-                    departments = departments.Where(x => x.Title.Contains(searchString)).ToList();
+                    departments = departments.Where(x => x.Title.ToLower().Contains(searchString)).ToList();
                     break;
                 case "Address":
                     departments = departments.Where(x => x.Address.Contains(searchString)).ToList();
@@ -702,5 +706,152 @@ namespace OperationMonitoring.Hubs
             return departments;
         }
 
+        public async Task SendEquipmentTypes(string searchString, bool isAscendedSort)
+        {
+            var types = db.EquipmentTypes.ToList();
+            if (!searchString.IsNullOrEmpty())
+            {
+                types = (List<EquipmentType>) await SearchNRI(searchString.ToLower(), types);
+            }
+            types = (List<EquipmentType>) await SortNRI(isAscendedSort, types);
+            var json = JsonConvert.SerializeObject(types);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+        public async Task SendEquipmentCategories(string searchString, bool isAscendedSort)
+        {
+            var categories = db.EquipmentCategories.ToList();
+            if (!searchString.IsNullOrEmpty())
+            {
+                categories = (List<EquipmentCategory>)await SearchNRI(searchString.ToLower(), categories);
+            }
+            categories = (List<EquipmentCategory>)await SortNRI(isAscendedSort, categories);
+            var json = JsonConvert.SerializeObject(categories);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+        public async Task SendMaintenanceTypes(string searchString, bool isAscendedSort)
+        {
+            var types = db.MaintenanceTypes.ToList();
+            if (!searchString.IsNullOrEmpty())
+            {
+                types = (List<MaintenanceType>)await SearchNRI(searchString.ToLower(), types);
+            }
+            types = (List<MaintenanceType>)await SortNRI(isAscendedSort, types);
+            var json = JsonConvert.SerializeObject(types);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+        public async Task SendMaintenanceCategories(string searchString, bool isAscendedSort)
+        {
+            var categories = db.MaintenanceCategories.ToList();
+            if (!searchString.IsNullOrEmpty())
+            {
+                categories = (List<MaintenanceCategory>)await SearchNRI(searchString.ToLower(), categories);
+            }
+            categories = (List<MaintenanceCategory>)await SortNRI(isAscendedSort, categories);
+            var json = JsonConvert.SerializeObject(categories);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+        public async Task SendPosition(string searchString, bool isAscendedSort)
+        {
+            var positions = db.Positions.ToList();
+            if (!searchString.IsNullOrEmpty())
+            {
+                positions = (List<Position>)await SearchNRI(searchString.ToLower(), positions);
+            }
+            positions = (List<Position>)await SortNRI(isAscendedSort, positions);
+            var json = JsonConvert.SerializeObject(positions);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+        public async Task<IEnumerable<INri>> SearchNRI(string searchString, IEnumerable<INri> nri)
+        {
+            nri = nri.Where(x => x.Title.ToLower().Contains(searchString)).ToList();
+            return nri;
+        }
+        public async Task<IEnumerable<INri>> SortNRI(bool isAscendSort, IEnumerable<INri> nri)
+        {
+            switch (isAscendSort)
+            {
+                case true:
+                    nri = nri.OrderBy(x => x.Title).ToList();
+                    break;
+                case false:
+                    nri = nri.OrderByDescending(x => x.Title).ToList();
+                    break;
+            }
+            return nri;
+        }
+
+
+        public async Task SendEmployees(string searchString, string searchField, bool searchOnlyActive, string sortField, bool isAscendingSort)
+        {
+            List<Employee> employees = db.Employees.Include(x => x.Position)
+                .ToList();
+            if (!searchString.IsNullOrEmpty() && !searchField.IsNullOrEmpty())
+            {
+                employees = await SearchEmployees(searchString.ToLower(), searchField, employees);
+            }
+            if (!sortField.IsNullOrEmpty())
+            {
+                employees = await SortEmployees(sortField, isAscendingSort, employees);
+            }
+            var json = JsonConvert.SerializeObject(employees);
+            await Clients.Caller.SendAsync("Receive", json);
+        }
+
+        public async Task<List<Employee>> SearchEmployees(string searchString, string searchField, List<Employee> employees)
+        {
+            switch (searchField)
+            {
+                case "Name":
+                    employees = await employees.Where(x => x.FullName.ToLower().Contains(searchString)).ToListAsync();
+                    break;
+                case "Position":
+                    employees = await employees.Where(x => x.Position.Title.ToLower().Contains(searchString)).ToListAsync();
+                    break;
+                default:
+                    break;
+            }
+            return employees;
+        }
+
+        public async Task<List<Employee>> SortEmployees(string sortField, bool isAscending, List<Employee> employees)
+        {
+            switch (isAscending)
+            {
+                case true:
+                    switch (sortField)
+                    {
+                        case "Id":
+                            employees = await employees.OrderBy(x => x.Id).ToListAsync();
+                            break;
+                        case "Name":
+                            employees = await employees.OrderBy(x => x.LastName).ToListAsync();
+                            break;
+                        case "Position":
+                            employees = await employees.OrderBy(x => x.Position.Title).ToListAsync();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case false:
+                    switch (sortField)
+                    {
+                        case "Id":
+                            employees = employees.OrderByDescending(x => x.Id).ToList();
+                            break;
+                        case "Name":
+                            employees = employees.OrderByDescending(x => x.LastName).ToList();
+                            break;
+                        case "Position":
+                            employees = employees.OrderByDescending(x => x.Position.Title).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+            }
+            return employees;
+        }
     }
 }

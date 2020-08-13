@@ -46,6 +46,23 @@ namespace OperationMonitoring.Controllers
                 return RedirectToAction("Departments");
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditDepartment(int editId, string editTitle, string editAddress)
+        {
+            try
+            {
+                var department = db.Departments.FirstOrDefault(x => x.Id == editId);
+                department.Title = editTitle;
+                department.Address = editAddress;
+                await db.SaveChangesAsync();
+                return RedirectToAction("Departments");
+            }
+            catch
+            {
+                return RedirectToAction("Departments");
+            }
+        }
 
         // EQUIPMENT TYPE
 
