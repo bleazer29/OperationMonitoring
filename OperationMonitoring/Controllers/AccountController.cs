@@ -75,10 +75,8 @@ namespace OperationMonitoring.Controllers
                     //db.UserRoles.Add(firstRoles);
                     //db.SaveChanges();
 
-                    //здесь
                     if (result.Succeeded)
                     {
-                        
                         Employee employee = new Employee
                         {
                             IdentityUser = user

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
@@ -166,7 +168,6 @@ namespace OperationMonitoring.Data
                 new EquipmentType() { Id=3, Title="Type3" }
             };
             modelBuilder.Entity<EquipmentType>().HasData(types);
-
 
         }
     }
