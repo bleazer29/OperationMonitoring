@@ -771,7 +771,7 @@ namespace OperationMonitoring.Hubs
             var json = JsonConvert.SerializeObject(categories);
             await Clients.Caller.SendAsync("Receive", json);
         }
-        public async Task SendPosition(string searchString, bool isAscendedSort)
+        public async Task SendPositions(string searchString, bool isAscendedSort)
         {
             var data = db.Positions.ToList();
             var positions = data.Cast<INri>().ToList();
