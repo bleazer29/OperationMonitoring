@@ -4,53 +4,91 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+    <div class="container">
+        <h1 class="hia">Delete employee</h1>
+            <hr />
+            <div class="container">
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        <label class="textStyle">Id</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.Id)</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <label class="textStyle">First Name</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.FirstName)</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <label class="textStyle">Last Name</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.LastName)</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <label class="textStyle">Patronymic</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.Patronymic)</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <label class="textStyle">FullName</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.FullName)</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <label class="textStyle">Birth Date</label>
+                    </dt>
+                    <dd class="col-sm-6">
+                        <span class="textStyle">@Html.DisplayFor(model => model.BirthDate)</span>
+                    </dd>
+                </dl>
+            </div>
+            <form asp-action="Delete">
+                <input type="submit" value="Delete" class="btn btn-primary widthStyle" />
+                <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary">Back to List</a>
+            </form>
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Employee</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Patronymic)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Patronymic)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BirthDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BirthDate)
-        </dd>
-    </dl>
+    <style>
+        .widthStyle {
+            width: 100%;
+        }
 
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger col-md-12" />
-        <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary">Back to List</a>
-    </form>
-</div>
+        .hia {
+            font-family: 'Open Sans';
+            font-size: 50px;
+        }
+
+        .textStyle {
+            font-family: 'Open Sans';
+            font-size: 30px;
+        }
+
+        .row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-sm-4 {
+            -webkit-box-flex: 0;
+            -ms-flex: 0 0 33.333333%;
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .col-sm-6 {
+            -webkit-box-flex: 0;
+            -ms-flex: 0 0 50%;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    </style>

@@ -9,9 +9,6 @@ using OperationMonitoring.ModelsIdentity.Security;
 using Microsoft.AspNetCore.DataProtection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace OperationMonitoring.Controllers
 {
@@ -22,31 +19,14 @@ namespace OperationMonitoring.Controllers
         private readonly ApplicationContext db;
         private readonly IDataProtector protector;
         private readonly UserManager<IdentityUser> userManager;
-        private readonly IMemoryCache memoryCache;
-
-
         public EmployeeController(ApplicationContext db, IDataProtectionProvider dataProtectionProvider,
-            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager,
-            IMemoryCache memoryCache)
+            DataProtectionPurposeStrings dataProtectionPurposeStrings, UserManager<IdentityUser> userManager)
         {
             this.db = db;
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
-            this.memoryCache = memoryCache;
         }
-
-        //public async Task<ActionResult> Index()
-        //{
-        //    var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
-
-        //    return View(listEmployees.Select(e =>
-        //    {
-        //        e.EncryptedId = protector.Protect(e.Id.ToString());
-        //        return e;
-        //    }));
-        //}
-
-
+      
         // GET: Employee/Details/5
         public  ActionResult Details(string id)
         {
@@ -70,7 +50,7 @@ namespace OperationMonitoring.Controllers
                     LastName = employees.LastName,
                     Patronymic = employees.Patronymic
                 };
-                await db.AddAsync(employee);
+                db.Employees.Add(employee);
                 await db.SaveChangesAsync();
                 return RedirectToAction("AdminPanel","Admin");
             }
@@ -96,10 +76,7 @@ namespace OperationMonitoring.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("AdminPanel", "Admin");
             }
-            catch
-            {
-                return View();
-            }
+            catch { return View();  }
         }
 
         // GET: Employee/Delete/5
@@ -109,10 +86,7 @@ namespace OperationMonitoring.Controllers
         }
 
         [HttpGet]
-        public IActionResult ErrorEmployee()
-        {
-            return View();
-        }
+        public IActionResult ErrorEmployee()  {  return View(); }
 
         // POST: Employee/Delete/5
         [HttpPost]
@@ -122,8 +96,8 @@ namespace OperationMonitoring.Controllers
             try
             {
                 var userId = userManager.GetUserId(HttpContext.User);
-                var employee = db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
-                if (employee.IdentityUser == null || employee.IdentityUser.Id != userId)
+                var employee = await db.Employees.AsNoTracking().Include(i=>i.IdentityUser).FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(protector.Unprotect(id)));
+                if (employee == null || employee.IdentityUser.Id != userId)
                 {
                     db.Employees.Remove(db.Employees.AsNoTracking().FirstOrDefault(x => x.Id == Convert.ToInt32(protector.Unprotect(id))));
                     await db.SaveChangesAsync();

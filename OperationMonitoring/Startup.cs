@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Data;
 using Microsoft.Extensions.Configuration;
@@ -14,9 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OperationMonitoring.Hubs;
 using Microsoft.AspNetCore.Http.Connections;
-using System.Net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring
@@ -56,6 +48,8 @@ namespace OperationMonitoring
             {
                 hubOptions.EnableDetailedErrors = true;
             });
+            services.AddResponseCompression();
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,11 +74,12 @@ namespace OperationMonitoring
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseResponseCompression();
+
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHub<DataFilterHub>("/data",
                     options =>

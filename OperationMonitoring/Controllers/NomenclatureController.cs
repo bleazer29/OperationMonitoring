@@ -96,7 +96,7 @@ namespace OperationMonitoring.Controllers
                     if (editWeight != null) spec.Weight = (double)editWeight;
                     if (editOperatingTime != null) spec.OperatingTime = (int)editOperatingTime;
                     spec.Material = editMaterial;
-                    db.Specifications.Add(spec);
+                    await db.Specifications.AddAsync(spec);
                     nomenclature.Specification = spec;
                 }
                 else
@@ -110,7 +110,7 @@ namespace OperationMonitoring.Controllers
                 if (providerId == -1)
                 {
                     Provider pr = new Provider() { Title = providerName, Address = providerAddress, EDRPOU = providerEDRPOU };
-                    db.Providers.Add(pr);
+                    await db.Providers.AddAsync(pr);
                     nomenclature.Provider = pr;
                 }
                 else if (providerId != 0) 

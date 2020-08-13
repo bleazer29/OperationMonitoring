@@ -1,37 +1,35 @@
 ﻿@model LoginViewModel
-
 @{
-    ViewBag.Title = "User Login";
+    Layout = "~/Views/Shared/_StartLayout.cshtml";
+    ViewData["Title"] = "Login";
+    ViewData["Heading"] = "Login into the system";
 }
 
-<h1>User Login</h1>
-
-<div class="row">
-    <div class="col-md-12">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label" asp-for="Email"></label>
-                <input asp-for="Email" type="email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label" asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label asp-for="RememberMe">
-                        <input asp-for="RememberMe" />
-                        @Html.DisplayNameFor(m => m.RememberMe)
-                    </label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <div>
-                <a asp-action="ForgotPassword">Forgot Password?</a>
-            </div>
-        </form>
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label class="control-label" asp-for="Login"></label>
+        <input asp-for="Login" type="text" class="form-control" />
+        <span asp-validation-for="Login" class="text-danger"></span>
     </div>
-</div>
+    <div class="form-group">
+        <label class="control-label" asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="main-login__columns">
+        <div class="checkbox">
+            <label asp-for="RememberMe">
+                <input type="checkbox" asp-for="RememberMe" />
+                <span></span>
+                @Html.DisplayNameFor(m => m.RememberMe)
+            </label>
+        </div>
+        <a asp-action="ForgotPassword">Forgot Password?</a>
+    </div>
+    <button class="btn btn-primary">Login</button>
+    <div class="main-login__link">
+        Not registered? 
+        <a asp-action="Register">Create an account</a>
+    </div>
+</form>

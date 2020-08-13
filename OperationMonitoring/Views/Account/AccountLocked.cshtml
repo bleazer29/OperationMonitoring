@@ -1,4 +1,9 @@
-﻿<h3 class="text-danger">
+﻿@{
+    Layout = "~/Views/Shared/_StartLayout.cshtml";
+    ViewData["Title"] = "Account Locked";
+    ViewData["Heading"] = "Account Locked";
+}
+<h3 class="text-danger">
     Your account is locked, please try again after sometime or you may
     <a asp-action="ForgotPassword" asp-controller="Account">
         reset your password by clicking here

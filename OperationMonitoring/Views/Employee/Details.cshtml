@@ -4,50 +4,89 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+    <div class="container">
+        <h1 class="hia">Details about employee</h1>
+        <hr />
+        <div class="container">
+            <dl class="row">
+                <dt class="col-sm-4">
+                    <label class="textStyle">Id</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.Id)</span>
+                </dd>
+                <dt class="col-sm-4">
+                    <label class="textStyle">First Name</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.FirstName)</span>
+                </dd>
+                <dt class="col-sm-4">
+                    <label class="textStyle">Last Name</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.LastName)</span>
+                </dd>
+                <dt class="col-sm-4">
+                    <label class="textStyle">Patronymic</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.Patronymic)</span>
+                </dd>
+                <dt class="col-sm-4">
+                    <label class="textStyle">FullName</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.FullName)</span>
+                </dd>
+                <dt class="col-sm-4">
+                    <label class="textStyle">Birth Date</label>
+                </dt>
+                <dd class="col-sm-6">
+                    <span class="textStyle">@Html.DisplayFor(model => model.BirthDate)</span>
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary widthStyle">Back to List</a>
+        </div>
+    </div>
 
-<div>
-    <h4>Employee</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd> 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Patronymic)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Patronymic)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BirthDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BirthDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary">Back to List</a>
-</div>
+    <style>
+        .widthStyle {
+            width: 100%;
+        }
+
+        .hia {
+            font-family: 'Open Sans';
+            font-size: 50px;
+        }
+
+        .textStyle {
+            font-family: 'Open Sans';
+            font-size: 30px;
+        }
+        .row {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-sm-4 {
+            -webkit-box-flex: 0;
+            -ms-flex: 0 0 33.333333%;
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .col-sm-6 {
+            -webkit-box-flex: 0;
+            -ms-flex: 0 0 50%;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    </style>

@@ -18,6 +18,7 @@ namespace OperationMonitoring.Controllers
 
         public IActionResult Index()
         {
+            // if not logged return RedirectToAction("Login", "Account");
             return View();
         }
 

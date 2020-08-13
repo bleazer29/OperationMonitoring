@@ -4,15 +4,24 @@
     ViewBag.Title = "Create new role";
 }
 
-<div class="row">
-    <div class="col-md-12">
-        <form method="post">
-            <div class="form-group">
-                <label asp-for="RoleName"></label>
-                <input asp-for="RoleName" class="form-control" />
-                <span asp-validation-for="RoleName" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Create role</button>
-        </form>
+    <div class="container">
+                <form method="post">
+                    <div class="form-group">
+                        <label asp-for="RoleName" class="textStyle">Name role</label>
+                        <input asp-for="RoleName" class="form-control inputStyle" placeholder="Entered name role..." />
+                        <span asp-validation-for="RoleName" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Create role</button>
+                </form>
     </div>
-</div>
+
+<style>
+    .textStyle {
+        font-family: 'Open Sans';
+        font-size: 50px;
+    }
+
+    .inputStyle{
+        margin-top:25px;
+    }
+</style>
