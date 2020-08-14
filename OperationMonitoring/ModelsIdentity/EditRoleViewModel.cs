@@ -9,6 +9,10 @@ namespace OperationMonitoring.Models
         [Required(ErrorMessage = "Role Name is required")]
         public string RoleName { get; set; }
         public List<string> Users { get; set; }
-        public EditRoleViewModel()  {  Users = new List<string>();  }
+        public List<string> Pages { get; set; }
+        public EditRoleViewModel()  {  Users = new List<string>(); Pages = new List<string>(); }
     }
+
+
+
 }

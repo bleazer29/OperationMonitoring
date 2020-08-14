@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using OperationMonitoring.Data;
 using OperationMonitoring.Models;
+using OperationMonitoring.ModelsIdentity;
 using OperationMonitoring.ModelsIdentity.Security;
 
 namespace OperationMonitoring.Controllers
@@ -105,7 +106,7 @@ namespace OperationMonitoring.Controllers
                     if (db.Employees.Any(x => x.IdentityUser.Id.Equals(id)))
                     {
                         db.Employees.Remove(db.Employees.FirstOrDefault(x => x.IdentityUser.Id.Equals(id)));
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                     }
 
                     if(user.Id != userId)
@@ -120,8 +121,6 @@ namespace OperationMonitoring.Controllers
                         ViewBag.ErrorTitle = $"Вы не можете удалить самого себя!";
                         return View("Error");
                     }
-
-                    
                 }
                 catch
                 {
@@ -150,7 +149,6 @@ namespace OperationMonitoring.Controllers
                 return View(model);
             }
             catch { return View(model); }
-
         }
 
 
@@ -170,10 +168,27 @@ namespace OperationMonitoring.Controllers
                     Id = role.Id,
                     RoleName = role.Name
                 };
+
                 foreach (var user in userManager.Users)
                 {
                     if (await userManager.IsInRoleAsync(user, role.Name)) model.Users.Add(user.UserName);
                 }
+                
+                var rolePages = db.VisiblePageRoles.Include(x=>x.RolePages).Include(y=>y.IdentityRole).ToList();
+                if (rolePages != null)
+                {
+                    for (int i = 0; i < rolePages.Count; i++)
+                    {
+                        if (rolePages[i].IdentityRole.Id == id)
+                        {
+                            if (rolePages[i].IsSelected)
+                            {
+                                model.Pages.Add(rolePages[i].RolePages.PageName);
+                            }
+                        }
+                    }
+                }
+               
                 return View(model);
             }
             catch { return View(); }
@@ -297,6 +312,107 @@ namespace OperationMonitoring.Controllers
             catch { return View("NotFound"); }
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditPagesForRoles(string roleId)
+        {
+            try
+            {
+                ViewBag.roleId = roleId;
+                var role = await roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                {
+                    ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
+                    return View("NotFound");
+                }
+
+                var model = new List<RolePageViewModel>();
+                if (db.VisiblePageRoles.Include(y => y.RolePages).ToList() == null)
+                {
+                    foreach (var rolePages in db.RolePages.ToList())
+                    {
+                        var rolePageViewModel = new RolePageViewModel
+                        {
+                            Id = rolePages.Id,
+                            RolePages = rolePages
+                        };
+                        model.Add(rolePageViewModel);
+                    }
+                }
+                else
+                {
+                    foreach (var visiblePageRoles in db.VisiblePageRoles.Include(y => y.RolePages).ToList())
+                    {
+                        var rolePageViewModel = new RolePageViewModel
+                        {
+                            Id = visiblePageRoles.Id,
+                            RolePages = visiblePageRoles.RolePages,
+                            IdentityRole = role,
+                            IsSelected = visiblePageRoles.IsSelected
+                        };
+                        model.Add(rolePageViewModel);
+                    }
+                }
+
+                return View(model);
+            }
+            catch { return View(); }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditPagesForRoles(List<RolePageViewModel> model, string roleId)
+        {
+            try
+            {
+                var role = await roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                {
+                    ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
+                    return View("NotFound");
+                }
+
+                for (int i = 0; i < model.Count; i++)
+                {
+                    VisiblePageRole visiblePageRole = new VisiblePageRole();
+
+                    visiblePageRole.Id = model[i].Id;   //Здесь с ID траблы для редактирования, и добавления было
+
+                    visiblePageRole.IdentityRole = role;
+                    visiblePageRole.RolePages = db.RolePages.Where(x => x.Id == model[i].RolePages.Id).FirstOrDefault();
+                    if (model[i].IsSelected)
+                    {
+                        if (db.VisiblePageRoles.Any(x=>x.Id == model[i].Id))
+                        {
+                            visiblePageRole.IsSelected = true;
+                            db.Entry(visiblePageRole).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            visiblePageRole.IsSelected = model[i].IsSelected;
+                            db.VisiblePageRoles.Add(visiblePageRole);
+                        }
+                     
+                    }
+                    else
+                    {
+                        visiblePageRole.IsSelected = false;
+                        db.Entry(visiblePageRole).State = EntityState.Modified;
+                    }
+                    await db.SaveChangesAsync();
+
+                    if (db.SaveChangesAsync().IsCompletedSuccessfully)
+                    {
+                        if (i < (model.Count - 1)) continue;
+                        else return RedirectToAction("EditRole", new { Id = roleId });
+                    }
+                }
+                return RedirectToAction("EditRole", new { Id = roleId });
+            }
+            catch { return View("NotFound"); }
+        }
+        
         [HttpGet]
         public async Task<IActionResult> AdminPanel()
         {
@@ -317,6 +433,7 @@ namespace OperationMonitoring.Controllers
             ViewBag.TotalTime = stopWatch.Elapsed;
             return View();
         }
+
 
 
 

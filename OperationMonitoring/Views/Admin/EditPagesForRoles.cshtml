@@ -1,0 +1,116 @@
+﻿@model List<OperationMonitoring.ModelsIdentity.RolePageViewModel>
+@using OperationMonitoring.Data
+
+@{
+    var roleId = ViewBag.roleId;
+}
+
+<div class="container">
+    <form method="post">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="hia">Add or remove pages from this role</h1>
+            </div>
+            <div class="card-body">
+                @{
+                   
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <label class="containerLabel">
+                                @Model[i].RolePages.PageName
+                                <input type="hidden" asp-for="@Model[i].Id" />
+                                <input type="hidden" asp-for="@Model[i].RolePages.Id" />
+                                <input asp-for="@Model[i].IsSelected" type="checkbox" />
+                                <span class="checkmark"></span>
+                            </label>
+                            <br />
+                        }
+                    
+                }
+
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Update" class="btn btn-primary widthStyle" />
+                <a asp-action="EditRole" asp-route-id="@roleId" class="btn btn-primary widthStyle">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .widthStyle {
+        width: 100%;
+    }
+
+    .hia {
+        font-family: 'Open Sans';
+        font-size: 50px;
+    }
+    /* The container */
+    .containerLabel {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+     .containerLabel input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+     }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .containerLabel:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .containerLabel input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .containerLabel input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .containerLabel .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>

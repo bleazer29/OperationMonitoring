@@ -347,33 +347,15 @@ namespace OperationMonitoring.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FileType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RelatedEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
 
                     b.ToTable("Docs");
-                });
-
-            modelBuilder.Entity("OperationMonitoring.Models.DocType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DocTypes");
                 });
 
             modelBuilder.Entity("OperationMonitoring.Models.Employee", b =>
@@ -439,7 +421,7 @@ namespace OperationMonitoring.Migrations
                     b.Property<int>("OperatingTime")
                         .HasColumnType("int");
 
-                    b.Property<int>("PresetId")
+                    b.Property<int?>("PresetId")
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNum")
@@ -1360,6 +1342,31 @@ namespace OperationMonitoring.Migrations
                         });
                 });
 
+            modelBuilder.Entity("OperationMonitoring.Models.VisiblePageRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("IdentityRoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("RolePagesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityRoleId");
+
+                    b.HasIndex("RolePagesId");
+
+                    b.ToTable("VisiblePageRoles");
+                });
+
             modelBuilder.Entity("OperationMonitoring.Models.Well", b =>
                 {
                     b.Property<int>("Id")
@@ -1382,6 +1389,38 @@ namespace OperationMonitoring.Migrations
                     b.HasIndex("CounterpartyId");
 
                     b.ToTable("Wells");
+                });
+
+            modelBuilder.Entity("OperationMonitoring.ModelsIdentity.RolePages", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RolePages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PageName = "Equipment"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PageName = "Assemblies"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PageName = "Counterparties"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1462,14 +1501,6 @@ namespace OperationMonitoring.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("OperationMonitoring.Models.Doc", b =>
-                {
-                    b.HasOne("OperationMonitoring.Models.DocType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("OperationMonitoring.Models.Employee", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
@@ -1498,8 +1529,7 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Preset", "Preset")
                         .WithMany()
                         .HasForeignKey("PresetId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OperationMonitoring.Models.EquipmentStatus", "Status")
                         .WithMany()
@@ -1757,6 +1787,19 @@ namespace OperationMonitoring.Migrations
                     b.HasOne("OperationMonitoring.Models.Storage", "StorageTo")
                         .WithMany()
                         .HasForeignKey("StorageToId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("OperationMonitoring.Models.VisiblePageRole", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "IdentityRole")
+                        .WithMany()
+                        .HasForeignKey("IdentityRoleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("OperationMonitoring.ModelsIdentity.RolePages", "RolePages")
+                        .WithMany()
+                        .HasForeignKey("RolePagesId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

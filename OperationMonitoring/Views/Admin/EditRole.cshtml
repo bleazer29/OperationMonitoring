@@ -12,7 +12,7 @@
                 <label asp-for="Id" class="textStyle">Id Role</label>
                 <input asp-for="Id" disabled class="form-control inputStyle">
             </div>
-                <div class="form-group">
+            <div class="form-group">
                 <label asp-for="RoleName" class="textStyle">Role Name</label>
                 @if (Model.RoleName == "Admin")
                 {
@@ -20,7 +20,7 @@
                 }
                 else
                 {
-                    <input asp-for="RoleName" class="form-control inputStyle">                    
+                    <input asp-for="RoleName" class="form-control inputStyle">
                 }
                 <span asp-validation-for="RoleName" class="text-danger"></span>
             </div>
@@ -31,7 +31,7 @@
                 <a asp-action="AdminPanel" asp-controller="Admin" class="btn btn-primary widthStyle">Cancel</a>
             </div>
 
-                <br /><hr /><br />
+            <br /><hr /><br />
 
             <h1 class="hia">Users in this role</h1>
             <hr />
@@ -53,6 +53,32 @@
             <div>
                 <a asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" class="btn btn-primary widthStyle">
                     Add or remove users from this role
+                </a>
+            </div>
+
+
+            <br /><hr /><br />
+
+            <h1 class="hia">Pages in this role</h1>
+            <hr />
+
+            <div>
+                @if (Model.Pages.Any())
+                {
+                    foreach (var pages in Model.Pages)
+                    {
+                        <h5 class="card-title">@pages</h5>
+                        <br />
+                    }
+                }
+                else
+                {
+                    <h5 class="card-title">None at the moment</h5>
+                }
+            </div>
+            <div>
+                <a asp-controller="Admin" asp-action="EditPagesForRoles" asp-route-roleId="@Model.Id" class="btn btn-primary widthStyle">
+                    Add or remove pages from this role
                 </a>
             </div>
         </form>

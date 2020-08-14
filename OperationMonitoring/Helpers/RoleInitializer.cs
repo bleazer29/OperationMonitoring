@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace OperationMonitoring.Helpers
 {

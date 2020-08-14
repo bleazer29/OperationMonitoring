@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OperationMonitoring.Models;
+using OperationMonitoring.ModelsIdentity;
 
 namespace OperationMonitoring.Data              
 {
@@ -40,6 +41,8 @@ namespace OperationMonitoring.Data
         public DbSet<UsageType> UsageTypes { get; set; }
         public DbSet<Preset> Presets { get; set; }
         public DbSet<PresetItem> PresetItems { get; set; }
+        public DbSet<RolePages> RolePages { get; set; }
+        public DbSet<VisiblePageRole> VisiblePageRoles { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
@@ -168,6 +171,13 @@ namespace OperationMonitoring.Data
             };
             modelBuilder.Entity<EquipmentType>().HasData(types);
 
+            RolePages[] rolePages =
+            {
+                new RolePages(){ Id=1, PageName = "Equipment"},
+                new RolePages(){ Id=2, PageName = "Assemblies"},
+                new RolePages(){ Id=3, PageName = "Counterparties"},
+            };
+            modelBuilder.Entity<RolePages>().HasData(rolePages);
         }
     }
 }
