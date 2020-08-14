@@ -26,7 +26,16 @@ namespace OperationMonitoring.Controllers
             this.userManager = userManager;
             protector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
         }
-      
+        public async Task<ActionResult> Index()
+        {
+            var listEmployees = await db.Employees.AsNoTracking().ToListAsync();
+            return View(listEmployees.Select(e =>
+            {
+                e.EncryptedId = protector.Protect(e.Id.ToString());
+                return e;
+            }));
+        }
+
         // GET: Employee/Details/5
         public  ActionResult Details(string id)
         {

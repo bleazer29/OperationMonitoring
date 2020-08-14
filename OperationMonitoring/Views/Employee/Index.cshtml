@@ -1,0 +1,66 @@
+﻿@model IEnumerable<OperationMonitoring.Models.Employee>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="Employees" class="tabcontent">
+    <h1 class="hia">List Employees</h1>
+    <a asp-action="Create" asp-controller="Employee" class="btn btn-primary col-md-12">Create new employee</a>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Patronymic </th>
+                <th>FullName</th>
+                <th>BirthDate</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Patronymic)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BirthDate)</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
+                        @Html.ActionLink("Details", "Details", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
+                        @Html.ActionLink("Delete", "Delete", "Employee", new { id = item.EncryptedId }, new { @class = "btn btn-primary bs" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+
+    .hia {
+        font-family: 'Open Sans';
+        font-size: 50px;
+    }
+
+    .hiaText {
+        font-family: 'Open Sans';
+        font-size: 35px;
+    }
+
+    .bs {
+        width: 31%;
+        height: 30px
+    }
+
+    .widthButton {
+        width: 100%
+    }
+
+   
+</style>

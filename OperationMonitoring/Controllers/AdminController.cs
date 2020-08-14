@@ -376,21 +376,20 @@ namespace OperationMonitoring.Controllers
                 for (int i = 0; i < model.Count; i++)
                 {
                     VisiblePageRole visiblePageRole = new VisiblePageRole();
-
-                    visiblePageRole.Id = model[i].Id;   //Здесь с ID траблы для редактирования, и добавления было
-
+                    
                     visiblePageRole.IdentityRole = role;
                     visiblePageRole.RolePages = db.RolePages.Where(x => x.Id == model[i].RolePages.Id).FirstOrDefault();
                     if (model[i].IsSelected)
                     {
-                        if (db.VisiblePageRoles.Any(x=>x.Id == model[i].Id))
+                        if (db.VisiblePageRoles.Any(x=>x.Id == model[i].Id && x.IdentityRole.Id == roleId)) //ID смотреть тут
                         {
+                            visiblePageRole.Id = model[i].Id;
                             visiblePageRole.IsSelected = true;
                             db.Entry(visiblePageRole).State = EntityState.Modified;
                         }
                         else
                         {
-                            visiblePageRole.IsSelected = model[i].IsSelected;
+                            visiblePageRole.IsSelected = true;
                             db.VisiblePageRoles.Add(visiblePageRole);
                         }
                      
@@ -402,11 +401,7 @@ namespace OperationMonitoring.Controllers
                     }
                     await db.SaveChangesAsync();
 
-                    if (db.SaveChangesAsync().IsCompletedSuccessfully)
-                    {
-                        if (i < (model.Count - 1)) continue;
-                        else return RedirectToAction("EditRole", new { Id = roleId });
-                    }
+                    
                 }
                 return RedirectToAction("EditRole", new { Id = roleId });
             }
